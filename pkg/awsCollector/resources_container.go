@@ -41,12 +41,12 @@ func (rc *ResourcesContainer) PrintStats() {
 	fmt.Printf("Found %d VPCs\n", len(rc.VpcsList))
 }
 
-func (rc *ResourcesContainer) String() string {
-	toPrint, _ := json.MarshalIndent(rc, "", "    ")
-	return string(toPrint)
+func (rc *ResourcesContainer) ToString() (string, error) {
+	toPrint, err := json.MarshalIndent(rc, "", "    ")
+	return string(toPrint), err
 }
 
-func CollectResourcesFromAPI() *ResourcesContainer {
+func (resources *ResourcesContainer) CollectResourcesFromAPI() {
 	// Load the Shared AWS Configuration (~/.aws/config)
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
@@ -55,9 +55,6 @@ func CollectResourcesFromAPI() *ResourcesContainer {
 
 	// Create an Amazon ec2 service client
 	client := ec2.NewFromConfig(cfg)
-
-	// Initialize output object
-	resources := NewResourcesContainer()
 
 	// Get (the first page of) VPCs
 	vpcsFromAPI, err := client.DescribeVpcs(context.TODO(), &ec2.DescribeVpcsInput{})
@@ -114,6 +111,4 @@ func CollectResourcesFromAPI() *ResourcesContainer {
 			resources.InstancesList = append(resources.InstancesList, &instancesFromAPI.Reservations[i].Instances[j])
 		}
 	}
-
-	return resources
 }
