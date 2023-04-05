@@ -1,7 +1,7 @@
 # cloud-resource-collector
 Collects cloud resources in a given account. Supports multiple cloud providers.
 
-### AWS Collector
+### Setup the AWS Collector
 
 The AWS Collector requires you to provide region and credential information, by setting up shared credential and config files:
 
@@ -24,3 +24,16 @@ If you are using Windows save the file under `C:\Users\<yourUserName>\.aws\confi
 If you are using Linux, MacOS, or Unix save the file under `~/.aws/config`
 
 Note: Pagination is not yet implemented, the collector will return only the first page of resources.
+
+
+### Executing
+
+At the root directory run: 
+```azure
+make build
+```
+
+Then execute while supplying the requested provider and the output file name as arguments:
+```azure
+./bin/collect -provider aws -out b.json
+```

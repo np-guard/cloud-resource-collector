@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
-	"github.com/np-guard/cloud-resource-collector/pkg/awsCollector"
+	"github.com/np-guard/cloud-resource-collector/pkg/aws"
 	"github.com/np-guard/cloud-resource-collector/pkg/common"
 )
 
@@ -20,11 +21,14 @@ func main() {
 	var resources common.ResourcesContainerInf
 	switch *inArgs.CollectFromProvider {
 	case "aws":
-		resources = awsCollector.NewResourcesContainer()
+		resources = aws.NewResourcesContainer()
 	}
 
 	// Collect resources from the provider API and generate output
-	resources.CollectResourcesFromAPI()
+	err = resources.CollectResourcesFromAPI()
+	if err != nil {
+		log.Fatal(err)
+	}
 	OutputResources(resources, *inArgs.OutputFile)
 
 	resources.PrintStats()

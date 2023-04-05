@@ -11,12 +11,13 @@ import (
 func OutputResources(rc common.ResourcesContainerInf, outputFileName string) {
 	jsonString, err := rc.ToString()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(fmt.Errorf("error converting resources to string: %w", err))
 	}
 
 	if outputFileName == "" {
 		fmt.Print(jsonString)
 	} else {
+		log.Printf("Writing to file: %s", outputFileName)
 
 		file, err := os.Create(outputFileName)
 		if err != nil {
@@ -25,7 +26,7 @@ func OutputResources(rc common.ResourcesContainerInf, outputFileName string) {
 
 		_, err = file.WriteString(jsonString)
 		if err != nil {
-			fmt.Print(err)
+			log.Fatal(err)
 		}
 	}
 
