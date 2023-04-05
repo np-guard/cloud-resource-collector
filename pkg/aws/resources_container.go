@@ -64,8 +64,9 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	if err != nil {
 		return fmt.Errorf("CollectResourcesFromAPI error getting VPCs: %w", err)
 	}
+	resources.VpcsList = make([]*aws2.Vpc, len(vpcsFromAPI.Vpcs))
 	for i := range vpcsFromAPI.Vpcs {
-		resources.VpcsList = append(resources.VpcsList, &vpcsFromAPI.Vpcs[i])
+		resources.VpcsList[i] = &vpcsFromAPI.Vpcs[i]
 	}
 
 	// Get (the first page of) Internet Gateways
@@ -73,8 +74,9 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	if err != nil {
 		return fmt.Errorf("CollectResourcesFromAPI error getting internet gateways: %w", err)
 	}
+	resources.InternetGWList = make([]*aws2.InternetGateway, len(intGWFromAPI.InternetGateways))
 	for i := range intGWFromAPI.InternetGateways {
-		resources.InternetGWList = append(resources.InternetGWList, &intGWFromAPI.InternetGateways[i])
+		resources.InternetGWList[i] = &intGWFromAPI.InternetGateways[i]
 	}
 
 	// Get (the first page of) Subnets
@@ -82,8 +84,9 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	if err != nil {
 		return fmt.Errorf("CollectResourcesFromAPI error getting subnets: %w", err)
 	}
+	resources.SubnetsList = make([]*aws2.Subnet, len(subnetsFromAPI.Subnets))
 	for i := range subnetsFromAPI.Subnets {
-		resources.SubnetsList = append(resources.SubnetsList, &subnetsFromAPI.Subnets[i])
+		resources.SubnetsList[i] = &subnetsFromAPI.Subnets[i]
 	}
 
 	// Get (the first page of) Network ACLs
@@ -91,8 +94,9 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	if err != nil {
 		return fmt.Errorf("CollectResourcesFromAPI error getting nACLs: %w", err)
 	}
+	resources.NetworkACLsList = make([]*aws2.NetworkAcl, len(nACLsFromAPI.NetworkAcls))
 	for i := range nACLsFromAPI.NetworkAcls {
-		resources.NetworkACLsList = append(resources.NetworkACLsList, &nACLsFromAPI.NetworkAcls[i])
+		resources.NetworkACLsList[i] = &nACLsFromAPI.NetworkAcls[i]
 	}
 
 	// Get (the first page of) Security Groups
@@ -100,8 +104,9 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	if err != nil {
 		return fmt.Errorf("CollectResourcesFromAPI error getting security groups: %w", err)
 	}
+	resources.SecurityGroupsList = make([]*aws2.SecurityGroup, len(secGroupsFromAPI.SecurityGroups))
 	for i := range secGroupsFromAPI.SecurityGroups {
-		resources.SecurityGroupsList = append(resources.SecurityGroupsList, &secGroupsFromAPI.SecurityGroups[i])
+		resources.SecurityGroupsList[i] = &secGroupsFromAPI.SecurityGroups[i]
 	}
 
 	// Get (the first page of) Instances
@@ -109,9 +114,14 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	if err != nil {
 		return fmt.Errorf("CollectResourcesFromAPI error getting instances: %w", err)
 	}
+	numInstances := 0
+	for i := range instancesFromAPI.Reservations {
+		numInstances += len(instancesFromAPI.Reservations[i].Instances)
+	}
+	resources.InstancesList = make([]*aws2.Instance, numInstances)
 	for i := range instancesFromAPI.Reservations {
 		for j := range instancesFromAPI.Reservations[i].Instances {
-			resources.InstancesList = append(resources.InstancesList, &instancesFromAPI.Reservations[i].Instances[j])
+			resources.InstancesList[i] = &instancesFromAPI.Reservations[i].Instances[j]
 		}
 	}
 
