@@ -1,20 +1,16 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"os"
-
 	"github.com/np-guard/cloud-resource-collector/pkg/aws"
 	"github.com/np-guard/cloud-resource-collector/pkg/common"
+	"log"
 )
 
 func main() {
 	var inArgs InArgs
 	err := ParseInArgs(&inArgs)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error parsing arguments: %v. exiting...\n", err)
-		os.Exit(1)
+		log.Fatalf("error parsing arguments: %v. exiting...\n", err)
 	}
 
 	// Initialize a collector for the requested provider

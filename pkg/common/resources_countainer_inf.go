@@ -4,5 +4,5 @@ package common
 type ResourcesContainerInf interface {
 	CollectResourcesFromAPI() error
 	PrintStats()
-	ToString() (string, error)
+	ToJsonString() (string, error)
 }

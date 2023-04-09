@@ -42,8 +42,8 @@ func (resources *ResourcesContainer) PrintStats() {
 	fmt.Printf("Found %d VPCs\n", len(resources.VpcsList))
 }
 
-// ToString converts a ResourcesContainer into a json-formatted-string
-func (resources *ResourcesContainer) ToString() (string, error) {
+// ToJsonString converts a ResourcesContainer into a json-formatted-string
+func (resources *ResourcesContainer) ToJsonString() (string, error) {
 	toPrint, err := json.MarshalIndent(resources, "", "    ")
 	return string(toPrint), err
 }

@@ -9,7 +9,7 @@ import (
 )
 
 func OutputResources(rc common.ResourcesContainerInf, outputFileName string) {
-	jsonString, err := rc.ToString()
+	jsonString, err := rc.ToJsonString()
 	if err != nil {
 		log.Fatal(fmt.Errorf("error converting resources to string: %w", err))
 	}
