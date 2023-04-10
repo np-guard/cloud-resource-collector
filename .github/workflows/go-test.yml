@@ -24,7 +24,7 @@ jobs:
       env:
         CGO_ENABLED: 0
         GOOS: linux      
-      run: go build --tags static_all -v -o ./bin/vpc-analyzer ./cmd/analyzer
+      run: go build --tags static_all -o ./bin/collect ./cmd/collect
 
     - name: Test
       run: go test -v ./...
