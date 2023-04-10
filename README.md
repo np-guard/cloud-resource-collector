@@ -8,7 +8,7 @@ Collects cloud resources in a given account. Supports multiple cloud providers.
 The AWS Collector requires you to provide region and credential information by setting up shared credential and config files:
 
 1. Create a text file with the following content (replacing the keys with your AWS keys)
-```shell
+```ini
 [default]
 aws_access_key_id = YOUR_AWS_ACCESS_KEY_ID
 aws_secret_access_key = YOUR_AWS_SECRET_ACCESS_KEY
@@ -17,7 +17,7 @@ If you are using Windows save the file under `C:\Users\<yourUserName>\.aws\crede
 If you are using Linux, MacOS, or Unix save the file under `~/.aws/credentials`
 
 2. Create a text file with the following content (choosing the appropriate region)
-```shell
+```ini
 [default]
 region = eu-north-1
 output = json
@@ -44,7 +44,7 @@ Usage of C:\MyStuff\Governance\np-guard\cloud-resource-collector\bin\collect:
 ```shell
 git clone git@github.com:np-guard/cloud-resource-collector.git
 cd cloud-resource-collector
-go mod download
-make
+make mod
+make build
 ```
 
