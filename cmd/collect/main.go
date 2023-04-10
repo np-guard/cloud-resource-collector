@@ -7,6 +7,10 @@ import (
 	"github.com/np-guard/cloud-resource-collector/pkg/common"
 )
 
+const (
+	AWS string = "aws"
+)
+
 func main() {
 	var inArgs InArgs
 	err := ParseInArgs(&inArgs)
@@ -17,7 +21,7 @@ func main() {
 	// Initialize a collector for the requested provider
 	var resources common.ResourcesContainerInf
 	switch *inArgs.CollectFromProvider {
-	case "aws":
+	case AWS:
 		resources = aws.NewResourcesContainer()
 	}
 

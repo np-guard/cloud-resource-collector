@@ -5,9 +5,12 @@ Collects cloud resources in a given account. Supports multiple cloud providers.
 
 ### Setup the AWS Collector
 
-The AWS Collector requires you to provide region and credential information by setting up shared credential and config files:
+The AWS Collector requires you to provide region and credential information. You can do this either by setting up 
+shared credential and config files or by setting environment variables.
 
-1. Create a text file with the following content (replacing the keys with your AWS keys)
+To setup the credential and config files do the following:
+
+- Create a text file with the following content (replacing the keys with your AWS keys)
 ```ini
 [default]
 aws_access_key_id = YOUR_AWS_ACCESS_KEY_ID
@@ -16,7 +19,7 @@ aws_secret_access_key = YOUR_AWS_SECRET_ACCESS_KEY
 If you are using Windows save the file under `C:\Users\<yourUserName>\.aws\credentials`.
 If you are using Linux, MacOS, or Unix save the file under `~/.aws/credentials`
 
-2. Create a text file with the following content (choosing the appropriate region)
+- Create a text file with the following content (choosing the appropriate region)
 ```ini
 [default]
 region = eu-north-1
@@ -24,6 +27,13 @@ output = json
 ```
 If you are using Windows save the file under `C:\Users\<yourUserName>\.aws\config`.
 If you are using Linux, MacOS, or Unix save the file under `~/.aws/config`
+
+Alternatively, you can set the following environment files:
+```shell
+export AWS_ACCESS_KEY_ID=YOUR_AWS_ACCESS_KEY_ID
+export AWS_SECRET_ACCESS_KEY=YOUR_AWS_SECRET_ACCESS_KEY
+export AWS_REGION=eu-north-1
+```
 
 Note: Pagination is not yet implemented, the collector will return only the first page of resources.
 

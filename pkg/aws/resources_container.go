@@ -21,6 +21,7 @@ type ResourcesContainer struct {
 	VpcsList           []*aws2.Vpc             `json:"vpcs"`
 }
 
+//nolint:all
 // NewResourcesContainer creates an empty resources container
 func NewResourcesContainer() *ResourcesContainer {
 	return &ResourcesContainer{
