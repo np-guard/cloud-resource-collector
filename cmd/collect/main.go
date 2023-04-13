@@ -1,9 +1,10 @@
 package main
 
 import (
+	"log"
+
 	"github.com/np-guard/cloud-resource-collector/pkg/aws"
 	"github.com/np-guard/cloud-resource-collector/pkg/common"
-	"log"
 )
 
 func main() {

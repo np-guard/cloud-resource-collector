@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	aws2 "github.com/aws/aws-sdk-go-v2/service/ec2/types"
@@ -42,8 +43,8 @@ func (resources *ResourcesContainer) PrintStats() {
 	fmt.Printf("Found %d VPCs\n", len(resources.VpcsList))
 }
 
-// ToJsonString converts a ResourcesContainer into a json-formatted-string
-func (resources *ResourcesContainer) ToJsonString() (string, error) {
+// ToJSONString converts a ResourcesContainer into a json-formatted-string
+func (resources *ResourcesContainer) ToJSONString() (string, error) {
 	toPrint, err := json.MarshalIndent(resources, "", "    ")
 	return string(toPrint), err
 }
@@ -53,7 +54,7 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	// Load the Shared AWS Configuration (~/.aws/config)
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI encountered an error loading AWS the configuration: %w\n", err)
+		return fmt.Errorf("CollectResourcesFromAPI encountered an error loading AWS the configuration: %w", err)
 	}
 
 	// Create an Amazon ec2 service client
