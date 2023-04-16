@@ -3,12 +3,14 @@ package ibm
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"os"
+
 	"github.com/IBM/go-sdk-core/v5/core"
 	"github.com/IBM/platform-services-go-sdk/globaltaggingv1"
 	"github.com/IBM/vpc-go-sdk/vpcv1"
+
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm/datamodel"
-	"log"
-	"os"
 )
 
 // tagsClient wraps the global search client and collects tags for all types of resources
@@ -16,6 +18,7 @@ type tagsClient struct {
 	serviceClient   *globaltaggingv1.GlobalTaggingV1
 	listTagsOptions *globaltaggingv1.ListTagsOptions
 }
+
 // Constructor for a tagsClient
 func newTagsCollector() *tagsClient {
 
@@ -29,6 +32,7 @@ func newTagsCollector() *tagsClient {
 
 	return &tagsClient{serviceClient: serviceClient, listTagsOptions: listTagsOptions}
 }
+
 // collectTags gets the tags associated with a resource (based on its CRN)
 func (tagsCollector *tagsClient) collectTags(resourceID string) []string {
 
