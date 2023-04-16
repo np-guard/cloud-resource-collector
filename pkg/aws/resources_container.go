@@ -21,7 +21,6 @@ type ResourcesContainer struct {
 	VpcsList           []*aws2.Vpc             `json:"vpcs"`
 }
 
-//nolint:all
 // NewResourcesContainer creates an empty resources container
 func NewResourcesContainer() *ResourcesContainer {
 	return &ResourcesContainer{
@@ -50,6 +49,7 @@ func (resources *ResourcesContainer) ToJSONString() (string, error) {
 	return string(toPrint), err
 }
 
+//nolint:all
 // CollectResourcesFromAPI uses AWS APIs to collect resource configuration information
 func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	// Load the Shared AWS Configuration (~/.aws/config)

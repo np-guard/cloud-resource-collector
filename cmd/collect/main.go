@@ -1,14 +1,15 @@
 package main
 
 import (
-	"log"
-
 	"github.com/np-guard/cloud-resource-collector/pkg/aws"
 	"github.com/np-guard/cloud-resource-collector/pkg/common"
+	"github.com/np-guard/cloud-resource-collector/pkg/ibm"
+	"log"
 )
 
 const (
 	AWS string = "aws"
+	IBM string = "ibm"
 )
 
 func main() {
@@ -23,6 +24,8 @@ func main() {
 	switch *inArgs.CollectFromProvider {
 	case AWS:
 		resources = aws.NewResourcesContainer()
+	case IBM:
+		resources = ibm.NewResourcesContainer()
 	}
 
 	// Collect resources from the provider API and generate output
