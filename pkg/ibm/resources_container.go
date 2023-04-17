@@ -21,7 +21,6 @@ type tagsClient struct {
 
 // Constructor for a tagsClient
 func newTagsCollector() *tagsClient {
-
 	serviceClientOptions := &globaltaggingv1.GlobalTaggingV1Options{}
 	serviceClient, err := globaltaggingv1.NewGlobalTaggingV1UsingExternalConfig(serviceClientOptions)
 	if err != nil {
@@ -35,7 +34,6 @@ func newTagsCollector() *tagsClient {
 
 // collectTags gets the tags associated with a resource (based on its CRN)
 func (tagsCollector *tagsClient) collectTags(resourceID string) []string {
-
 	tagsCollector.listTagsOptions.SetAttachedTo(resourceID)
 	tagList, _, err := tagsCollector.serviceClient.ListTags(tagsCollector.listTagsOptions)
 	if err != nil {

@@ -1,10 +1,11 @@
 package main
 
 import (
+	"log"
+
 	"github.com/np-guard/cloud-resource-collector/pkg/aws"
 	"github.com/np-guard/cloud-resource-collector/pkg/common"
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm"
-	"log"
 )
 
 const (
