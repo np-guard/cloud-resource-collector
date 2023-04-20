@@ -2,8 +2,8 @@ package ibm
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/IBM/go-sdk-core/v5/core"
@@ -20,36 +20,35 @@ type tagsClient struct {
 }
 
 // Constructor for a tagsClient
-func newTagsCollector() *tagsClient {
+func newTagsCollector() (*tagsClient, error) {
 	serviceClientOptions := &globaltaggingv1.GlobalTaggingV1Options{}
 	serviceClient, err := globaltaggingv1.NewGlobalTaggingV1UsingExternalConfig(serviceClientOptions)
 	if err != nil {
-		log.Fatal(fmt.Errorf("failed to create tagging service client (%w)", err))
+		return nil, fmt.Errorf("failed to create tagging service client (%w)", err)
 	}
 
 	listTagsOptions := serviceClient.NewListTagsOptions()
 
-	return &tagsClient{serviceClient: serviceClient, listTagsOptions: listTagsOptions}
+	return &tagsClient{serviceClient: serviceClient, listTagsOptions: listTagsOptions}, nil
 }
 
-// collectTags gets the tags associated with a resource (based on its CRN)
-func (tagsCollector *tagsClient) collectTags(resourceID string) []string {
-	tagsCollector.listTagsOptions.SetAttachedTo(resourceID)
+// setResourceTags gets the tags associated with a resource (based on its CRN)
+func (tagsCollector *tagsClient) setResourceTags(resource datamodel.TaggedResource) error {
+	tagsCollector.listTagsOptions.SetAttachedTo(*resource.GetCRN())
 	tagList, _, err := tagsCollector.serviceClient.ListTags(tagsCollector.listTagsOptions)
 	if err != nil {
-		log.Fatal(fmt.Errorf("failed to collect tags (%w)", err))
+		return fmt.Errorf("failed to collect tags (%w)", err)
 	}
 
 	tags := make([]string, len(tagList.Items))
 	for i := range tagList.Items {
 		tags[i] = *tagList.Items[i].Name
 	}
-
-	return tags
+	resource.SetTags(tags)
+	return nil
 }
 
 // ResourcesContainer holds the results of collecting the configurations of all resources.
-// This includes:
 type ResourcesContainer struct {
 	VpcList           []*datamodel.VPC             `json:"vpcs"`
 	SubnetList        []*datamodel.Subnet          `json:"subnets"`
@@ -93,15 +92,83 @@ func (resources *ResourcesContainer) ToJSONString() (string, error) {
 	return string(toPrint), err
 }
 
+// collect the tags for all resources of all types
+//
+//nolint:gocyclo,funlen // because Golang forces me to replicate code per-resource-type
+func (resources *ResourcesContainer) collectTags() error {
+	// Instantiate the tags collector
+	tagsCollector, err := newTagsCollector()
+	if err != nil {
+		return err
+	}
+
+	for i := range resources.VpcList {
+		err := tagsCollector.setResourceTags(resources.VpcList[i])
+		if err != nil {
+			return err
+		}
+	}
+
+	for i := range resources.SubnetList {
+		err := tagsCollector.setResourceTags(resources.SubnetList[i])
+		if err != nil {
+			return err
+		}
+	}
+
+	for i := range resources.PublicGWList {
+		err := tagsCollector.setResourceTags(resources.PublicGWList[i])
+		if err != nil {
+			return err
+		}
+	}
+
+	for i := range resources.FloatingIPList {
+		err := tagsCollector.setResourceTags(resources.FloatingIPList[i])
+		if err != nil {
+			return err
+		}
+	}
+
+	for i := range resources.NetworkACLList {
+		err := tagsCollector.setResourceTags(resources.NetworkACLList[i])
+		if err != nil {
+			return err
+		}
+	}
+
+	for i := range resources.SecurityGroupList {
+		err := tagsCollector.setResourceTags(resources.SecurityGroupList[i])
+		if err != nil {
+			return err
+		}
+	}
+
+	for i := range resources.EndpointGWList {
+		err := tagsCollector.setResourceTags(resources.EndpointGWList[i])
+		if err != nil {
+			return err
+		}
+	}
+
+	for i := range resources.InstanceList {
+		err := tagsCollector.setResourceTags(resources.InstanceList[i])
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // CollectResourcesFromAPI uses IBM APIs to collect resource configuration information
 //
-//nolint:all
+//nolint:funlen,gocyclo // because Golang forces me to replicate code per-resource-type
 func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
-
 	//TODO: Enable supplying credentials through other means
 	apiKey := os.Getenv("IBMCLOUD_API_KEY")
 	if apiKey == "" {
-		log.Fatal("No API key set")
+		return errors.New("no API key set")
 	}
 
 	// Instantiate the service with an API key based IAM authenticator
@@ -111,11 +178,8 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 		},
 	})
 	if err != nil {
-		log.Fatal("Error creating VPC Service.")
+		return errors.New("error creating VPC Service")
 	}
-
-	// Instantiate the tags collector
-	tagsCollector := newTagsCollector()
 
 	// Get (the first page of) VPCs
 	vpcCollection, _, err := vpcService.ListVpcs(&vpcv1.ListVpcsOptions{})
@@ -125,7 +189,6 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	resources.VpcList = make([]*datamodel.VPC, len(vpcCollection.Vpcs))
 	for i := range vpcCollection.Vpcs {
 		resources.VpcList[i] = datamodel.NewVPC(&vpcCollection.Vpcs[i])
-		resources.VpcList[i].Tags = tagsCollector.collectTags(*resources.VpcList[i].CRN)
 	}
 
 	// Get (the first page of) Subnets
@@ -136,13 +199,13 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	}
 	resources.SubnetList = make([]*datamodel.Subnet, len(subnetCollection.Subnets))
 	for i := range subnetCollection.Subnets {
+		var reservedIPs *vpcv1.ReservedIPCollection
 		resources.SubnetList[i] = datamodel.NewSubnet(&subnetCollection.Subnets[i])
-		resources.SubnetList[i].Tags = tagsCollector.collectTags(*resources.SubnetList[i].CRN)
 
 		// second API call to get the list of reserved IPs in this subnet
 		subnetID := resources.SubnetList[i].ID
 		options := vpcService.NewListSubnetReservedIpsOptions(*subnetID)
-		reservedIPs, _, err := vpcService.ListSubnetReservedIps(options)
+		reservedIPs, _, err = vpcService.ListSubnetReservedIps(options)
 		if err != nil {
 			return fmt.Errorf("CollectResourcesFromAPI error getting reserved IPs for %s",
 				*resources.SubnetList[i].Name)
@@ -158,7 +221,6 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	resources.PublicGWList = make([]*datamodel.PublicGateway, len(publicGWCollection.PublicGateways))
 	for i := range publicGWCollection.PublicGateways {
 		resources.PublicGWList[i] = datamodel.NewPublicGateway(&publicGWCollection.PublicGateways[i])
-		resources.PublicGWList[i].Tags = tagsCollector.collectTags(*resources.PublicGWList[i].CRN)
 	}
 
 	// Get (the first page of) Floating IPs
@@ -169,7 +231,6 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	resources.FloatingIPList = make([]*datamodel.FloatingIP, len(floatingIPCollection.FloatingIps))
 	for i := range floatingIPCollection.FloatingIps {
 		resources.FloatingIPList[i] = datamodel.NewFloatingIP(&floatingIPCollection.FloatingIps[i])
-		resources.FloatingIPList[i].Tags = tagsCollector.collectTags(*resources.FloatingIPList[i].CRN)
 	}
 
 	// Get (the first page of) Network ACLs
@@ -180,7 +241,6 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	resources.NetworkACLList = make([]*datamodel.NetworkACL, len(networkACLsCollection.NetworkAcls))
 	for i := range networkACLsCollection.NetworkAcls {
 		resources.NetworkACLList[i] = datamodel.NewNetworkACL(&networkACLsCollection.NetworkAcls[i])
-		resources.NetworkACLList[i].Tags = tagsCollector.collectTags(*resources.NetworkACLList[i].CRN)
 	}
 
 	// Get (the first page of) Security Groups
@@ -191,7 +251,6 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	resources.SecurityGroupList = make([]*datamodel.SecurityGroup, len(sgCollection.SecurityGroups))
 	for i := range sgCollection.SecurityGroups {
 		resources.SecurityGroupList[i] = datamodel.NewSecurityGroup(&sgCollection.SecurityGroups[i])
-		resources.SecurityGroupList[i].Tags = tagsCollector.collectTags(*resources.SecurityGroupList[i].CRN)
 	}
 
 	// Get (the first page of) Endpoint Gateways (VPEs)
@@ -202,27 +261,32 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	resources.EndpointGWList = make([]*datamodel.EndpointGateway, len(vpeCollection.EndpointGateways))
 	for i := range vpeCollection.EndpointGateways {
 		resources.EndpointGWList[i] = datamodel.NewEndpointGateway(&vpeCollection.EndpointGateways[i])
-		resources.EndpointGWList[i].Tags = tagsCollector.collectTags(*resources.EndpointGWList[i].CRN)
 	}
 
 	// Get (the first page of) Instances
 	instancesCollection, _, err := vpcService.ListInstances(&vpcv1.ListInstancesOptions{})
 	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI error getting Endpoint Gateways: %w", err)
+		return fmt.Errorf("CollectResourcesFromAPI error getting Instances: %w", err)
 	}
 	resources.InstanceList = make([]*datamodel.Instance, len(instancesCollection.Instances))
 	for i := range instancesCollection.Instances {
+		var networkInterfaces *vpcv1.NetworkInterfaceUnpaginatedCollection
 		resources.InstanceList[i] = datamodel.NewInstance(&instancesCollection.Instances[i])
-		resources.InstanceList[i].Tags = tagsCollector.collectTags(*resources.InstanceList[i].CRN)
 
 		// Second API call to get detailed network interfaces information
 		options := &vpcv1.ListInstanceNetworkInterfacesOptions{}
 		options.SetInstanceID(*resources.InstanceList[i].ID)
-		networkInterfaces, _, err := vpcService.ListInstanceNetworkInterfaces(options)
+		networkInterfaces, _, err = vpcService.ListInstanceNetworkInterfaces(options)
 		if err != nil {
 			return fmt.Errorf("CollectResourcesFromAPI error getting NW Interfaces for %s", *resources.InstanceList[i].Name)
 		}
 		resources.InstanceList[i].NetworkInterfaces = networkInterfaces.NetworkInterfaces
+	}
+
+	// Add the tags to all resources
+	err = resources.collectTags()
+	if err != nil {
+		return err
 	}
 
 	return nil

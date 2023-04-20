@@ -49,9 +49,8 @@ func (resources *ResourcesContainer) ToJSONString() (string, error) {
 	return string(toPrint), err
 }
 
-//nolint:all
 // CollectResourcesFromAPI uses AWS APIs to collect resource configuration information
-func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
+func (resources *ResourcesContainer) CollectResourcesFromAPI() error { //nolint:gocyclo // due to many API calls
 	// Load the Shared AWS Configuration (~/.aws/config)
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
