@@ -116,3 +116,70 @@ func NewInstance(instance *vpcv1.Instance) *Instance {
 }
 
 func (res *Instance) GetCRN() *string { return res.CRN }
+
+// RoutingTable configuration object (not taggable)
+type RoutingTable struct {
+	vpcv1.RoutingTable
+	Routes []vpcv1.Route `json:"routes"`
+}
+
+func NewRoutingTable(rt *vpcv1.RoutingTable, routes []vpcv1.Route) *RoutingTable {
+	return &RoutingTable{RoutingTable: *rt, Routes: routes}
+}
+
+// LoadBalancer configuration objects
+
+// LoadBalancerPool object with explicit members (not references)
+type LoadBalancerPool struct {
+	vpcv1.LoadBalancerPool
+	Members []vpcv1.LoadBalancerPoolMember `json:"members"`
+}
+
+func NewLoadBalancerPool(loadBalancerPool *vpcv1.LoadBalancerPool,
+	members []vpcv1.LoadBalancerPoolMember) LoadBalancerPool {
+	return LoadBalancerPool{LoadBalancerPool: *loadBalancerPool, Members: members}
+}
+
+// LoadBalancerListenerPolicy configuration with explicit rules (not references)
+type LoadBalancerListenerPolicy struct {
+	vpcv1.LoadBalancerListenerPolicy
+	Rules []vpcv1.LoadBalancerListenerPolicyRule `json:"rules"`
+}
+
+func NewLoadBalancerListenerPolicy(
+	loadBalancerListenerPolicy *vpcv1.LoadBalancerListenerPolicy,
+	rules []vpcv1.LoadBalancerListenerPolicyRule) LoadBalancerListenerPolicy {
+	return LoadBalancerListenerPolicy{LoadBalancerListenerPolicy: *loadBalancerListenerPolicy, Rules: rules}
+}
+
+// LoadBalancerListener configuration object with explicit policies (not references)
+type LoadBalancerListener struct {
+	vpcv1.LoadBalancerListener
+	Policies []LoadBalancerListenerPolicy `json:"policies"`
+}
+
+func NewLoadBalancerListener(
+	loadBalancerListener *vpcv1.LoadBalancerListener, policies []LoadBalancerListenerPolicy) LoadBalancerListener {
+	return LoadBalancerListener{LoadBalancerListener: *loadBalancerListener, Policies: policies}
+}
+
+// LoadBalancer configuration object with explicit listeners and pools (not references)
+type LoadBalancer struct {
+	vpcv1.LoadBalancer
+	Listeners []LoadBalancerListener `json:"listeners"`
+	Pools     []LoadBalancerPool     `json:"pools"`
+	BaseTaggedResource
+}
+
+func NewLoadBalancer(
+	lb *vpcv1.LoadBalancer,
+	listeners []LoadBalancerListener,
+	pools []LoadBalancerPool) *LoadBalancer {
+	return &LoadBalancer{
+		LoadBalancer: *lb,
+		Listeners:    listeners,
+		Pools:        pools,
+	}
+}
+
+func (res *LoadBalancer) GetCRN() *string { return res.CRN }

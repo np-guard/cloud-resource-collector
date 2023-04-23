@@ -58,6 +58,8 @@ type ResourcesContainer struct {
 	SecurityGroupList []*datamodel.SecurityGroup   `json:"security_groups"`
 	EndpointGWList    []*datamodel.EndpointGateway `json:"endpoint_gateways"`
 	InstanceList      []*datamodel.Instance        `json:"instances"`
+	RoutingTableList  []*datamodel.RoutingTable    `json:"routing_tables"`
+	LBList            []*datamodel.LoadBalancer    `json:"load_balancers"`
 }
 
 // NewResourcesContainer creates an empty resources container
@@ -71,6 +73,8 @@ func NewResourcesContainer() *ResourcesContainer {
 		SecurityGroupList: []*datamodel.SecurityGroup{},
 		EndpointGWList:    []*datamodel.EndpointGateway{},
 		InstanceList:      []*datamodel.Instance{},
+		RoutingTableList:  []*datamodel.RoutingTable{},
+		LBList:            []*datamodel.LoadBalancer{},
 	}
 }
 
@@ -84,6 +88,8 @@ func (resources *ResourcesContainer) PrintStats() {
 	fmt.Printf("Found %d security groups\n", len(resources.SecurityGroupList))
 	fmt.Printf("Found %d endpoint gateways (VPEs)\n", len(resources.EndpointGWList))
 	fmt.Printf("Found %d instances\n", len(resources.InstanceList))
+	fmt.Printf("Found %d routing tables\n", len(resources.RoutingTableList))
+	fmt.Printf("Found %d load balancers\n", len(resources.LBList))
 }
 
 // ToJSONString converts a ResourcesContainer into a json-formatted-string
@@ -158,6 +164,13 @@ func (resources *ResourcesContainer) collectTags() error {
 		}
 	}
 
+	for i := range resources.LBList {
+		err := tagsCollector.setResourceTags(resources.LBList[i])
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -171,7 +184,7 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 		return errors.New("no API key set")
 	}
 
-	// Instantiate the service with an API key based IAM authenticator
+	// Instantiate the VPC service with an API key based IAM authenticator
 	vpcService, err := vpcv1.NewVpcV1(&vpcv1.VpcV1Options{
 		Authenticator: &core.IamAuthenticator{
 			ApiKey: apiKey,
@@ -181,109 +194,67 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 		return errors.New("error creating VPC Service")
 	}
 
-	// Get (the first page of) VPCs
-	vpcCollection, _, err := vpcService.ListVpcs(&vpcv1.ListVpcsOptions{})
+	// VPCs
+	resources.VpcList, err = getVPCs(vpcService)
 	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI error getting VPCs: %w", err)
-	}
-	resources.VpcList = make([]*datamodel.VPC, len(vpcCollection.Vpcs))
-	for i := range vpcCollection.Vpcs {
-		resources.VpcList[i] = datamodel.NewVPC(&vpcCollection.Vpcs[i])
+		return err
 	}
 
-	// Get (the first page of) Subnets
-	// Note: reserved IPs are collected through a second API call, also without paging
-	subnetCollection, _, err := vpcService.ListSubnets(&vpcv1.ListSubnetsOptions{})
+	// Subnets
+	resources.SubnetList, err = getSubnets(vpcService)
 	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI error getting Subnets: %w", err)
-	}
-	resources.SubnetList = make([]*datamodel.Subnet, len(subnetCollection.Subnets))
-	for i := range subnetCollection.Subnets {
-		var reservedIPs *vpcv1.ReservedIPCollection
-		resources.SubnetList[i] = datamodel.NewSubnet(&subnetCollection.Subnets[i])
-
-		// second API call to get the list of reserved IPs in this subnet
-		subnetID := resources.SubnetList[i].ID
-		options := vpcService.NewListSubnetReservedIpsOptions(*subnetID)
-		reservedIPs, _, err = vpcService.ListSubnetReservedIps(options)
-		if err != nil {
-			return fmt.Errorf("CollectResourcesFromAPI error getting reserved IPs for %s",
-				*resources.SubnetList[i].Name)
-		}
-		resources.SubnetList[i].ReservedIps = reservedIPs.ReservedIps
+		return err
 	}
 
-	// Get (the first page of) Public Gateways
-	publicGWCollection, _, err := vpcService.ListPublicGateways(&vpcv1.ListPublicGatewaysOptions{})
+	// Public Gateways
+	resources.PublicGWList, err = getPublicGateways(vpcService)
 	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI error getting Public Gateways: %w", err)
-	}
-	resources.PublicGWList = make([]*datamodel.PublicGateway, len(publicGWCollection.PublicGateways))
-	for i := range publicGWCollection.PublicGateways {
-		resources.PublicGWList[i] = datamodel.NewPublicGateway(&publicGWCollection.PublicGateways[i])
+		return err
 	}
 
-	// Get (the first page of) Floating IPs
-	floatingIPCollection, _, err := vpcService.ListFloatingIps(&vpcv1.ListFloatingIpsOptions{})
+	// Floating IPs
+	resources.FloatingIPList, err = getFloatingIPs(vpcService)
 	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI error getting Floating IPs: %w", err)
-	}
-	resources.FloatingIPList = make([]*datamodel.FloatingIP, len(floatingIPCollection.FloatingIps))
-	for i := range floatingIPCollection.FloatingIps {
-		resources.FloatingIPList[i] = datamodel.NewFloatingIP(&floatingIPCollection.FloatingIps[i])
+		return err
 	}
 
-	// Get (the first page of) Network ACLs
-	networkACLsCollection, _, err := vpcService.ListNetworkAcls(&vpcv1.ListNetworkAclsOptions{})
+	// Network ACLs
+	resources.NetworkACLList, err = getNetworkACLs(vpcService)
 	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI error getting Network ACLs: %w", err)
-	}
-	resources.NetworkACLList = make([]*datamodel.NetworkACL, len(networkACLsCollection.NetworkAcls))
-	for i := range networkACLsCollection.NetworkAcls {
-		resources.NetworkACLList[i] = datamodel.NewNetworkACL(&networkACLsCollection.NetworkAcls[i])
+		return err
 	}
 
-	// Get (the first page of) Security Groups
-	sgCollection, _, err := vpcService.ListSecurityGroups(&vpcv1.ListSecurityGroupsOptions{})
+	// Security Groups
+	resources.SecurityGroupList, err = getSecurityGroups(vpcService)
 	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI error getting Security Groups: %w", err)
-	}
-	resources.SecurityGroupList = make([]*datamodel.SecurityGroup, len(sgCollection.SecurityGroups))
-	for i := range sgCollection.SecurityGroups {
-		resources.SecurityGroupList[i] = datamodel.NewSecurityGroup(&sgCollection.SecurityGroups[i])
+		return err
 	}
 
-	// Get (the first page of) Endpoint Gateways (VPEs)
-	vpeCollection, _, err := vpcService.ListEndpointGateways(&vpcv1.ListEndpointGatewaysOptions{})
+	// Endpoint Gateways (VPEs)
+	resources.EndpointGWList, err = getEndpointGateways(vpcService)
 	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI error getting Endpoint Gateways: %w", err)
-	}
-	resources.EndpointGWList = make([]*datamodel.EndpointGateway, len(vpeCollection.EndpointGateways))
-	for i := range vpeCollection.EndpointGateways {
-		resources.EndpointGWList[i] = datamodel.NewEndpointGateway(&vpeCollection.EndpointGateways[i])
+		return err
 	}
 
-	// Get (the first page of) Instances
-	instancesCollection, _, err := vpcService.ListInstances(&vpcv1.ListInstancesOptions{})
+	// Instances
+	resources.InstanceList, err = getInstances(vpcService)
 	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI error getting Instances: %w", err)
-	}
-	resources.InstanceList = make([]*datamodel.Instance, len(instancesCollection.Instances))
-	for i := range instancesCollection.Instances {
-		var networkInterfaces *vpcv1.NetworkInterfaceUnpaginatedCollection
-		resources.InstanceList[i] = datamodel.NewInstance(&instancesCollection.Instances[i])
-
-		// Second API call to get detailed network interfaces information
-		options := &vpcv1.ListInstanceNetworkInterfacesOptions{}
-		options.SetInstanceID(*resources.InstanceList[i].ID)
-		networkInterfaces, _, err = vpcService.ListInstanceNetworkInterfaces(options)
-		if err != nil {
-			return fmt.Errorf("CollectResourcesFromAPI error getting NW Interfaces for %s", *resources.InstanceList[i].Name)
-		}
-		resources.InstanceList[i].NetworkInterfaces = networkInterfaces.NetworkInterfaces
+		return err
 	}
 
-	// Add the tags to all resources
+	// Routing Tables
+	resources.RoutingTableList, err = getRoutingTables(vpcService, resources.VpcList)
+	if err != nil {
+		return err
+	}
+
+	// Load Balancers
+	resources.LBList, err = getLoadBalancers(vpcService)
+	if err != nil {
+		return err
+	}
+
+	// Add the tags to all (taggable) resources
 	err = resources.collectTags()
 	if err != nil {
 		return err
