@@ -3,6 +3,7 @@ module github.com/np-guard/cloud-resource-collector
 go 1.20
 
 require (
+	github.com/IBM-Cloud/container-services-go-sdk v0.0.0-20230118060037-101bda076037
 	github.com/IBM/go-sdk-core/v5 v5.13.1
 	github.com/IBM/platform-services-go-sdk v0.35.1
 	github.com/IBM/vpc-go-sdk v0.35.0
