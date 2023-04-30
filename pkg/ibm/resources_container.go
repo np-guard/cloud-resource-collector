@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/IBM/vpc-go-sdk/vpcv1"
+
+	iksv1 "github.com/IBM-Cloud/container-services-go-sdk/kubernetesserviceapiv1"
 	"github.com/IBM/go-sdk-core/v5/core"
 	"github.com/IBM/platform-services-go-sdk/globaltaggingv1"
-	"github.com/IBM/vpc-go-sdk/vpcv1"
 
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm/datamodel"
 )
@@ -60,6 +62,7 @@ type ResourcesContainer struct {
 	InstanceList      []*datamodel.Instance        `json:"instances"`
 	RoutingTableList  []*datamodel.RoutingTable    `json:"routing_tables"`
 	LBList            []*datamodel.LoadBalancer    `json:"load_balancers"`
+	IKSWorkerNodes    []*datamodel.IKSWorkerNode   `json:"iks_worker_nodes"`
 }
 
 // NewResourcesContainer creates an empty resources container
@@ -75,6 +78,7 @@ func NewResourcesContainer() *ResourcesContainer {
 		InstanceList:      []*datamodel.Instance{},
 		RoutingTableList:  []*datamodel.RoutingTable{},
 		LBList:            []*datamodel.LoadBalancer{},
+		IKSWorkerNodes:    []*datamodel.IKSWorkerNode{},
 	}
 }
 
@@ -90,6 +94,7 @@ func (resources *ResourcesContainer) PrintStats() {
 	fmt.Printf("Found %d instances\n", len(resources.InstanceList))
 	fmt.Printf("Found %d routing tables\n", len(resources.RoutingTableList))
 	fmt.Printf("Found %d load balancers\n", len(resources.LBList))
+	fmt.Printf("Found %d IKS worker nodes\n", len(resources.IKSWorkerNodes))
 }
 
 // ToJSONString converts a ResourcesContainer into a json-formatted-string
@@ -194,6 +199,16 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 		return errors.New("error creating VPC Service")
 	}
 
+	// Instantiate the IKS service with an API key based IAM authenticator
+	iksService, err := iksv1.NewKubernetesServiceApiV1(&iksv1.KubernetesServiceApiV1Options{
+		Authenticator: &core.IamAuthenticator{
+			ApiKey: apiKey,
+		},
+	})
+	if err != nil {
+		return errors.New("error creating IKS Service")
+	}
+
 	// VPCs
 	resources.VpcList, err = getVPCs(vpcService)
 	if err != nil {
@@ -252,6 +267,21 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	resources.LBList, err = getLoadBalancers(vpcService)
 	if err != nil {
 		return err
+	}
+
+	// IKS Clusters
+	clusterIDs, err := getClusters(iksService)
+	if err != nil {
+		return err
+	}
+
+	// IKS Cluster Nodes
+	for i := range clusterIDs {
+		iksWorkers, nodeerr := getCLusterNodes(iksService, clusterIDs[i])
+		if nodeerr != nil {
+			return nodeerr
+		}
+		resources.IKSWorkerNodes = append(resources.IKSWorkerNodes, iksWorkers...)
 	}
 
 	// Add the tags to all (taggable) resources
