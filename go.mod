@@ -8,7 +8,7 @@ require (
 	github.com/IBM/platform-services-go-sdk v0.35.1
 	github.com/IBM/vpc-go-sdk v0.35.0
 	github.com/aws/aws-sdk-go-v2/config v1.18.22
-	github.com/aws/aws-sdk-go-v2/service/ec2 v1.92.1
+	github.com/aws/aws-sdk-go-v2/service/ec2 v1.95.0
 )
 
 require (
