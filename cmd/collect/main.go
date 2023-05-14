@@ -9,8 +9,9 @@ import (
 )
 
 const (
-	AWS string = "aws"
-	IBM string = "ibm"
+	AWS      string = "aws"
+	IBM      string = "ibm"
+	EVIDENCE string = "evidence"
 )
 
 func main() {
@@ -34,7 +35,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	OutputResources(resources, *inArgs.OutputFile)
+	OutputResources(resources, *inArgs.OutputFile, *inArgs.OutputFormat == EVIDENCE)
 
 	resources.PrintStats()
 }

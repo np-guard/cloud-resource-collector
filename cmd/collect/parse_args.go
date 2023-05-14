@@ -8,6 +8,7 @@ import (
 type InArgs struct {
 	CollectFromProvider *string
 	OutputFile          *string
+	OutputFormat        *string
 }
 
 func ParseInArgs(args *InArgs) error {
@@ -18,6 +19,8 @@ func ParseInArgs(args *InArgs) error {
 
 	args.CollectFromProvider = flag.String("provider", "", "cloud provider from which to collect resources")
 	args.OutputFile = flag.String("out", "", "file path to store results")
+	args.OutputFormat = flag.String("format", "raw",
+		"json output format, either raw or "+EVIDENCE+"(default is raw)")
 	flag.Parse()
 
 	if !SupportedProviders[*args.CollectFromProvider] {

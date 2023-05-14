@@ -189,6 +189,11 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 		return errors.New("no API key set")
 	}
 
+	// Set environment variables necessary for tagging service
+	os.Setenv("GLOBAL_TAGGING_APIKEY", apiKey)
+	os.Setenv("GLOBAL_TAGGING_AUTHTYPE", "iam")
+	os.Setenv("GLOBAL_TAGGING_URL", "https://tags.global-search-tagging.cloud.ibm.com")
+
 	// Instantiate the VPC service with an API key based IAM authenticator
 	vpcService, err := vpcv1.NewVpcV1(&vpcv1.VpcV1Options{
 		Authenticator: &core.IamAuthenticator{

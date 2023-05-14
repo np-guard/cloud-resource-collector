@@ -8,7 +8,7 @@ import (
 	"github.com/np-guard/cloud-resource-collector/pkg/common"
 )
 
-func OutputResources(rc common.ResourcesContainerInf, outputFileName string) {
+func OutputResources(rc common.ResourcesContainerInf, outputFileName string, asEvidence bool) {
 	jsonString, err := rc.ToJSONString()
 	if err != nil {
 		log.Fatal(fmt.Errorf("error converting resources to string: %w", err))
@@ -18,6 +18,11 @@ func OutputResources(rc common.ResourcesContainerInf, outputFileName string) {
 		fmt.Print(jsonString)
 	} else {
 		log.Printf("Writing to file: %s", outputFileName)
+
+		// If evidence format then wrap with an object (for use in OPA)
+		if asEvidence {
+			jsonString = "{\"" + EVIDENCE + "\": " + jsonString + "}"
+		}
 
 		file, err := os.Create(outputFileName)
 		if err != nil {
