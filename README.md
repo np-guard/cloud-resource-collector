@@ -37,12 +37,20 @@ export AWS_REGION=eu-north-1
 
 Note: Pagination is not yet implemented, the collector will return only the first page of resources.
 
+### Setup the IBM Collector
+
+The IBM collector requires an IBM API key to be supplied through the following environment variable:
+```shell
+export IBMCLOUD_API_KEY=<ibm-cloud-api-key>
+```
 
 ## Usage
 
 ```shell
 $ ./bin/collect -h
 Usage of C:\MyStuff\Governance\np-guard\cloud-resource-collector\bin\collect:
+  -format string
+        json output format, either raw or evidence(default is raw) (default "raw")
   -out string
         file path to store results
   -provider string
