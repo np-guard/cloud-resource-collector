@@ -194,3 +194,11 @@ type IKSWorkerNode struct {
 func NewIKSWorkerNode(getWorkerResponse *iksv1.GetWorkerResponse) *IKSWorkerNode {
 	return &IKSWorkerNode{GetWorkerResponse: *getWorkerResponse}
 }
+
+type IKSWorkerPool struct {
+	iksv1.GetWorkerPoolResponse
+}
+
+func NewIKSWorkerPool(getWorkerPoolResponse iksv1.GetWorkerPoolResponse) *IKSWorkerPool {
+	return &IKSWorkerPool{GetWorkerPoolResponse: getWorkerPoolResponse}
+}
