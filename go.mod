@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/IBM-Cloud/container-services-go-sdk v0.0.0-20230118060037-101bda076037
-	github.com/IBM/go-sdk-core/v5 v5.13.1
+	github.com/IBM/go-sdk-core/v5 v5.13.2
 	github.com/IBM/platform-services-go-sdk v0.37.3
 	github.com/IBM/vpc-go-sdk v0.36.0
 	github.com/aws/aws-sdk-go-v2/config v1.18.22
@@ -28,7 +28,7 @@ require (
 	github.com/go-openapi/strfmt v0.21.7 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.12.0 // indirect
+	github.com/go-playground/validator/v10 v10.13.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.2 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
