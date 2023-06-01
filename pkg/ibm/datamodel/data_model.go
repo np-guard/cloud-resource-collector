@@ -2,7 +2,7 @@ package datamodel
 
 import (
 	iksv1 "github.com/IBM-Cloud/container-services-go-sdk/kubernetesserviceapiv1"
-	"github.com/IBM/vpc-go-sdk/vpcv1"
+	vpcv1 "github.com/IBM/vpc-go-sdk/vpcv1"
 )
 
 // The following types define the "canonical data model" for IBM resources.
@@ -193,4 +193,12 @@ type IKSWorkerNode struct {
 
 func NewIKSWorkerNode(getWorkerResponse *iksv1.GetWorkerResponse) *IKSWorkerNode {
 	return &IKSWorkerNode{GetWorkerResponse: *getWorkerResponse}
+}
+
+type IKSWorkerPool struct {
+	iksv1.GetWorkerPoolResponse
+}
+
+func NewIKSWorkerPool(getWorkerPoolResponse *iksv1.GetWorkerPoolResponse) *IKSWorkerPool {
+	return &IKSWorkerPool{GetWorkerPoolResponse: *getWorkerPoolResponse}
 }
