@@ -3,10 +3,13 @@ package ibm
 import (
 	"encoding/json"
 	"fmt"
+
 	iksv1 "github.com/IBM-Cloud/container-services-go-sdk/kubernetesserviceapiv1"
 
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm/datamodel"
 )
+
+const HTTPOK = 200
 
 // Get (the first page of) IKS Clusters
 func getClusters(iksService *iksv1.KubernetesServiceApiV1) ([]*string, error) {
@@ -42,18 +45,19 @@ func getWorkerPools(iksService *iksv1.KubernetesServiceApiV1, clusterID *string)
 
 	workerPoolResponse, response, err := iksService.VpcGetWorkerPools(&iksv1.VpcGetWorkerPoolsOptions{Cluster: clusterID})
 	if err != nil {
-		if response.StatusCode == 200 {
+		if response.StatusCode == HTTPOK {
 			// This is a temporary workaround to handle a defect in the SDK in which it does not expect an array
 			err = json.Unmarshal(response.RawResult, &workerPools)
 			if err != nil {
-				return nil, fmt.Errorf("[getWorkerPools] error getting worker pools for %s: %w", *clusterID, err)
+				return nil, fmt.Errorf("[getWorkerPools] error unmarshelling VpcGetWorkerPools response for %s: %w",
+					*clusterID, err)
 			}
 		} else {
 			return nil, fmt.Errorf("[getWorkerPools] error getting worker pools for %s: %w", *clusterID, err)
 		}
 	} else {
 		// SDK returns wrong type, aborting
-		return nil, fmt.Errorf("Cannot use SDK response %v", workerPoolResponse)
+		return nil, fmt.Errorf("cannot use SDK response %v", workerPoolResponse)
 	}
 
 	res := make([]*datamodel.IKSWorkerPool, len(workerPools))
@@ -66,7 +70,7 @@ func getWorkerPools(iksService *iksv1.KubernetesServiceApiV1, clusterID *string)
 		if err != nil {
 			return nil, fmt.Errorf("[getWorkerPools] error getting worker pool %s: %w", *workerPools[i].ID, err)
 		}
-		res[i] = datamodel.NewIKSWorkerPool(*pool)
+		res[i] = datamodel.NewIKSWorkerPool(pool)
 	}
 
 	return workerPools, nil
