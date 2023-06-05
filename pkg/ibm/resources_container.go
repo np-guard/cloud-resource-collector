@@ -63,7 +63,6 @@ type ResourcesContainer struct {
 	RoutingTableList  []*datamodel.RoutingTable    `json:"routing_tables"`
 	LBList            []*datamodel.LoadBalancer    `json:"load_balancers"`
 	IKSWorkerNodes    []*datamodel.IKSWorkerNode   `json:"iks_worker_nodes"`
-	IKSWorkerPools    []*datamodel.IKSWorkerPool   `json:"iks_worker_pools"`
 }
 
 // NewResourcesContainer creates an empty resources container
@@ -80,7 +79,6 @@ func NewResourcesContainer() *ResourcesContainer {
 		RoutingTableList:  []*datamodel.RoutingTable{},
 		LBList:            []*datamodel.LoadBalancer{},
 		IKSWorkerNodes:    []*datamodel.IKSWorkerNode{},
-		IKSWorkerPools:    []*datamodel.IKSWorkerPool{},
 	}
 }
 
@@ -97,7 +95,6 @@ func (resources *ResourcesContainer) PrintStats() {
 	fmt.Printf("Found %d routing tables\n", len(resources.RoutingTableList))
 	fmt.Printf("Found %d load balancers\n", len(resources.LBList))
 	fmt.Printf("Found %d IKS worker nodes\n", len(resources.IKSWorkerNodes))
-	fmt.Printf("Found %d IKS worker pools\n", len(resources.IKSWorkerPools))
 }
 
 // ToJSONString converts a ResourcesContainer into a json-formatted-string
@@ -286,13 +283,6 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 			return nodeerr
 		}
 		resources.IKSWorkerNodes = append(resources.IKSWorkerNodes, iksWorkers...)
-
-		// IKS Worker Pools
-		iksWorkerPools, nodeerr := getWorkerPools(iksService, clusterIDs[i])
-		if nodeerr != nil {
-			return nodeerr
-		}
-		resources.IKSWorkerPools = append(resources.IKSWorkerPools, iksWorkerPools...)
 	}
 
 	// Add the tags to all (taggable) resources
