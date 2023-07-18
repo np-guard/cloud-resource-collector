@@ -49,8 +49,6 @@ export IBMCLOUD_API_KEY=<ibm-cloud-api-key>
 ```shell
 $ ./bin/collect -h
 Usage of C:\MyStuff\Governance\np-guard\cloud-resource-collector\bin\collect:
-  -format string
-        json output format, either raw or evidence(default is raw) (default "raw")
   -out string
         file path to store results
   -provider string
