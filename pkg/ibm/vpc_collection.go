@@ -8,18 +8,26 @@ import (
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm/datamodel"
 )
 
-// Get (the first page of) VPCs
+// Get all VPCs
 func getVPCs(vpcService *vpcv1.VpcV1) ([]*datamodel.VPC, error) {
-	vpcCollection, _, err := vpcService.ListVpcs(&vpcv1.ListVpcsOptions{})
-	if err != nil {
-		return nil, fmt.Errorf("[getVPCs] error getting VPCs: %w", err)
-	}
+	var pageSize int64 = 4
+	options := vpcv1.ListVpcsOptions{Limit: &pageSize}
 
-	res := make([]*datamodel.VPC, len(vpcCollection.Vpcs))
-	for i := range vpcCollection.Vpcs {
-		res[i] = datamodel.NewVPC(&vpcCollection.Vpcs[i])
+	// We can use vpcCollection.TotalCount for efficiency, but usually it's a single page
+	res := make([]*datamodel.VPC, 0)
+	for {
+		vpcCollection, _, err := vpcService.ListVpcs(&options)
+		if err != nil {
+			return nil, fmt.Errorf("[getVPCs] error getting VPCs: %w", err)
+		}
+		for _, vpc := range vpcCollection.Vpcs {
+			res = append(res, datamodel.NewVPC(&vpc))
+		}
+		if vpcCollection.Next == nil {
+			break
+		}
+		options.Start = vpcCollection.Next.Href
 	}
-
 	return res, nil
 }
 
