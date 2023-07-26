@@ -41,8 +41,8 @@ type Subnet struct {
 	BaseTaggedResource
 }
 
-func NewSubnet(subnet *vpcv1.Subnet) *Subnet {
-	return &Subnet{Subnet: *subnet}
+func NewSubnet(subnet *vpcv1.Subnet, reservedIPs []vpcv1.ReservedIP) *Subnet {
+	return &Subnet{Subnet: *subnet, ReservedIps: reservedIPs}
 }
 
 func (res *Subnet) GetCRN() *string { return res.CRN }
@@ -114,8 +114,8 @@ type Instance struct {
 	BaseTaggedResource
 }
 
-func NewInstance(instance *vpcv1.Instance) *Instance {
-	return &Instance{Instance: *instance}
+func NewInstance(instance *vpcv1.Instance, networkInterfaces []vpcv1.NetworkInterface) *Instance {
+	return &Instance{Instance: *instance, NetworkInterfaces: networkInterfaces}
 }
 
 func (res *Instance) GetCRN() *string { return res.CRN }
