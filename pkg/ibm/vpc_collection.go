@@ -8,25 +8,51 @@ import (
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm/datamodel"
 )
 
-// Get all VPCs
-func getVPCs(vpcService *vpcv1.VpcV1) ([]*datamodel.VPC, error) {
-	var pageSize int64 = 4
-	options := vpcv1.ListVpcsOptions{Limit: &pageSize}
+const pageSize = 4
 
-	// We can use vpcCollection.TotalCount for efficiency, but usually it's a single page
-	res := make([]*datamodel.VPC, 0)
+type HasGetNextStart[T any] interface {
+	GetNextStart() (*string, error)
+}
+
+func iteratePagedApi[T any, Q HasGetNextStart[T]](
+	apiFunc func(int64, *string) (Q, any, error),
+	getArray func(Q) []T) ([]T, error) {
+	var start *string = nil
+	// We can use collection.TotalCount for efficiency, but usually it's a single page
+	res := make([]T, 0)
 	for {
-		vpcCollection, _, err := vpcService.ListVpcs(&options)
+		collection, _, err := apiFunc(pageSize, start)
 		if err != nil {
 			return nil, fmt.Errorf("[getVPCs] error getting VPCs: %w", err)
 		}
-		for _, vpc := range vpcCollection.Vpcs {
-			res = append(res, datamodel.NewVPC(&vpc))
+		res = append(res, getArray(collection)...)
+		start, err = collection.GetNextStart()
+		if err != nil {
+			return nil, fmt.Errorf("[getVPCs] error getting next page: %w", err)
 		}
-		if vpcCollection.Next == nil {
+		if start == nil {
 			break
 		}
-		options.Start = vpcCollection.Next.Href
+	}
+	return res, nil
+}
+
+// Get all VPCs
+func getVPCs(vpcService *vpcv1.VpcV1) ([]*datamodel.VPC, error) {
+	apiFunc := func(pageSize int64, next *string) (*vpcv1.VPCCollection, any, error) {
+		return vpcService.ListVpcs(&vpcv1.ListVpcsOptions{Limit: &pageSize, Start: next})
+	}
+	getArray := func(collection *vpcv1.VPCCollection) []vpcv1.VPC {
+		return collection.Vpcs
+	}
+	// We can use vpcCollection.TotalCount for efficiency, but usually it's a single page
+	apiResult, err := iteratePagedApi(apiFunc, getArray)
+	if err != nil {
+		return nil, fmt.Errorf("[getVPCs] error getting VPCs: %w", err)
+	}
+	res := make([]*datamodel.VPC, 0)
+	for _, vpc := range apiResult {
+		res = append(res, datamodel.NewVPC(&vpc))
 	}
 	return res, nil
 }
