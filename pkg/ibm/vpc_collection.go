@@ -192,8 +192,8 @@ func getLoadBalancers(vpcService *vpcv1.VpcV1) ([]*datamodel.LoadBalancer, error
 			policiesOptions := &vpcv1.ListLoadBalancerListenerPoliciesOptions{}
 			policiesOptions.SetLoadBalancerID(lbID)
 			policiesOptions.SetListenerID(*listenerID)
-			policiesCollection, _, polerr := vpcService.ListLoadBalancerListenerPolicies(policiesOptions)
-			if polerr != nil {
+			policiesCollection, _, polErr := vpcService.ListLoadBalancerListenerPolicies(policiesOptions)
+			if polErr != nil {
 				return nil, fmt.Errorf("[getLoadBalancers] error getting policies for %s: %w", *listenerID, err)
 			}
 
@@ -204,8 +204,8 @@ func getLoadBalancers(vpcService *vpcv1.VpcV1) ([]*datamodel.LoadBalancer, error
 				options.SetLoadBalancerID(lbID)
 				options.SetListenerID(*listenerID)
 				options.SetPolicyID(*policyID)
-				rules, _, ruleerr := vpcService.ListLoadBalancerListenerPolicyRules(options)
-				if ruleerr != nil {
+				rules, _, ruleErr := vpcService.ListLoadBalancerListenerPolicyRules(options)
+				if ruleErr != nil {
 					return nil, fmt.Errorf("[getLoadBalancers] error getting policy rules for %s: %w", *policyID, err)
 				}
 				policies[k] = datamodel.NewLoadBalancerListenerPolicy(&policiesCollection.Policies[k], rules.Rules)

@@ -292,9 +292,9 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	// Collect from all clusters
 	for i := range clusterIDs {
 		// IKS Cluster Nodes
-		iksWorkers, nodeerr := getCLusterNodes(iksService, clusterIDs[i])
-		if nodeerr != nil {
-			return nodeerr
+		iksWorkers, nodeErr := getCLusterNodes(iksService, clusterIDs[i])
+		if nodeErr != nil {
+			return nodeErr
 		}
 		resources.IKSWorkerNodes = append(resources.IKSWorkerNodes, iksWorkers...)
 	}
