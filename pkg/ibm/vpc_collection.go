@@ -8,7 +8,7 @@ import (
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm/datamodel"
 )
 
-const pageSize = 4
+const pageSize = 50
 
 type HasGetNextStart[T any] interface {
 	GetNextStart() (*string, error)
@@ -37,7 +37,7 @@ func iteratePagedAPI[T any, Q HasGetNextStart[T]](
 	return res, nil
 }
 
-// Get all VPCs
+//nolint:dupl // The duplication is essentially creating the adapter
 func getVPCs(vpcService *vpcv1.VpcV1) ([]*datamodel.VPC, error) {
 	APIFunc := func(pageSize int64, next *string) (*vpcv1.VPCCollection, any, error) {
 		return vpcService.ListVpcs(&vpcv1.ListVpcsOptions{Limit: &pageSize, Start: next})
@@ -56,7 +56,6 @@ func getVPCs(vpcService *vpcv1.VpcV1) ([]*datamodel.VPC, error) {
 	return res, nil
 }
 
-// Get all Subnets
 func getSubnets(vpcService *vpcv1.VpcV1) ([]*datamodel.Subnet, error) {
 	subnetAPIFunc := func(pageSize int64, next *string) (*vpcv1.SubnetCollection, any, error) {
 		return vpcService.ListSubnets(&vpcv1.ListSubnetsOptions{Limit: &pageSize, Start: next})
@@ -98,7 +97,7 @@ func getReservedIps(vpcService *vpcv1.VpcV1, subnetID, name string) ([]vpcv1.Res
 	return reservedIPs, nil
 }
 
-// Get all Public Gateways
+//nolint:dupl // See getVPCs
 func getPublicGateways(vpcService *vpcv1.VpcV1) ([]*datamodel.PublicGateway, error) {
 	gatewayAPIFunc := func(pageSize int64, next *string) (*vpcv1.PublicGatewayCollection, any, error) {
 		return vpcService.ListPublicGateways(&vpcv1.ListPublicGatewaysOptions{Limit: &pageSize, Start: next})
@@ -118,7 +117,7 @@ func getPublicGateways(vpcService *vpcv1.VpcV1) ([]*datamodel.PublicGateway, err
 	return res, nil
 }
 
-// Get all Floating IPs
+//nolint:dupl // See getVPCs
 func getFloatingIPs(vpcService *vpcv1.VpcV1) ([]*datamodel.FloatingIP, error) {
 	floatingIPAPIFunc := func(pageSize int64, next *string) (*vpcv1.FloatingIPCollection, any, error) {
 		return vpcService.ListFloatingIps(&vpcv1.ListFloatingIpsOptions{Limit: &pageSize, Start: next})
@@ -138,7 +137,7 @@ func getFloatingIPs(vpcService *vpcv1.VpcV1) ([]*datamodel.FloatingIP, error) {
 	return res, nil
 }
 
-// Get all Network ACLs
+//nolint:dupl // See getVPCs
 func getNetworkACLs(vpcService *vpcv1.VpcV1) ([]*datamodel.NetworkACL, error) {
 	networkACLAPIFunc := func(pageSize int64, next *string) (*vpcv1.NetworkACLCollection, any, error) {
 		return vpcService.ListNetworkAcls(&vpcv1.ListNetworkAclsOptions{Limit: &pageSize, Start: next})
@@ -158,7 +157,7 @@ func getNetworkACLs(vpcService *vpcv1.VpcV1) ([]*datamodel.NetworkACL, error) {
 	return res, nil
 }
 
-// Get all Security Groups
+//nolint:dupl // See getVPCs
 func getSecurityGroups(vpcService *vpcv1.VpcV1) ([]*datamodel.SecurityGroup, error) {
 	securityGroupAPIFunc := func(pageSize int64, next *string) (*vpcv1.SecurityGroupCollection, any, error) {
 		return vpcService.ListSecurityGroups(&vpcv1.ListSecurityGroupsOptions{Limit: &pageSize, Start: next})
@@ -179,6 +178,8 @@ func getSecurityGroups(vpcService *vpcv1.VpcV1) ([]*datamodel.SecurityGroup, err
 }
 
 // Get all Endpoint Gateways (VPEs)
+//
+//nolint:dupl // See getVPCs
 func getEndpointGateways(vpcService *vpcv1.VpcV1) ([]*datamodel.EndpointGateway, error) {
 	endpointGatewayAPIFunc := func(pageSize int64, next *string) (*vpcv1.EndpointGatewayCollection, any, error) {
 		return vpcService.ListEndpointGateways(&vpcv1.ListEndpointGatewaysOptions{Limit: &pageSize, Start: next})
@@ -198,7 +199,6 @@ func getEndpointGateways(vpcService *vpcv1.VpcV1) ([]*datamodel.EndpointGateway,
 	return res, nil
 }
 
-// Get all Instances
 func getInstances(vpcService *vpcv1.VpcV1) ([]*datamodel.Instance, error) {
 	instanceAPIFunc := func(pageSize int64, next *string) (*vpcv1.InstanceCollection, any, error) {
 		return vpcService.ListInstances(&vpcv1.ListInstancesOptions{Limit: &pageSize, Start: next})
@@ -236,7 +236,6 @@ func getNetworkInterface(vpcService *vpcv1.VpcV1, id, name string) ([]vpcv1.Netw
 	return networkInterfaces.NetworkInterfaces, nil
 }
 
-// Get all Routing Tables
 func getRoutingTables(vpcService *vpcv1.VpcV1, vpcList []*datamodel.VPC) ([]*datamodel.RoutingTable, error) {
 	var res []*datamodel.RoutingTable
 
@@ -260,9 +259,7 @@ func getRoutingTables(vpcService *vpcv1.VpcV1, vpcList []*datamodel.VPC) ([]*dat
 			return nil, fmt.Errorf("[getRoutingTables] error getting Routing Tables for %s: %w", vpcID, err)
 		}
 		for j := range routingTables {
-			rtID := routingTables[j].ID
-
-			routes, err := getRoutes(vpcService, &vpcID, rtID)
+			routes, err := getRoutes(vpcService, vpcID, *routingTables[j].ID)
 			if err != nil {
 				return nil, err
 			}
@@ -273,9 +270,9 @@ func getRoutingTables(vpcService *vpcv1.VpcV1, vpcList []*datamodel.VPC) ([]*dat
 	return res, nil
 }
 
-func getRoutes(vpcService *vpcv1.VpcV1, vpcID, rtID *string) ([]vpcv1.Route, error) {
+func getRoutes(vpcService *vpcv1.VpcV1, vpcID, rtID string) ([]vpcv1.Route, error) {
 	routingTableRouteAPIFunc := func(pageSize int64, next *string) (*vpcv1.RouteCollection, any, error) {
-		options := vpcService.NewListVPCRoutingTableRoutesOptions(*vpcID, *rtID)
+		options := vpcService.NewListVPCRoutingTableRoutesOptions(vpcID, rtID)
 		options.Limit = &pageSize
 		options.Start = next
 		return vpcService.ListVPCRoutingTableRoutes(options)
@@ -285,7 +282,7 @@ func getRoutes(vpcService *vpcv1.VpcV1, vpcID, rtID *string) ([]vpcv1.Route, err
 	}
 	routes, err := iteratePagedAPI(routingTableRouteAPIFunc, routingTableRouteGetArray)
 	if err != nil {
-		return nil, fmt.Errorf("[getRoutes] error getting routes for %s: %w", *rtID, err)
+		return nil, fmt.Errorf("[getRoutes] error getting routes for %s: %w", rtID, err)
 	}
 	return routes, nil
 }
@@ -315,18 +312,18 @@ func getLoadBalancers(vpcService *vpcv1.VpcV1) ([]*datamodel.LoadBalancer, error
 
 		listeners := make([]datamodel.LoadBalancerListener, len(listenersCollection.Listeners))
 		for j := range listenersCollection.Listeners {
-			listenerID := listenersCollection.Listeners[j].ID
+			listenerID := *listenersCollection.Listeners[j].ID
 			policiesOptions := &vpcv1.ListLoadBalancerListenerPoliciesOptions{}
 			policiesOptions.SetLoadBalancerID(lbID)
-			policiesOptions.SetListenerID(*listenerID)
+			policiesOptions.SetListenerID(listenerID)
 			policiesCollection, _, polErr := vpcService.ListLoadBalancerListenerPolicies(policiesOptions)
 			if polErr != nil {
-				return nil, fmt.Errorf("[getLoadBalancers] error getting policies for %s: %w", *listenerID, err)
+				return nil, fmt.Errorf("[getLoadBalancers] error getting policies for %s: %w", listenerID, err)
 			}
 
 			policies := make([]datamodel.LoadBalancerListenerPolicy, len(policiesCollection.Policies))
 			for k := range policiesCollection.Policies {
-				policies[k], polErr = getPolicyRules(vpcService, &lbID, listenerID, &policiesCollection.Policies[k])
+				policies[k], polErr = getPolicyRules(vpcService, lbID, listenerID, &policiesCollection.Policies[k])
 				if polErr != nil {
 					return nil, polErr
 				}
@@ -343,7 +340,7 @@ func getLoadBalancers(vpcService *vpcv1.VpcV1) ([]*datamodel.LoadBalancer, error
 		}
 		pools := make([]datamodel.LoadBalancerPool, len(poolsCollection.Pools))
 		for j := range pools {
-			pools[j], err = getPoolMembers(vpcService, &lbID, &poolsCollection.Pools[j])
+			pools[j], err = getPoolMembers(vpcService, lbID, &poolsCollection.Pools[j])
 			if err != nil {
 				return nil, err
 			}
@@ -355,9 +352,9 @@ func getLoadBalancers(vpcService *vpcv1.VpcV1) ([]*datamodel.LoadBalancer, error
 	return res, nil
 }
 
-func getPoolMembers(vpcService *vpcv1.VpcV1, lbID *string, vpcPool *vpcv1.LoadBalancerPool) (datamodel.LoadBalancerPool, error) {
+func getPoolMembers(vpcService *vpcv1.VpcV1, lbID string, vpcPool *vpcv1.LoadBalancerPool) (datamodel.LoadBalancerPool, error) {
 	options := &vpcv1.ListLoadBalancerPoolMembersOptions{}
-	options.SetLoadBalancerID(*lbID)
+	options.SetLoadBalancerID(lbID)
 	options.SetPoolID(*vpcPool.ID)
 	members, _, err := vpcService.ListLoadBalancerPoolMembers(options)
 	if err != nil {
@@ -367,11 +364,11 @@ func getPoolMembers(vpcService *vpcv1.VpcV1, lbID *string, vpcPool *vpcv1.LoadBa
 	return pool, nil
 }
 
-func getPolicyRules(vpcService *vpcv1.VpcV1, lbID, listenerID *string,
+func getPolicyRules(vpcService *vpcv1.VpcV1, lbID, listenerID string,
 	lbPolicy *vpcv1.LoadBalancerListenerPolicy) (datamodel.LoadBalancerListenerPolicy, error) {
 	options := &vpcv1.ListLoadBalancerListenerPolicyRulesOptions{}
-	options.SetLoadBalancerID(*lbID)
-	options.SetListenerID(*listenerID)
+	options.SetLoadBalancerID(lbID)
+	options.SetListenerID(listenerID)
 	options.SetPolicyID(*lbPolicy.ID)
 	rules, _, ruleErr := vpcService.ListLoadBalancerListenerPolicyRules(options)
 	if ruleErr != nil {
