@@ -1,0 +1,27 @@
+name: Publish a new release on pkg.go.dev
+
+on:
+  push:
+    tags:
+      - v[0-9]+.**
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  publish_release:
+    name: Publish a new release on pkg.go.dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+
+      - name: Set up Go
+        uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9
+        with:
+          go-version-file: ./go.mod
+
+      - name: Publish on pkg.go.dev
+        run: GOPROXY=proxy.golang.org go list -m github.com/np-guard/cloud-resource-collector@${{ github.ref_name }}
