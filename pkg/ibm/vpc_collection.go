@@ -212,8 +212,8 @@ func getInstances(vpcService *vpcv1.VpcV1) ([]*datamodel.Instance, error) {
 	}
 	res := make([]*datamodel.Instance, len(instances))
 	for i := range instances {
-		id := *res[i].ID
-		name := *res[i].Name
+		id := *instances[i].ID
+		name := *instances[i].Name
 
 		networkInterfaces, err := getNetworkInterface(vpcService, id, name)
 		if err != nil {
@@ -263,7 +263,7 @@ func getRoutingTables(vpcService *vpcv1.VpcV1, vpcList []*datamodel.VPC) ([]*dat
 			if err != nil {
 				return nil, err
 			}
-			res = append(res, datamodel.NewRoutingTable(&routingTables[i], routes))
+			res = append(res, datamodel.NewRoutingTable(&routingTables[j], routes))
 		}
 	}
 
