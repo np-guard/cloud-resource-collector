@@ -9,7 +9,7 @@ import (
 
 // Helper function for unmarshalling
 
-func JSONToMap(jsonStr []byte) (map[string]json.RawMessage, error) {
+func jsonToMap(jsonStr []byte) (map[string]json.RawMessage, error) {
 	var result map[string]json.RawMessage
 	err := json.Unmarshal(jsonStr, &result)
 	return result, err
@@ -44,12 +44,11 @@ func NewVPC(sdkVPC *vpcv1.VPC) *VPC {
 
 func (res *VPC) GetCRN() *string { return res.VPC.CRN }
 
-type ReservedIPWrapper struct {
-	vpcv1.ReservedIP
-}
+// ReservedIPWrapper is an alias to vpcv1.ReservedIP that allows us to override the implementation of UnmarshalJSON
+type ReservedIPWrapper vpcv1.ReservedIP
 
 func (res *ReservedIPWrapper) UnmarshalJSON(data []byte) error {
-	resIPMap, err := JSONToMap(data)
+	resIPMap, err := jsonToMap(data)
 	if err != nil {
 		return err
 	}
@@ -59,7 +58,8 @@ func (res *ReservedIPWrapper) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	res.ReservedIP = *resIPObj
+	//res.ReservedIP = *resIPObj
+	*res = ReservedIPWrapper(*resIPObj)
 	return nil
 }
 
@@ -73,7 +73,7 @@ type Subnet struct {
 func NewSubnet(subnet *vpcv1.Subnet, reservedIPs []vpcv1.ReservedIP) *Subnet {
 	reservedIPWraps := make([]ReservedIPWrapper, len(reservedIPs))
 	for i := range reservedIPs {
-		reservedIPWraps[i].ReservedIP = reservedIPs[i]
+		reservedIPWraps[i] = ReservedIPWrapper(reservedIPs[i])
 	}
 	return &Subnet{Subnet: *subnet, ReservedIps: reservedIPWraps}
 }
@@ -105,7 +105,7 @@ func NewFloatingIP(floatingIP *vpcv1.FloatingIP) *FloatingIP {
 func (res *FloatingIP) GetCRN() *string { return res.CRN }
 
 func (res *FloatingIP) UnmarshalJSON(data []byte) error {
-	asMap, err := JSONToMap(data)
+	asMap, err := jsonToMap(data)
 	if err != nil {
 		return err
 	}
@@ -132,7 +132,7 @@ func NewNetworkACL(networkACL *vpcv1.NetworkACL) *NetworkACL {
 func (res *NetworkACL) GetCRN() *string { return res.CRN }
 
 func (res *NetworkACL) UnmarshalJSON(data []byte) error {
-	asMap, err := JSONToMap(data)
+	asMap, err := jsonToMap(data)
 	if err != nil {
 		return err
 	}
@@ -159,7 +159,7 @@ func NewSecurityGroup(securityGroup *vpcv1.SecurityGroup) *SecurityGroup {
 func (res *SecurityGroup) GetCRN() *string { return res.CRN }
 
 func (res *SecurityGroup) UnmarshalJSON(data []byte) error {
-	asMap, err := JSONToMap(data)
+	asMap, err := jsonToMap(data)
 	if err != nil {
 		return err
 	}
@@ -186,7 +186,7 @@ func NewEndpointGateway(endpointGateway *vpcv1.EndpointGateway) *EndpointGateway
 func (res *EndpointGateway) GetCRN() *string { return res.CRN }
 
 func (res *EndpointGateway) UnmarshalJSON(data []byte) error {
-	asMap, err := JSONToMap(data)
+	asMap, err := jsonToMap(data)
 	if err != nil {
 		return err
 	}
@@ -225,12 +225,12 @@ func NewRoutingTable(rt *vpcv1.RoutingTable, routes []vpcv1.Route) *RoutingTable
 
 // LoadBalancer configuration objects
 
-type LoadBalancerPoolMemberWrap struct {
-	vpcv1.LoadBalancerPoolMember
-}
+// LoadBalancerPoolMemberWrapper is an alias to vpcv1.LoadBalancerPoolMember that allows us to override
+// the implementation of UnmarshalJSON
+type LoadBalancerPoolMemberWrapper vpcv1.LoadBalancerPoolMember
 
-func (res *LoadBalancerPoolMemberWrap) UnmarshalJSON(data []byte) error {
-	asMap, err := JSONToMap(data)
+func (res *LoadBalancerPoolMemberWrapper) UnmarshalJSON(data []byte) error {
+	asMap, err := jsonToMap(data)
 	if err != nil {
 		return err
 	}
@@ -239,31 +239,31 @@ func (res *LoadBalancerPoolMemberWrap) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	res.LoadBalancerPoolMember = *asObj
+	*res = LoadBalancerPoolMemberWrapper(*asObj)
 	return nil
 }
 
 // LoadBalancerPool object with explicit members (not references)
 type LoadBalancerPool struct {
 	vpcv1.LoadBalancerPool
-	Members []LoadBalancerPoolMemberWrap `json:"members"`
+	Members []LoadBalancerPoolMemberWrapper `json:"members"`
 }
 
 func NewLoadBalancerPool(loadBalancerPool *vpcv1.LoadBalancerPool,
 	members []vpcv1.LoadBalancerPoolMember) LoadBalancerPool {
-	LoadBalancerPoolMemberWraps := make([]LoadBalancerPoolMemberWrap, len(members))
+	LoadBalancerPoolMemberWraps := make([]LoadBalancerPoolMemberWrapper, len(members))
 	for i := range members {
-		LoadBalancerPoolMemberWraps[i].LoadBalancerPoolMember = members[i]
+		LoadBalancerPoolMemberWraps[i] = LoadBalancerPoolMemberWrapper(members[i])
 	}
 	return LoadBalancerPool{LoadBalancerPool: *loadBalancerPool, Members: LoadBalancerPoolMemberWraps}
 }
 
-type LoadBalancerListenerPolicyRuleWrap struct {
-	vpcv1.LoadBalancerListenerPolicyRule
-}
+// LoadBalancerListenerPolicyRuleWrapper is an alias to vpcv1.LoadBalancerListenerPolicyRule that allows us to override
+// the implementation of UnmarshalJSON
+type LoadBalancerListenerPolicyRuleWrapper vpcv1.LoadBalancerListenerPolicyRule
 
-func (res *LoadBalancerListenerPolicyRuleWrap) UnmarshalJSON(data []byte) error {
-	asMap, err := JSONToMap(data)
+func (res *LoadBalancerListenerPolicyRuleWrapper) UnmarshalJSON(data []byte) error {
+	asMap, err := jsonToMap(data)
 	if err != nil {
 		return err
 	}
@@ -272,29 +272,29 @@ func (res *LoadBalancerListenerPolicyRuleWrap) UnmarshalJSON(data []byte) error 
 	if err != nil {
 		return err
 	}
-	res.LoadBalancerListenerPolicyRule = *asObj
+	*res = LoadBalancerListenerPolicyRuleWrapper(*asObj)
 	return nil
 }
 
 // LoadBalancerListenerPolicy configuration with explicit rules (not references)
 type LoadBalancerListenerPolicy struct {
 	vpcv1.LoadBalancerListenerPolicy
-	Rules []LoadBalancerListenerPolicyRuleWrap `json:"rules"`
+	Rules []LoadBalancerListenerPolicyRuleWrapper `json:"rules"`
 }
 
 func NewLoadBalancerListenerPolicy(
 	loadBalancerListenerPolicy *vpcv1.LoadBalancerListenerPolicy,
 	rules []vpcv1.LoadBalancerListenerPolicyRule) LoadBalancerListenerPolicy {
-	rulesWrap := make([]LoadBalancerListenerPolicyRuleWrap, len(rules))
+	rulesWrap := make([]LoadBalancerListenerPolicyRuleWrapper, len(rules))
 	for i := range rules {
-		rulesWrap[i].LoadBalancerListenerPolicyRule = rules[i]
+		rulesWrap[i] = LoadBalancerListenerPolicyRuleWrapper(rules[i])
 	}
 
 	return LoadBalancerListenerPolicy{LoadBalancerListenerPolicy: *loadBalancerListenerPolicy, Rules: rulesWrap}
 }
 
 func (res *LoadBalancerListenerPolicy) UnmarshalJSON(data []byte) error {
-	asMap, err := JSONToMap(data)
+	asMap, err := jsonToMap(data)
 	if err != nil {
 		return err
 	}
@@ -305,7 +305,7 @@ func (res *LoadBalancerListenerPolicy) UnmarshalJSON(data []byte) error {
 	}
 	res.LoadBalancerListenerPolicy = *asObj
 
-	var rules []LoadBalancerListenerPolicyRuleWrap
+	var rules []LoadBalancerListenerPolicyRuleWrapper
 	err = json.Unmarshal(asMap["rules"], &rules)
 	if err != nil {
 		return err

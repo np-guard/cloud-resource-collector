@@ -56,9 +56,7 @@ type ResourcesContainer struct {
 
 // NewResourcesContainer creates an empty resources container
 func NewResourcesContainer() *ResourcesContainer {
-	var newObject ResourcesContainer
-	newObject.ResourcesContainerModel = *datamodel.NewResourcesContainerModel()
-	return &newObject
+	return &ResourcesContainer{*datamodel.NewResourcesContainerModel()}
 }
 
 // collect the tags for all resources of all types
