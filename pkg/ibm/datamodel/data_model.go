@@ -58,7 +58,6 @@ func (res *ReservedIPWrapper) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	//res.ReservedIP = *resIPObj
 	*res = ReservedIPWrapper(*resIPObj)
 	return nil
 }
