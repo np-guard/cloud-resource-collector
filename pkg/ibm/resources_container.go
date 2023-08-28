@@ -1,7 +1,6 @@
 package ibm
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -52,55 +51,12 @@ func (tagsCollector *tagsClient) setResourceTags(resource datamodel.TaggedResour
 
 // ResourcesContainer holds the results of collecting the configurations of all resources.
 type ResourcesContainer struct {
-	VpcList           []*datamodel.VPC             `json:"vpcs"`
-	SubnetList        []*datamodel.Subnet          `json:"subnets"`
-	PublicGWList      []*datamodel.PublicGateway   `json:"public_gateways"`
-	FloatingIPList    []*datamodel.FloatingIP      `json:"floating_ips"`
-	NetworkACLList    []*datamodel.NetworkACL      `json:"network_acls"`
-	SecurityGroupList []*datamodel.SecurityGroup   `json:"security_groups"`
-	EndpointGWList    []*datamodel.EndpointGateway `json:"endpoint_gateways"`
-	InstanceList      []*datamodel.Instance        `json:"instances"`
-	RoutingTableList  []*datamodel.RoutingTable    `json:"routing_tables"`
-	LBList            []*datamodel.LoadBalancer    `json:"load_balancers"`
-	IKSWorkerNodes    []*datamodel.IKSWorkerNode   `json:"iks_worker_nodes"`
+	datamodel.ResourcesContainerModel
 }
 
 // NewResourcesContainer creates an empty resources container
 func NewResourcesContainer() *ResourcesContainer {
-	return &ResourcesContainer{
-		VpcList:           []*datamodel.VPC{},
-		SubnetList:        []*datamodel.Subnet{},
-		PublicGWList:      []*datamodel.PublicGateway{},
-		FloatingIPList:    []*datamodel.FloatingIP{},
-		NetworkACLList:    []*datamodel.NetworkACL{},
-		SecurityGroupList: []*datamodel.SecurityGroup{},
-		EndpointGWList:    []*datamodel.EndpointGateway{},
-		InstanceList:      []*datamodel.Instance{},
-		RoutingTableList:  []*datamodel.RoutingTable{},
-		LBList:            []*datamodel.LoadBalancer{},
-		IKSWorkerNodes:    []*datamodel.IKSWorkerNode{},
-	}
-}
-
-// PrintStats outputs the number of items of each type
-func (resources *ResourcesContainer) PrintStats() {
-	fmt.Printf("Found %d VPCs\n", len(resources.VpcList))
-	fmt.Printf("Found %d subnets\n", len(resources.SubnetList))
-	fmt.Printf("Found %d public gateways\n", len(resources.PublicGWList))
-	fmt.Printf("Found %d floating IPs\n", len(resources.FloatingIPList))
-	fmt.Printf("Found %d nACLs\n", len(resources.NetworkACLList))
-	fmt.Printf("Found %d security groups\n", len(resources.SecurityGroupList))
-	fmt.Printf("Found %d endpoint gateways (VPEs)\n", len(resources.EndpointGWList))
-	fmt.Printf("Found %d instances\n", len(resources.InstanceList))
-	fmt.Printf("Found %d routing tables\n", len(resources.RoutingTableList))
-	fmt.Printf("Found %d load balancers\n", len(resources.LBList))
-	fmt.Printf("Found %d IKS worker nodes\n", len(resources.IKSWorkerNodes))
-}
-
-// ToJSONString converts a ResourcesContainer into a json-formatted-string
-func (resources *ResourcesContainer) ToJSONString() (string, error) {
-	toPrint, err := json.MarshalIndent(resources, "", "    ")
-	return string(toPrint), err
+	return &ResourcesContainer{*datamodel.NewResourcesContainerModel()}
 }
 
 // collect the tags for all resources of all types
