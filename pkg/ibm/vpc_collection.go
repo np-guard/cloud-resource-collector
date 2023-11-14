@@ -390,7 +390,7 @@ func getTransitConnections(tgwService *tgw.TransitGatewayApisV1) ([]*datamodel.T
 
 	transitCons, err := iteratePagedAPI(APIFunc, getArray)
 	if err != nil {
-		return nil, fmt.Errorf("[getTransitConnections] error getting transit connections: #{err}")
+		return nil, fmt.Errorf("[getTransitConnections] error getting transit connections: %w", err)
 	}
 	res := make([]*datamodel.TransitConnection, len(transitCons))
 	for i := range transitCons {

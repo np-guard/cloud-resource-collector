@@ -3095,6 +3095,6 @@
         }
     ],
     "load_balancers": [],
-    "transit_connections": null,
+    "transit_connections": [],
     "iks_worker_nodes": []
 }
