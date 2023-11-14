@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"os"
 
+	iksv1 "github.com/IBM-Cloud/container-services-go-sdk/kubernetesserviceapiv1"
+	"github.com/IBM/go-sdk-core/v5/core"
+	tgw "github.com/IBM/networking-go-sdk/transitgatewayapisv1"
+	"github.com/IBM/platform-services-go-sdk/globaltaggingv1"
 	"github.com/IBM/vpc-go-sdk/vpcv1"
 
-	"github.com/IBM/go-sdk-core/v5/core"
-	"github.com/IBM/platform-services-go-sdk/globaltaggingv1"
-
-	iksv1 "github.com/IBM-Cloud/container-services-go-sdk/kubernetesserviceapiv1"
-	tgw "github.com/IBM/networking-go-sdk/transitgatewayapisv1"
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm/datamodel"
 )
 
