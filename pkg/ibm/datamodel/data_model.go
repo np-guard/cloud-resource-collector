@@ -3,6 +3,8 @@ package datamodel
 import (
 	"encoding/json"
 
+	tgw "github.com/IBM/networking-go-sdk/transitgatewayapisv1"
+
 	iksv1 "github.com/IBM-Cloud/container-services-go-sdk/kubernetesserviceapiv1"
 	"github.com/IBM/vpc-go-sdk/vpcv1"
 )
@@ -346,6 +348,16 @@ func NewLoadBalancer(
 
 func (res *LoadBalancer) GetCRN() *string { return res.CRN }
 
+// TransitConnection configuration object
+type TransitConnection struct {
+	tgw.TransitConnection
+}
+
+func NewTransitConnection(transitConnection *tgw.TransitConnection) *TransitConnection {
+	return &TransitConnection{TransitConnection: *transitConnection}
+}
+
+// IKSWorkerNode configuration object
 type IKSWorkerNode struct {
 	iksv1.GetWorkerResponse
 }
