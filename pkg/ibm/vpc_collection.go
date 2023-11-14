@@ -380,6 +380,7 @@ func getPolicyRules(vpcService *vpcv1.VpcV1, lbID, listenerID string,
 	return policy, nil
 }
 
+//nolint:dupl // See getVPCs
 func getTransitConnections(tgwService *tgw.TransitGatewayApisV1) ([]*datamodel.TransitConnection, error) {
 	APIFunc := func(pageSize int64, next *string) (*tgw.TransitConnectionCollection, any, error) {
 		return tgwService.ListConnections(&tgw.ListConnectionsOptions{Limit: &pageSize, Start: next})
