@@ -10,9 +10,10 @@ import (
 )
 
 func TestUnmarshal(t *testing.T) {
-	unmarshalInputs := [2]string{
+	unmarshalInputs := [3]string{
 		"data/iks-on-goldeneye-vpc-config.json",
 		"data/demo-with-instances-config.json",
+		"data/transit-gateways.json",
 	}
 
 	for i := range unmarshalInputs {

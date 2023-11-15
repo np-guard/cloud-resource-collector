@@ -3,6 +3,7 @@ package ibm
 import (
 	"fmt"
 
+	tgw "github.com/IBM/networking-go-sdk/transitgatewayapisv1"
 	"github.com/IBM/vpc-go-sdk/vpcv1"
 
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm/datamodel"
@@ -377,4 +378,24 @@ func getPolicyRules(vpcService *vpcv1.VpcV1, lbID, listenerID string,
 	}
 	policy := datamodel.NewLoadBalancerListenerPolicy(lbPolicy, rules.Rules)
 	return policy, nil
+}
+
+//nolint:dupl // See getVPCs
+func getTransitConnections(tgwService *tgw.TransitGatewayApisV1) ([]*datamodel.TransitConnection, error) {
+	APIFunc := func(pageSize int64, next *string) (*tgw.TransitConnectionCollection, any, error) {
+		return tgwService.ListConnections(&tgw.ListConnectionsOptions{Limit: &pageSize, Start: next})
+	}
+	getArray := func(collection *tgw.TransitConnectionCollection) []tgw.TransitConnection {
+		return collection.Connections
+	}
+
+	transitCons, err := iteratePagedAPI(APIFunc, getArray)
+	if err != nil {
+		return nil, fmt.Errorf("[getTransitConnections] error getting transit connections: %w", err)
+	}
+	res := make([]*datamodel.TransitConnection, len(transitCons))
+	for i := range transitCons {
+		res[i] = datamodel.NewTransitConnection(&transitCons[i])
+	}
+	return res, nil
 }

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/IBM/vpc-go-sdk/vpcv1"
-
 	iksv1 "github.com/IBM-Cloud/container-services-go-sdk/kubernetesserviceapiv1"
 	"github.com/IBM/go-sdk-core/v5/core"
+	tgw "github.com/IBM/networking-go-sdk/transitgatewayapisv1"
 	"github.com/IBM/platform-services-go-sdk/globaltaggingv1"
+	"github.com/IBM/vpc-go-sdk/vpcv1"
 
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm/datamodel"
 )
@@ -169,6 +169,23 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 		return errors.New("error creating VPC Service")
 	}
 
+	// Instantiate the Networking service with an API key based IAM authenticator
+	var tgServiceVersion = "2021-12-30"
+	transitGWService, err := tgw.NewTransitGatewayApisV1(&tgw.TransitGatewayApisV1Options{
+		Version: &tgServiceVersion,
+		Authenticator: &core.IamAuthenticator{
+			ApiKey: apiKey,
+		},
+	})
+	if err != nil {
+		return errors.New("error creating Networking Service")
+	}
+
+	err = transitGWService.SetServiceURL("https://transit.cloud.ibm.com/v1")
+	if err != nil {
+		return errors.New("error setting Networking Service URL")
+	}
+
 	// Instantiate the IKS service with an API key based IAM authenticator
 	iksService, err := iksv1.NewKubernetesServiceApiV1(&iksv1.KubernetesServiceApiV1Options{
 		Authenticator: &core.IamAuthenticator{
@@ -235,6 +252,12 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 
 	// Load Balancers
 	resources.LBList, err = getLoadBalancers(vpcService)
+	if err != nil {
+		return err
+	}
+
+	// Transit Gateways
+	resources.TransitConnectionList, err = getTransitConnections(transitGWService)
 	if err != nil {
 		return err
 	}

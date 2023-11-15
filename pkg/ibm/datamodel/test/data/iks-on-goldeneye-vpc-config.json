@@ -3060,6 +3060,7 @@
             "tags": []
         }
     ],
+    "transit_connections": [],
     "iks_worker_nodes": [
         {
             "flavor": "bx2.4x16",
