@@ -199,6 +199,10 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 	}
 	resources.VpcList = append(resources.VpcList, vpcs...)
 
+	if len(vpcs) == 0 {
+		return nil // no point in collecting other resources from this region if it has no VPCs
+	}
+
 	// Subnets
 	subnets, err := getSubnets(vpcService)
 	if err != nil {
