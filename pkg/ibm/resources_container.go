@@ -57,6 +57,10 @@ type ResourcesContainer struct {
 
 // NewResourcesContainer creates an empty resources container
 func NewResourcesContainer(regions []string) *ResourcesContainer {
+	if len(regions) == 0 {
+		regions = allRegions()
+	}
+
 	return &ResourcesContainer{
 		ResourcesContainerModel: *datamodel.NewResourcesContainerModel(),
 		regions:                 regions,

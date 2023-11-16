@@ -38,10 +38,5 @@ func ParseInArgs(args *InArgs) error {
 		return fmt.Errorf("unsupported provider: %s", *args.CollectFromProvider)
 	}
 
-	if len(args.regions) == 0 {
-		flag.PrintDefaults()
-		return fmt.Errorf("at least one cloud region must be provided")
-	}
-
 	return nil
 }

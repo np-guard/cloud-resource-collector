@@ -12,3 +12,13 @@ var vpcRegionURLs = map[string]string{
 	"jp-osa":   "https://jp-osa.iaas.cloud.ibm.com/v1",
 	"jp-tok":   "https://jp-tok.iaas.cloud.ibm.com/v1",
 }
+
+func allRegions() []string {
+	regions := make([]string, len(vpcRegionURLs))
+	i := 0
+	for region := range vpcRegionURLs {
+		regions[i] = region
+		i++
+	}
+	return regions
+}
