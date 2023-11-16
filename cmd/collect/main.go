@@ -26,7 +26,7 @@ func main() {
 	case AWS:
 		resources = aws.NewResourcesContainer()
 	case IBM:
-		resources = ibm.NewResourcesContainer()
+		resources = ibm.NewResourcesContainer(inArgs.regions)
 	}
 
 	// Collect resources from the provider API and generate output

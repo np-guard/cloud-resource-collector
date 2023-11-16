@@ -52,11 +52,15 @@ func (tagsCollector *tagsClient) setResourceTags(resource datamodel.TaggedResour
 // ResourcesContainer holds the results of collecting the configurations of all resources.
 type ResourcesContainer struct {
 	datamodel.ResourcesContainerModel
+	regions []string
 }
 
 // NewResourcesContainer creates an empty resources container
-func NewResourcesContainer() *ResourcesContainer {
-	return &ResourcesContainer{*datamodel.NewResourcesContainerModel()}
+func NewResourcesContainer(regions []string) *ResourcesContainer {
+	return &ResourcesContainer{
+		ResourcesContainerModel: *datamodel.NewResourcesContainerModel(),
+		regions:                 regions,
+	}
 }
 
 // collect the tags for all resources of all types
@@ -136,8 +140,6 @@ func (resources *ResourcesContainer) collectTags() error {
 }
 
 // CollectResourcesFromAPI uses IBM APIs to collect resource configuration information
-//
-//nolint:funlen,gocyclo // because Golang forces me to replicate code per-resource-type
 func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	//TODO: Enable supplying credentials through other means
 	apiKey := os.Getenv("IBMCLOUD_API_KEY")
@@ -159,16 +161,107 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 		return errors.New("failed to set GLOBAL_TAGGING_URL")
 	}
 
+	for _, region := range resources.regions {
+		err = resources.collectRegionalResources(region, apiKey)
+		if err != nil {
+			return err
+		}
+	}
+
+	err = resources.collectGlobalResources(apiKey)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (resources *ResourcesContainer) collectRegionalResources(region, apiKey string) error {
 	// Instantiate the VPC service with an API key based IAM authenticator
 	vpcService, err := vpcv1.NewVpcV1(&vpcv1.VpcV1Options{
 		Authenticator: &core.IamAuthenticator{
 			ApiKey: apiKey,
 		},
+		URL: vpcRegionURLs[region],
 	})
 	if err != nil {
 		return errors.New("error creating VPC Service")
 	}
 
+	// VPCs
+	vpcs, err := getVPCs(vpcService)
+	if err != nil {
+		return err
+	}
+	resources.VpcList = append(resources.VpcList, vpcs...)
+
+	// Subnets
+	subnets, err := getSubnets(vpcService)
+	if err != nil {
+		return err
+	}
+	resources.SubnetList = append(resources.SubnetList, subnets...)
+
+	// Public Gateways
+	pgws, err := getPublicGateways(vpcService)
+	if err != nil {
+		return err
+	}
+	resources.PublicGWList = append(resources.PublicGWList, pgws...)
+
+	// Floating IPs
+	fips, err := getFloatingIPs(vpcService)
+	if err != nil {
+		return err
+	}
+	resources.FloatingIPList = append(resources.FloatingIPList, fips...)
+
+	// Network ACLs
+	nacls, err := getNetworkACLs(vpcService)
+	if err != nil {
+		return err
+	}
+	resources.NetworkACLList = append(resources.NetworkACLList, nacls...)
+
+	// Security Groups
+	sgs, err := getSecurityGroups(vpcService)
+	if err != nil {
+		return err
+	}
+	resources.SecurityGroupList = append(resources.SecurityGroupList, sgs...)
+
+	// Endpoint Gateways (VPEs)
+	vpes, err := getEndpointGateways(vpcService)
+	if err != nil {
+		return err
+	}
+	resources.EndpointGWList = append(resources.EndpointGWList, vpes...)
+
+	// Instances
+	insts, err := getInstances(vpcService)
+	if err != nil {
+		return err
+	}
+	resources.InstanceList = append(resources.InstanceList, insts...)
+
+	// Routing Tables
+	rts, err := getRoutingTables(vpcService, vpcs)
+	if err != nil {
+		return err
+	}
+	resources.RoutingTableList = append(resources.RoutingTableList, rts...)
+
+	// Load Balancers
+	lbs, err := getLoadBalancers(vpcService)
+	if err != nil {
+		return err
+	}
+	resources.LBList = append(resources.LBList, lbs...)
+	return nil
+}
+
+func (resources *ResourcesContainer) collectGlobalResources(apiKey string) error {
+	// Transit Gateways
 	// Instantiate the Networking service with an API key based IAM authenticator
 	var tgServiceVersion = "2021-12-30"
 	transitGWService, err := tgw.NewTransitGatewayApisV1(&tgw.TransitGatewayApisV1Options{
@@ -186,6 +279,11 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 		return errors.New("error setting Networking Service URL")
 	}
 
+	resources.TransitConnectionList, err = getTransitConnections(transitGWService)
+	if err != nil {
+		return err
+	}
+
 	// Instantiate the IKS service with an API key based IAM authenticator
 	iksService, err := iksv1.NewKubernetesServiceApiV1(&iksv1.KubernetesServiceApiV1Options{
 		Authenticator: &core.IamAuthenticator{
@@ -194,72 +292,6 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	})
 	if err != nil {
 		return errors.New("error creating IKS Service")
-	}
-
-	// VPCs
-	resources.VpcList, err = getVPCs(vpcService)
-	if err != nil {
-		return err
-	}
-
-	// Subnets
-	resources.SubnetList, err = getSubnets(vpcService)
-	if err != nil {
-		return err
-	}
-
-	// Public Gateways
-	resources.PublicGWList, err = getPublicGateways(vpcService)
-	if err != nil {
-		return err
-	}
-
-	// Floating IPs
-	resources.FloatingIPList, err = getFloatingIPs(vpcService)
-	if err != nil {
-		return err
-	}
-
-	// Network ACLs
-	resources.NetworkACLList, err = getNetworkACLs(vpcService)
-	if err != nil {
-		return err
-	}
-
-	// Security Groups
-	resources.SecurityGroupList, err = getSecurityGroups(vpcService)
-	if err != nil {
-		return err
-	}
-
-	// Endpoint Gateways (VPEs)
-	resources.EndpointGWList, err = getEndpointGateways(vpcService)
-	if err != nil {
-		return err
-	}
-
-	// Instances
-	resources.InstanceList, err = getInstances(vpcService)
-	if err != nil {
-		return err
-	}
-
-	// Routing Tables
-	resources.RoutingTableList, err = getRoutingTables(vpcService, resources.VpcList)
-	if err != nil {
-		return err
-	}
-
-	// Load Balancers
-	resources.LBList, err = getLoadBalancers(vpcService)
-	if err != nil {
-		return err
-	}
-
-	// Transit Gateways
-	resources.TransitConnectionList, err = getTransitConnections(transitGWService)
-	if err != nil {
-		return err
 	}
 
 	// IKS Clusters

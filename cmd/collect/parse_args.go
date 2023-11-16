@@ -5,8 +5,20 @@ import (
 	"fmt"
 )
 
+type regionList []string
+
+func (dp *regionList) String() string {
+	return fmt.Sprintln(*dp)
+}
+
+func (dp *regionList) Set(region string) error {
+	*dp = append(*dp, region)
+	return nil
+}
+
 type InArgs struct {
 	CollectFromProvider *string
+	regions             regionList
 	OutputFile          *string
 }
 
@@ -18,11 +30,17 @@ func ParseInArgs(args *InArgs) error {
 
 	args.CollectFromProvider = flag.String("provider", "", "cloud provider from which to collect resources")
 	args.OutputFile = flag.String("out", "", "file path to store results")
+	flag.Var(&args.regions, "region", "cloud region from which to collect resources")
 	flag.Parse()
 
 	if !SupportedProviders[*args.CollectFromProvider] {
 		flag.PrintDefaults()
 		return fmt.Errorf("unsupported provider: %s", *args.CollectFromProvider)
+	}
+
+	if len(args.regions) == 0 {
+		flag.PrintDefaults()
+		return fmt.Errorf("at least one cloud region must be provided")
 	}
 
 	return nil
