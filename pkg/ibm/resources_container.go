@@ -67,6 +67,10 @@ func NewResourcesContainer(regions []string) *ResourcesContainer {
 	}
 }
 
+func (resources *ResourcesContainer) AllRegions() []string {
+	return allRegions()
+}
+
 // collect the tags for all resources of all types
 //
 //nolint:gocyclo,funlen // because Golang forces me to replicate code per-resource-type

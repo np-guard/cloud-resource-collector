@@ -49,6 +49,8 @@ export IBMCLOUD_API_KEY=<ibm-cloud-api-key>
 ```
 $ ./bin/collect -h
 Usage of ./bin/collect:
+  -get-regions
+        just print the list of regions for the selected provider
   -out string
         file path to store results
   -provider string

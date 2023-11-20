@@ -5,4 +5,5 @@ type ResourcesContainerInf interface {
 	CollectResourcesFromAPI() error
 	PrintStats()
 	ToJSONString() (string, error)
+	AllRegions() []string
 }
