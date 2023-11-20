@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"strings"
 
 	"github.com/np-guard/cloud-resource-collector/pkg/aws"
 	"github.com/np-guard/cloud-resource-collector/pkg/common"
@@ -26,7 +28,13 @@ func main() {
 	case AWS:
 		resources = aws.NewResourcesContainer()
 	case IBM:
-		resources = ibm.NewResourcesContainer()
+		resources = ibm.NewResourcesContainer(inArgs.regions)
+	}
+
+	if *inArgs.getRegions {
+		providerRegions := strings.Join(resources.AllRegions(), ", ")
+		fmt.Printf("Available regions for provider %s: %s\n", *inArgs.CollectFromProvider, providerRegions)
+		return
 	}
 
 	// Collect resources from the provider API and generate output

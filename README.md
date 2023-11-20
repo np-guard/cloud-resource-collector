@@ -46,14 +46,20 @@ export IBMCLOUD_API_KEY=<ibm-cloud-api-key>
 
 ## Usage
 
-```shell
+```
 $ ./bin/collect -h
-Usage of C:\MyStuff\Governance\np-guard\cloud-resource-collector\bin\collect:
+Usage of ./bin/collect:
+  -get-regions
+        just print the list of regions for the selected provider
   -out string
         file path to store results
   -provider string
         cloud provider from which to collect resources
+  -region value
+        cloud region from which to collect resources
 ```
+* Value of `-provider` must be either `ibm` or `aws`
+* The `-region` argument can appear multiple times. If running with no `-region` arguments, resources from all regions are collected.
 
 ## Build the project
 

@@ -49,6 +49,10 @@ func (resources *ResourcesContainer) ToJSONString() (string, error) {
 	return string(toPrint), err
 }
 
+func (resources *ResourcesContainer) AllRegions() []string {
+	return nil
+}
+
 // CollectResourcesFromAPI uses AWS APIs to collect resource configuration information
 func (resources *ResourcesContainer) CollectResourcesFromAPI() error { //nolint:gocyclo // due to many API calls
 	// Load the Shared AWS Configuration (~/.aws/config)
