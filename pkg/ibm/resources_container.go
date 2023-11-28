@@ -9,6 +9,7 @@ package ibm
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 
 	iksv1 "github.com/IBM-Cloud/container-services-go-sdk/kubernetesserviceapiv1"
@@ -202,6 +203,8 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 		return errors.New("error creating VPC Service")
 	}
 
+	log.Printf("Collecting resources from region %s\n", region)
+
 	// VPCs
 	vpcs, err := getVPCs(vpcService)
 	if err != nil {
@@ -279,6 +282,8 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 }
 
 func (resources *ResourcesContainer) collectGlobalResources(apiKey string) error {
+	log.Println("Collecting global resources")
+
 	// Transit Gateways
 	// Instantiate the Networking service with an API key based IAM authenticator
 	var tgServiceVersion = "2021-12-30"
