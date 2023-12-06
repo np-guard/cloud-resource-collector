@@ -45,7 +45,7 @@ func iteratePagedAPI[T any, Q HasGetNextStart[T]](
 }
 
 //nolint:dupl // The duplication is essentially creating the adapter
-func getVPCs(vpcService *vpcv1.VpcV1) ([]*datamodel.VPC, error) {
+func getVPCs(vpcService *vpcv1.VpcV1, region string) ([]*datamodel.VPC, error) {
 	APIFunc := func(pageSize int64, next *string) (*vpcv1.VPCCollection, any, error) {
 		return vpcService.ListVpcs(&vpcv1.ListVpcsOptions{Limit: &pageSize, Start: next})
 	}
@@ -58,7 +58,7 @@ func getVPCs(vpcService *vpcv1.VpcV1) ([]*datamodel.VPC, error) {
 	}
 	res := make([]*datamodel.VPC, len(vpcs))
 	for i := range vpcs {
-		res[i] = datamodel.NewVPC(&vpcs[i])
+		res[i] = datamodel.NewVPC(&vpcs[i], region)
 	}
 	return res, nil
 }

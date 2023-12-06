@@ -206,7 +206,7 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 	log.Printf("Collecting resources from region %s\n", region)
 
 	// VPCs
-	vpcs, err := getVPCs(vpcService)
+	vpcs, err := getVPCs(vpcService, region)
 	if err != nil {
 		return err
 	}

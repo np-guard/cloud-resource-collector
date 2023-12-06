@@ -43,11 +43,12 @@ func (res *BaseTaggedResource) SetTags(tags []string) {
 // VPC configuration object
 type VPC struct {
 	vpcv1.VPC
+	Region string `json:"region"`
 	BaseTaggedResource
 }
 
-func NewVPC(sdkVPC *vpcv1.VPC) *VPC {
-	return &VPC{VPC: *sdkVPC}
+func NewVPC(sdkVPC *vpcv1.VPC, region string) *VPC {
+	return &VPC{VPC: *sdkVPC, Region: region}
 }
 
 func (res *VPC) GetCRN() *string { return res.VPC.CRN }
