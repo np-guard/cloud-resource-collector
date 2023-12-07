@@ -364,6 +364,14 @@ func NewTransitConnection(transitConnection *tgw.TransitConnection) *TransitConn
 	return &TransitConnection{TransitConnection: *transitConnection}
 }
 
+type TransitGateway struct {
+	tgw.TransitGateway
+}
+
+func NewTransitGateway(transitGateway *tgw.TransitGateway) *TransitGateway {
+	return &TransitGateway{TransitGateway: *transitGateway}
+}
+
 // IKSWorkerNode configuration object
 type IKSWorkerNode struct {
 	iksv1.GetWorkerResponse

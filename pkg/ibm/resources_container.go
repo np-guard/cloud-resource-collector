@@ -307,6 +307,11 @@ func (resources *ResourcesContainer) collectGlobalResources(apiKey string) error
 		return err
 	}
 
+	resources.TransitGatewayList, err = getTransitGateways(transitGWService)
+	if err != nil {
+		return err
+	}
+
 	// Instantiate the IKS service with an API key based IAM authenticator
 	iksService, err := iksv1.NewKubernetesServiceApiV1(&iksv1.KubernetesServiceApiV1Options{
 		Authenticator: &core.IamAuthenticator{

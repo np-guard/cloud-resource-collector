@@ -3062,6 +3062,7 @@
         }
     ],
     "transit_connections": [],
+    "transit_gateways": [],
     "iks_worker_nodes": [
         {
             "flavor": "bx2.4x16",

@@ -405,3 +405,23 @@ func getTransitConnections(tgwService *tgw.TransitGatewayApisV1) ([]*datamodel.T
 	}
 	return res, nil
 }
+
+//nolint:dupl // See getVPCs
+func getTransitGateways(tgwService *tgw.TransitGatewayApisV1) ([]*datamodel.TransitGateway, error) {
+	APIFunc := func(pageSize int64, next *string) (*tgw.TransitGatewayCollection, any, error) {
+		return tgwService.ListTransitGateways(&tgw.ListTransitGatewaysOptions{Limit: &pageSize, Start: next})
+	}
+	getArray := func(collection *tgw.TransitGatewayCollection) []tgw.TransitGateway {
+		return collection.TransitGateways
+	}
+
+	transitGws, err := iteratePagedAPI(APIFunc, getArray)
+	if err != nil {
+		return nil, fmt.Errorf("[getTransitGateways] error getting transit gateways: %w", err)
+	}
+	res := make([]*datamodel.TransitGateway, len(transitGws))
+	for i := range transitGws {
+		res[i] = datamodel.NewTransitGateway(&transitGws[i])
+	}
+	return res, nil
+}
