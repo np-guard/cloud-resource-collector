@@ -24,6 +24,7 @@ type ResourcesContainerModel struct {
 	RoutingTableList      []*RoutingTable      `json:"routing_tables"`
 	LBList                []*LoadBalancer      `json:"load_balancers"`
 	TransitConnectionList []*TransitConnection `json:"transit_connections"`
+	TransitGatewayList    []*TransitGateway    `json:"transit_gateways"`
 	IKSWorkerNodes        []*IKSWorkerNode     `json:"iks_worker_nodes"`
 }
 
@@ -41,6 +42,7 @@ func NewResourcesContainerModel() *ResourcesContainerModel {
 		RoutingTableList:      []*RoutingTable{},
 		LBList:                []*LoadBalancer{},
 		TransitConnectionList: []*TransitConnection{},
+		TransitGatewayList:    []*TransitGateway{},
 		IKSWorkerNodes:        []*IKSWorkerNode{},
 	}
 }
@@ -58,6 +60,7 @@ func (resources *ResourcesContainerModel) PrintStats() {
 	fmt.Printf("Found %d routing tables\n", len(resources.RoutingTableList))
 	fmt.Printf("Found %d load balancers\n", len(resources.LBList))
 	fmt.Printf("Found %d transit connections\n", len(resources.TransitConnectionList))
+	fmt.Printf("Found %d transit gateways\n", len(resources.TransitGatewayList))
 	fmt.Printf("Found %d IKS worker nodes\n", len(resources.IKSWorkerNodes))
 }
 
