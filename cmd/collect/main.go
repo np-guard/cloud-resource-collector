@@ -34,7 +34,7 @@ func main() {
 	case AWS:
 		resources = aws.NewResourcesContainer()
 	case IBM:
-		resources = ibm.NewResourcesContainer(inArgs.regions)
+		resources = ibm.NewResourcesContainer(inArgs.regions, *inArgs.resourceGroupID)
 	}
 
 	if *inArgs.getRegions {

@@ -26,6 +26,7 @@ type InArgs struct {
 	CollectFromProvider *string
 	regions             regionList
 	getRegions          *bool
+	resourceGroupID     *string
 	OutputFile          *string
 }
 
@@ -38,6 +39,7 @@ func ParseInArgs(args *InArgs) error {
 	args.CollectFromProvider = flag.String("provider", "", "cloud provider from which to collect resources")
 	flag.Var(&args.regions, "region", "cloud region from which to collect resources")
 	args.getRegions = flag.Bool("get-regions", false, "just print the list of regions for the selected provider")
+	args.resourceGroupID = flag.String("resource-group", "", "resource group id from which to collect resources")
 	args.OutputFile = flag.String("out", "", "file path to store results")
 	flag.Parse()
 
@@ -53,6 +55,9 @@ func ParseInArgs(args *InArgs) error {
 		}
 		if *args.getRegions {
 			return fmt.Errorf("getting the list of regions for provider %s is not yet supported", *args.CollectFromProvider)
+		}
+		if *args.resourceGroupID != "" {
+			return fmt.Errorf("setting resourceGroup from the command-line for provider %s is not yet supported. ", *args.CollectFromProvider)
 		}
 	}
 

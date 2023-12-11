@@ -45,9 +45,9 @@ func iteratePagedAPI[T any, Q HasGetNextStart[T]](
 }
 
 //nolint:dupl // The duplication is essentially creating the adapter
-func getVPCs(vpcService *vpcv1.VpcV1, region string) ([]*datamodel.VPC, error) {
+func getVPCs(vpcService *vpcv1.VpcV1, region, resourceGroupID string) ([]*datamodel.VPC, error) {
 	APIFunc := func(pageSize int64, next *string) (*vpcv1.VPCCollection, any, error) {
-		return vpcService.ListVpcs(&vpcv1.ListVpcsOptions{Limit: &pageSize, Start: next})
+		return vpcService.ListVpcs(&vpcv1.ListVpcsOptions{Limit: &pageSize, Start: next, ResourceGroupID: &resourceGroupID})
 	}
 	getArray := func(collection *vpcv1.VPCCollection) []vpcv1.VPC {
 		return collection.Vpcs
@@ -63,9 +63,9 @@ func getVPCs(vpcService *vpcv1.VpcV1, region string) ([]*datamodel.VPC, error) {
 	return res, nil
 }
 
-func getSubnets(vpcService *vpcv1.VpcV1) ([]*datamodel.Subnet, error) {
+func getSubnets(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamodel.Subnet, error) {
 	subnetAPIFunc := func(pageSize int64, next *string) (*vpcv1.SubnetCollection, any, error) {
-		return vpcService.ListSubnets(&vpcv1.ListSubnetsOptions{Limit: &pageSize, Start: next})
+		return vpcService.ListSubnets(&vpcv1.ListSubnetsOptions{Limit: &pageSize, Start: next, ResourceGroupID: &resourceGroupID})
 	}
 	subnetGetArray := func(collection *vpcv1.SubnetCollection) []vpcv1.Subnet {
 		return collection.Subnets
@@ -105,9 +105,9 @@ func getReservedIps(vpcService *vpcv1.VpcV1, subnetID, name string) ([]vpcv1.Res
 }
 
 //nolint:dupl // See getVPCs
-func getPublicGateways(vpcService *vpcv1.VpcV1) ([]*datamodel.PublicGateway, error) {
+func getPublicGateways(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamodel.PublicGateway, error) {
 	gatewayAPIFunc := func(pageSize int64, next *string) (*vpcv1.PublicGatewayCollection, any, error) {
-		return vpcService.ListPublicGateways(&vpcv1.ListPublicGatewaysOptions{Limit: &pageSize, Start: next})
+		return vpcService.ListPublicGateways(&vpcv1.ListPublicGatewaysOptions{Limit: &pageSize, Start: next, ResourceGroupID: &resourceGroupID})
 	}
 	gatewayGetArray := func(collection *vpcv1.PublicGatewayCollection) []vpcv1.PublicGateway {
 		return collection.PublicGateways
@@ -125,9 +125,9 @@ func getPublicGateways(vpcService *vpcv1.VpcV1) ([]*datamodel.PublicGateway, err
 }
 
 //nolint:dupl // See getVPCs
-func getFloatingIPs(vpcService *vpcv1.VpcV1) ([]*datamodel.FloatingIP, error) {
+func getFloatingIPs(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamodel.FloatingIP, error) {
 	floatingIPAPIFunc := func(pageSize int64, next *string) (*vpcv1.FloatingIPCollection, any, error) {
-		return vpcService.ListFloatingIps(&vpcv1.ListFloatingIpsOptions{Limit: &pageSize, Start: next})
+		return vpcService.ListFloatingIps(&vpcv1.ListFloatingIpsOptions{Limit: &pageSize, Start: next, ResourceGroupID: &resourceGroupID})
 	}
 	floatingIPGetArray := func(collection *vpcv1.FloatingIPCollection) []vpcv1.FloatingIP {
 		return collection.FloatingIps
@@ -145,9 +145,9 @@ func getFloatingIPs(vpcService *vpcv1.VpcV1) ([]*datamodel.FloatingIP, error) {
 }
 
 //nolint:dupl // See getVPCs
-func getNetworkACLs(vpcService *vpcv1.VpcV1) ([]*datamodel.NetworkACL, error) {
+func getNetworkACLs(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamodel.NetworkACL, error) {
 	networkACLAPIFunc := func(pageSize int64, next *string) (*vpcv1.NetworkACLCollection, any, error) {
-		return vpcService.ListNetworkAcls(&vpcv1.ListNetworkAclsOptions{Limit: &pageSize, Start: next})
+		return vpcService.ListNetworkAcls(&vpcv1.ListNetworkAclsOptions{Limit: &pageSize, Start: next, ResourceGroupID: &resourceGroupID})
 	}
 	networkACLGetArray := func(collection *vpcv1.NetworkACLCollection) []vpcv1.NetworkACL {
 		return collection.NetworkAcls
@@ -165,9 +165,9 @@ func getNetworkACLs(vpcService *vpcv1.VpcV1) ([]*datamodel.NetworkACL, error) {
 }
 
 //nolint:dupl // See getVPCs
-func getSecurityGroups(vpcService *vpcv1.VpcV1) ([]*datamodel.SecurityGroup, error) {
+func getSecurityGroups(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamodel.SecurityGroup, error) {
 	securityGroupAPIFunc := func(pageSize int64, next *string) (*vpcv1.SecurityGroupCollection, any, error) {
-		return vpcService.ListSecurityGroups(&vpcv1.ListSecurityGroupsOptions{Limit: &pageSize, Start: next})
+		return vpcService.ListSecurityGroups(&vpcv1.ListSecurityGroupsOptions{Limit: &pageSize, Start: next, ResourceGroupID: &resourceGroupID})
 	}
 	securityGroupGetArray := func(collection *vpcv1.SecurityGroupCollection) []vpcv1.SecurityGroup {
 		return collection.SecurityGroups
@@ -187,9 +187,10 @@ func getSecurityGroups(vpcService *vpcv1.VpcV1) ([]*datamodel.SecurityGroup, err
 // Get all Endpoint Gateways (VPEs)
 //
 //nolint:dupl // See getVPCs
-func getEndpointGateways(vpcService *vpcv1.VpcV1) ([]*datamodel.EndpointGateway, error) {
+func getEndpointGateways(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamodel.EndpointGateway, error) {
 	endpointGatewayAPIFunc := func(pageSize int64, next *string) (*vpcv1.EndpointGatewayCollection, any, error) {
-		return vpcService.ListEndpointGateways(&vpcv1.ListEndpointGatewaysOptions{Limit: &pageSize, Start: next})
+		return vpcService.ListEndpointGateways(&vpcv1.ListEndpointGatewaysOptions{Limit: &pageSize, Start: next,
+			ResourceGroupID: &resourceGroupID})
 	}
 	endpointGatewayGetArray := func(collection *vpcv1.EndpointGatewayCollection) []vpcv1.EndpointGateway {
 		return collection.EndpointGateways
@@ -206,9 +207,9 @@ func getEndpointGateways(vpcService *vpcv1.VpcV1) ([]*datamodel.EndpointGateway,
 	return res, nil
 }
 
-func getInstances(vpcService *vpcv1.VpcV1) ([]*datamodel.Instance, error) {
+func getInstances(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamodel.Instance, error) {
 	instanceAPIFunc := func(pageSize int64, next *string) (*vpcv1.InstanceCollection, any, error) {
-		return vpcService.ListInstances(&vpcv1.ListInstancesOptions{Limit: &pageSize, Start: next})
+		return vpcService.ListInstances(&vpcv1.ListInstancesOptions{Limit: &pageSize, Start: next, ResourceGroupID: &resourceGroupID})
 	}
 	instanceGetArray := func(collection *vpcv1.InstanceCollection) []vpcv1.Instance {
 		return collection.Instances
@@ -295,7 +296,7 @@ func getRoutes(vpcService *vpcv1.VpcV1, vpcID, rtID string) ([]vpcv1.Route, erro
 }
 
 // Get all Load Balancers
-func getLoadBalancers(vpcService *vpcv1.VpcV1) ([]*datamodel.LoadBalancer, error) {
+func getLoadBalancers(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamodel.LoadBalancer, error) {
 	loadBalancerAPIFunc := func(pageSize int64, next *string) (*vpcv1.LoadBalancerCollection, any, error) {
 		return vpcService.ListLoadBalancers(&vpcv1.ListLoadBalancersOptions{Limit: &pageSize, Start: next})
 	}
@@ -306,8 +307,12 @@ func getLoadBalancers(vpcService *vpcv1.VpcV1) ([]*datamodel.LoadBalancer, error
 	if err != nil {
 		return nil, fmt.Errorf("[getLoadBalancers] error getting Load Balancer: %w", err)
 	}
-	res := make([]*datamodel.LoadBalancer, len(loadBalancers))
+	res := make([]*datamodel.LoadBalancer, 0, len(loadBalancers))
 	for i := range loadBalancers {
+		if resourceGroupID != "" && *(loadBalancers[i].ResourceGroup.ID) != resourceGroupID {
+			continue
+		}
+
 		// get all the listeners
 		lbID := *loadBalancers[i].ID
 		listenerOptions := &vpcv1.ListLoadBalancerListenersOptions{}
@@ -352,8 +357,7 @@ func getLoadBalancers(vpcService *vpcv1.VpcV1) ([]*datamodel.LoadBalancer, error
 				return nil, err
 			}
 		}
-
-		res[i] = datamodel.NewLoadBalancer(&loadBalancers[i], listeners, pools)
+		res = append(res, datamodel.NewLoadBalancer(&loadBalancers[i], listeners, pools))
 	}
 
 	return res, nil
@@ -386,8 +390,8 @@ func getPolicyRules(vpcService *vpcv1.VpcV1, lbID, listenerID string,
 	return policy, nil
 }
 
-//nolint:dupl // See getVPCs
-func getTransitConnections(tgwService *tgw.TransitGatewayApisV1) ([]*datamodel.TransitConnection, error) {
+func getTransitConnections(tgwService *tgw.TransitGatewayApisV1,
+	tgwList []*datamodel.TransitGateway) ([]*datamodel.TransitConnection, error) {
 	APIFunc := func(pageSize int64, next *string) (*tgw.TransitConnectionCollection, any, error) {
 		return tgwService.ListConnections(&tgw.ListConnectionsOptions{Limit: &pageSize, Start: next})
 	}
@@ -399,15 +403,18 @@ func getTransitConnections(tgwService *tgw.TransitGatewayApisV1) ([]*datamodel.T
 	if err != nil {
 		return nil, fmt.Errorf("[getTransitConnections] error getting transit connections: %w", err)
 	}
-	res := make([]*datamodel.TransitConnection, len(transitCons))
+	var res []*datamodel.TransitConnection
 	for i := range transitCons {
-		res[i] = datamodel.NewTransitConnection(&transitCons[i])
+		for j := range tgwList {
+			if *(transitCons[i].TransitGateway.ID) == *(tgwList[j].ID) {
+				res = append(res, datamodel.NewTransitConnection(&transitCons[i]))
+			}
+		}
 	}
 	return res, nil
 }
 
-//nolint:dupl // See getVPCs
-func getTransitGateways(tgwService *tgw.TransitGatewayApisV1) ([]*datamodel.TransitGateway, error) {
+func getTransitGateways(tgwService *tgw.TransitGatewayApisV1, resourceGroupID string) ([]*datamodel.TransitGateway, error) {
 	APIFunc := func(pageSize int64, next *string) (*tgw.TransitGatewayCollection, any, error) {
 		return tgwService.ListTransitGateways(&tgw.ListTransitGatewaysOptions{Limit: &pageSize, Start: next})
 	}
@@ -419,9 +426,11 @@ func getTransitGateways(tgwService *tgw.TransitGatewayApisV1) ([]*datamodel.Tran
 	if err != nil {
 		return nil, fmt.Errorf("[getTransitGateways] error getting transit gateways: %w", err)
 	}
-	res := make([]*datamodel.TransitGateway, len(transitGws))
+	var res []*datamodel.TransitGateway
 	for i := range transitGws {
-		res[i] = datamodel.NewTransitGateway(&transitGws[i])
+		if resourceGroupID == "" || *(transitGws[i].ResourceGroup.ID) == resourceGroupID {
+			res = append(res, datamodel.NewTransitGateway(&transitGws[i]))
+		}
 	}
 	return res, nil
 }
