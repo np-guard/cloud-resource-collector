@@ -3099,5 +3099,5 @@
     "transit_connections": [],
     "transit_gateways": [],
     "iks_worker_nodes": [],
-    "version": "0.3.0"
+    "collector_version": "0.3.0"
 }
