@@ -29,6 +29,11 @@ func main() {
 		log.Fatalf("error parsing arguments: %v. exiting...\n", err)
 	}
 
+	if *inArgs.version {
+		fmt.Printf("cloud-resource-collector v%s\n", version.VersionCore)
+		return
+	}
+
 	// Initialize a collector for the requested provider
 	var resources common.ResourcesContainerInf
 	switch *inArgs.CollectFromProvider {
@@ -41,11 +46,6 @@ func main() {
 	if *inArgs.getRegions {
 		providerRegions := strings.Join(resources.AllRegions(), ", ")
 		fmt.Printf("Available regions for provider %s: %s\n", *inArgs.CollectFromProvider, providerRegions)
-		return
-	}
-
-	if *inArgs.version {
-		fmt.Printf("%s\n", version.VersionCore)
 		return
 	}
 

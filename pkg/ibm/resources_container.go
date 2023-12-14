@@ -7,7 +7,6 @@ SPDX-License-Identifier: Apache-2.0
 package ibm
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -20,7 +19,6 @@ import (
 	"github.com/IBM/vpc-go-sdk/vpcv1"
 
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm/datamodel"
-	"github.com/np-guard/cloud-resource-collector/pkg/version"
 )
 
 // tagsClient wraps the global search client and collects tags for all types of resources
@@ -80,20 +78,6 @@ func NewResourcesContainer(regions []string, resourceGroupID string) *ResourcesC
 
 func (resources *ResourcesContainer) AllRegions() []string {
 	return allRegions()
-}
-
-func (resources *ResourcesContainer) ToJSONString() (string, error) {
-	type resourcesJSON datamodel.ResourcesContainerModel
-	toPrint, err := json.MarshalIndent(struct {
-		Version string
-		resourcesJSON
-	}{
-		Version:       version.VersionCore,
-		resourcesJSON: resourcesJSON(resources.ResourcesContainerModel),
-	},
-		"",
-		"    ")
-	return string(toPrint), err
 }
 
 // collect the tags for all resources of all types

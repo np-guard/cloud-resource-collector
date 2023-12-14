@@ -9,6 +9,8 @@ package datamodel
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/np-guard/cloud-resource-collector/pkg/version"
 )
 
 // ResourcesContainerModel defines the model of a container for all resource types we can collect
@@ -26,6 +28,7 @@ type ResourcesContainerModel struct {
 	TransitConnectionList []*TransitConnection `json:"transit_connections"`
 	TransitGatewayList    []*TransitGateway    `json:"transit_gateways"`
 	IKSWorkerNodes        []*IKSWorkerNode     `json:"iks_worker_nodes"`
+	Version               string
 }
 
 // NewResourcesContainerModel creates an empty resources container
@@ -44,6 +47,7 @@ func NewResourcesContainerModel() *ResourcesContainerModel {
 		TransitConnectionList: []*TransitConnection{},
 		TransitGatewayList:    []*TransitGateway{},
 		IKSWorkerNodes:        []*IKSWorkerNode{},
+		Version:               version.VersionCore,
 	}
 }
 
