@@ -3388,5 +3388,6 @@
             "poolID": "ciui60sd0qqbef35up90-03a1052",
             "poolName": "transit_vpc_pool_ky"
         }
-    ]
+    ],
+    "version": "0.3.0"
 }
