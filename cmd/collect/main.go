@@ -14,6 +14,7 @@ import (
 	"github.com/np-guard/cloud-resource-collector/pkg/aws"
 	"github.com/np-guard/cloud-resource-collector/pkg/common"
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm"
+	"github.com/np-guard/cloud-resource-collector/pkg/version"
 )
 
 const (
@@ -40,6 +41,11 @@ func main() {
 	if *inArgs.getRegions {
 		providerRegions := strings.Join(resources.AllRegions(), ", ")
 		fmt.Printf("Available regions for provider %s: %s\n", *inArgs.CollectFromProvider, providerRegions)
+		return
+	}
+
+	if *inArgs.version {
+		fmt.Printf("%s\n", version.VersionCore)
 		return
 	}
 

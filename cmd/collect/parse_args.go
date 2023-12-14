@@ -28,6 +28,7 @@ type InArgs struct {
 	getRegions          *bool
 	resourceGroupID     *string
 	OutputFile          *string
+	version             *bool
 }
 
 func ParseInArgs(args *InArgs) error {
@@ -41,9 +42,10 @@ func ParseInArgs(args *InArgs) error {
 	args.getRegions = flag.Bool("get-regions", false, "just print the list of regions for the selected provider")
 	args.resourceGroupID = flag.String("resource-group", "", "resource group id from which to collect resources")
 	args.OutputFile = flag.String("out", "", "file path to store results")
+	args.version = flag.Bool("version", false, "prints the release version number")
 	flag.Parse()
 
-	if !SupportedProviders[*args.CollectFromProvider] {
+	if !SupportedProviders[*args.CollectFromProvider] && !*args.version {
 		flag.PrintDefaults()
 		return fmt.Errorf("unsupported provider: %s", *args.CollectFromProvider)
 	}
