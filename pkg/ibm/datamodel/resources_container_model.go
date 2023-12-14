@@ -28,7 +28,7 @@ type ResourcesContainerModel struct {
 	TransitConnectionList []*TransitConnection `json:"transit_connections"`
 	TransitGatewayList    []*TransitGateway    `json:"transit_gateways"`
 	IKSWorkerNodes        []*IKSWorkerNode     `json:"iks_worker_nodes"`
-	Version               string               `json:"version"`
+	Version               string               `json:"collector_version"`
 }
 
 // NewResourcesContainerModel creates an empty resources container
