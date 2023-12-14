@@ -14,6 +14,7 @@ import (
 	"github.com/np-guard/cloud-resource-collector/pkg/aws"
 	"github.com/np-guard/cloud-resource-collector/pkg/common"
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm"
+	"github.com/np-guard/cloud-resource-collector/pkg/version"
 )
 
 const (
@@ -26,6 +27,11 @@ func main() {
 	err := ParseInArgs(&inArgs)
 	if err != nil {
 		log.Fatalf("error parsing arguments: %v. exiting...\n", err)
+	}
+
+	if *inArgs.version {
+		fmt.Printf("cloud-resource-collector v%s\n", version.VersionCore)
+		return
 	}
 
 	// Initialize a collector for the requested provider
