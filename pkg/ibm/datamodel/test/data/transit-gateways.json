@@ -51,6 +51,13 @@
                 "id": "id:14",
                 "name": "esteemed-partner-brute-childlike"
             },
+            "dns": {
+                "enable_hub": false,
+                "resolution_binding_count": 0,
+                "resolver": null
+            },
+            "health_reasons": [],
+            "health_state": "ok",
             "href": "href:2",
             "id": "id:3",
             "name": "us-south-default-vpc",
@@ -115,6 +122,13 @@
                 "id": "id:27",
                 "name": "remindful-handstand-smuggling-presoak"
             },
+            "dns": {
+                "enable_hub": false,
+                "resolution_binding_count": 0,
+                "resolver": null
+            },
+            "health_reasons": [],
+            "health_state": "ok",
             "href": "href:18",
             "id": "id:19",
             "name": "ky-vpc1",
@@ -179,6 +193,13 @@
                 "id": "id:40",
                 "name": "tasting-cage-sturdily-scenic"
             },
+            "dns": {
+                "enable_hub": false,
+                "resolution_binding_count": 0,
+                "resolver": null
+            },
+            "health_reasons": [],
+            "health_state": "ok",
             "href": "href:31",
             "id": "id:32",
             "name": "ky-vpc2",
@@ -1021,7 +1042,8 @@
                     "crn": "crn:140",
                     "href": "href:141",
                     "id": "id:142",
-                    "name": "concierge-headstone-reluctant-routine"
+                    "name": "concierge-headstone-reluctant-routine",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-11-09T14:20:56.000Z",
@@ -1033,7 +1055,8 @@
                 "crn": "crn:143",
                 "href": "href:144",
                 "id": "id:145",
-                "name": "ibm-centos-7-9-minimal-amd64-8"
+                "name": "ibm-centos-7-9-minimal-amd64-8",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -1044,6 +1067,7 @@
                 "response_hop_limit": 1
             },
             "name": "ky-vpc1-vsi",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:77",
                 "id": "id:78",
@@ -1096,7 +1120,8 @@
                         "crn": "crn:140",
                         "href": "href:141",
                         "id": "id:142",
-                        "name": "concierge-headstone-reluctant-routine"
+                        "name": "concierge-headstone-reluctant-routine",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -1173,7 +1198,8 @@
                     "crn": "crn:153",
                     "href": "href:154",
                     "id": "id:155",
-                    "name": "uninstall-sank-proved-sheet"
+                    "name": "uninstall-sank-proved-sheet",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-11-09T14:20:56.000Z",
@@ -1185,7 +1211,8 @@
                 "crn": "crn:143",
                 "href": "href:144",
                 "id": "id:145",
-                "name": "ibm-centos-7-9-minimal-amd64-8"
+                "name": "ibm-centos-7-9-minimal-amd64-8",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -1196,6 +1223,7 @@
                 "response_hop_limit": 1
             },
             "name": "ky-vpc2-vsi",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:57",
                 "id": "id:58",
@@ -1248,7 +1276,8 @@
                         "crn": "crn:153",
                         "href": "href:154",
                         "id": "id:155",
-                        "name": "uninstall-sank-proved-sheet"
+                        "name": "uninstall-sank-proved-sheet",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -1312,6 +1341,7 @@
                     "resource_type": "vpn_server"
                 }
             ],
+            "advertise_routes_to": [],
             "created_at": "2023-08-14T11:33:06.000Z",
             "href": "href:10",
             "id": "id:11",
@@ -1335,6 +1365,7 @@
                     "resource_type": "vpn_server"
                 }
             ],
+            "advertise_routes_to": [],
             "created_at": "2023-11-09T13:17:20.000Z",
             "href": "href:23",
             "id": "id:24",
@@ -1366,6 +1397,7 @@
                     "resource_type": "vpn_server"
                 }
             ],
+            "advertise_routes_to": [],
             "created_at": "2023-11-09T13:17:20.000Z",
             "href": "href:36",
             "id": "id:37",
