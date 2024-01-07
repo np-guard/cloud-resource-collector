@@ -224,11 +224,35 @@ func (res *Instance) GetCRN() *string { return res.CRN }
 // RoutingTable configuration object (not taggable)
 type RoutingTable struct {
 	vpcv1.RoutingTable
-	Routes []vpcv1.Route `json:"routes"`
+	Routes []RouteWrapper `json:"routes"`
 }
 
 func NewRoutingTable(rt *vpcv1.RoutingTable, routes []vpcv1.Route) *RoutingTable {
-	return &RoutingTable{RoutingTable: *rt, Routes: routes}
+	routesWrapper := make([]RouteWrapper, len(routes))
+	for i := range routes {
+		routesWrapper[i] = RouteWrapper(routes[i])
+	}
+	return &RoutingTable{RoutingTable: *rt, Routes: routesWrapper}
+}
+
+// RouteWrapper is an alias to vpcv1.Route that allows us to override
+// the implementation of UnmarshalJSON
+type RouteWrapper vpcv1.Route
+
+func (res *RouteWrapper) UnmarshalJSON(data []byte) error {
+	asMap, err := jsonToMap(data)
+	if err != nil {
+		return err
+	}
+
+	route := &vpcv1.Route{}
+	err = vpcv1.UnmarshalRoute(asMap, &route)
+	if err != nil {
+		return err
+	}
+
+	*res = RouteWrapper(*route)
+	return nil
 }
 
 // LoadBalancer configuration objects
