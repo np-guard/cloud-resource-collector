@@ -51,10 +51,12 @@
                 "id": "id:14",
                 "name": "suitcase-singular-profile-professed"
             },
+            "dns": null,
+            "health_reasons": [],
+            "health_state": "ok",
             "href": "href:2",
             "id": "id:3",
             "name": "test-vpc1-ky",
-            "region": "us-south",
             "resource_group": {
                 "href": "href:15",
                 "id": "id:16",
@@ -62,6 +64,7 @@
             },
             "resource_type": "vpc",
             "status": "available",
+            "region": "us-south",
             "tags": []
         },
         {
@@ -115,10 +118,12 @@
                 "id": "id:27",
                 "name": "tribunal-surcharge-pastime-diaphragm"
             },
+            "dns": null,
+            "health_reasons": [],
+            "health_state": "ok",
             "href": "href:18",
             "id": "id:19",
             "name": "test-vpc2-ky",
-            "region": "us-south",
             "resource_group": {
                 "href": "href:15",
                 "id": "id:16",
@@ -126,6 +131,7 @@
             },
             "resource_type": "vpc",
             "status": "available",
+            "region": "us-south",
             "tags": []
         }
     ],
@@ -1367,7 +1373,8 @@
                     "crn": "crn:185",
                     "href": "href:186",
                     "id": "id:187",
-                    "name": "mollusk-snowcap-clapper-opposite"
+                    "name": "mollusk-snowcap-clapper-opposite",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-06-06T07:41:48.000Z",
@@ -1379,7 +1386,8 @@
                 "crn": "crn:188",
                 "href": "href:189",
                 "id": "id:190",
-                "name": "tagged-image"
+                "name": "tagged-image",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -1390,6 +1398,7 @@
                 "response_hop_limit": 1
             },
             "name": "vsi0-ky",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:47",
                 "id": "id:48",
@@ -1442,7 +1451,8 @@
                         "crn": "crn:185",
                         "href": "href:186",
                         "id": "id:187",
-                        "name": "mollusk-snowcap-clapper-opposite"
+                        "name": "mollusk-snowcap-clapper-opposite",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -1511,7 +1521,8 @@
                     "crn": "crn:201",
                     "href": "href:202",
                     "id": "id:203",
-                    "name": "starless-resolved-unawake-union"
+                    "name": "starless-resolved-unawake-union",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-06-06T07:19:10.000Z",
@@ -1523,7 +1534,8 @@
                 "crn": "crn:204",
                 "href": "href:205",
                 "id": "id:206",
-                "name": "ibm-centos-7-9-minimal-amd64-8"
+                "name": "ibm-centos-7-9-minimal-amd64-8",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -1534,6 +1546,7 @@
                 "response_hop_limit": 1
             },
             "name": "vsi2-ky",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:67",
                 "id": "id:68",
@@ -1586,7 +1599,8 @@
                         "crn": "crn:201",
                         "href": "href:202",
                         "id": "id:203",
-                        "name": "starless-resolved-unawake-union"
+                        "name": "starless-resolved-unawake-union",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -1663,7 +1677,8 @@
                     "crn": "crn:213",
                     "href": "href:214",
                     "id": "id:215",
-                    "name": "uncouple-defame-frostlike-kinswoman"
+                    "name": "uncouple-defame-frostlike-kinswoman",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-06-06T07:18:57.000Z",
@@ -1675,7 +1690,8 @@
                 "crn": "crn:204",
                 "href": "href:205",
                 "id": "id:206",
-                "name": "ibm-centos-7-9-minimal-amd64-8"
+                "name": "ibm-centos-7-9-minimal-amd64-8",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -1686,6 +1702,7 @@
                 "response_hop_limit": 1
             },
             "name": "vsi1-ky",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:89",
                 "id": "id:90",
@@ -1738,7 +1755,8 @@
                         "crn": "crn:213",
                         "href": "href:214",
                         "id": "id:215",
-                        "name": "uncouple-defame-frostlike-kinswoman"
+                        "name": "uncouple-defame-frostlike-kinswoman",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -1807,7 +1825,8 @@
                     "crn": "crn:222",
                     "href": "href:223",
                     "id": "id:224",
-                    "name": "derived-plentiful-baked-album"
+                    "name": "derived-plentiful-baked-album",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-06-06T07:18:55.000Z",
@@ -1819,7 +1838,8 @@
                 "crn": "crn:204",
                 "href": "href:205",
                 "id": "id:206",
-                "name": "ibm-centos-7-9-minimal-amd64-8"
+                "name": "ibm-centos-7-9-minimal-amd64-8",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -1830,6 +1850,7 @@
                 "response_hop_limit": 1
             },
             "name": "vsi20-ky",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:106",
                 "id": "id:107",
@@ -1882,7 +1903,8 @@
                         "crn": "crn:222",
                         "href": "href:223",
                         "id": "id:224",
-                        "name": "derived-plentiful-baked-album"
+                        "name": "derived-plentiful-baked-album",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -1935,7 +1957,6 @@
             ],
             "tags": []
         },
-
         {
             "availability_policy": {
                 "host_failure": "restart"
@@ -1952,7 +1973,8 @@
                     "crn": "crn:222",
                     "href": "href:223",
                     "id": "id:224",
-                    "name": "derived-plentiful-baked-album"
+                    "name": "derived-plentiful-baked-album",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-06-06T07:18:55.000Z",
@@ -1964,7 +1986,8 @@
                 "crn": "crn:204",
                 "href": "href:205",
                 "id": "id:206",
-                "name": "ibm-centos-7-9-minimal-amd64-8"
+                "name": "ibm-centos-7-9-minimal-amd64-8",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -1975,6 +1998,7 @@
                 "response_hop_limit": 1
             },
             "name": "vsi21-ky",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:10611",
                 "id": "id:10711",
@@ -2027,7 +2051,8 @@
                         "crn": "crn:222",
                         "href": "href:223",
                         "id": "id:224",
-                        "name": "derived-plentiful-baked-album"
+                        "name": "derived-plentiful-baked-album",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -2091,6 +2116,7 @@
                     "resource_type": "vpn_server"
                 }
             ],
+            "advertise_routes_to": [],
             "created_at": "2023-06-06T07:18:23.000Z",
             "href": "href:10",
             "id": "id:11",
@@ -2122,6 +2148,7 @@
         },
         {
             "accept_routes_from": [],
+            "advertise_routes_to": [],
             "created_at": "2023-06-06T07:18:38.000Z",
             "href": "href:77",
             "id": "id:78",
@@ -2145,6 +2172,7 @@
             "routes": [
                 {
                     "action": "delegate",
+                    "advertise": null,
                     "created_at": "2023-06-06T07:18:42.000Z",
                     "destination": "161.26.0.0/16",
                     "href": "href:225",
@@ -2163,6 +2191,7 @@
                 },
                 {
                     "action": "delegate",
+                    "advertise": null,
                     "created_at": "2023-06-06T07:18:42.000Z",
                     "destination": "166.8.0.0/14",
                     "href": "href:227",
@@ -2181,6 +2210,7 @@
                 },
                 {
                     "action": "delegate",
+                    "advertise": null,
                     "created_at": "2023-06-06T07:18:42.000Z",
                     "destination": "10.240.0.0/16",
                     "href": "href:229",
@@ -2199,6 +2229,7 @@
                 },
                 {
                     "action": "deliver",
+                    "advertise": null,
                     "created_at": "2023-06-06T07:19:37.000Z",
                     "destination": "0.0.0.0/0",
                     "href": "href:231",
@@ -2226,6 +2257,7 @@
                     "resource_type": "vpn_server"
                 }
             ],
+            "advertise_routes_to": [],
             "created_at": "2023-06-06T07:18:23.000Z",
             "href": "href:23",
             "id": "id:24",
