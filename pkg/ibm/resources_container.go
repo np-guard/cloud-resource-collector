@@ -194,13 +194,12 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	return nil
 }
 
-func (resources *ResourcesContainer) collectRegionalResources(region, apiKey string) error {
 
+func (resources *ResourcesContainer) collectRegionalResources(region, apiKey string) error {
 	// check if region is valid
-	url, ok := vpcRegionURLs[region]
-	if !ok {
-		providerRegions := strings.Join(resources.AllRegions(), ", ")
-		return errors.New("Invalid region was passed. Available regions for provider ibm: " + providerRegions + "\n")
+	if _, ok := vpcRegionURLs[region]; !ok {
+		log.Printf("Invalid region: %s was passed. Available regions for provider ibm: %s\n", region, strings.Join(resources.AllRegions(), ", "))
+		return nil
 	}
 
 	// Instantiate the VPC service with an API key based IAM authenticator
@@ -208,7 +207,7 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 		Authenticator: &core.IamAuthenticator{
 			ApiKey: apiKey,
 		},
-		URL: url,
+		URL: vpcRegionURLs[region],
 	})
 	if err != nil {
 		return errors.New("error creating VPC Service")
