@@ -16,7 +16,7 @@ import (
 )
 
 func TestUnmarshal(t *testing.T) {
-	unmarshalInputs := [4]string{
+	unmarshalInputs := []string{
 		"data/iks-on-goldeneye-vpc-config.json",
 		"data/demo-with-instances-config.json",
 		"data/transit-gateways.json",
