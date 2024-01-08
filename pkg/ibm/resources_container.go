@@ -194,7 +194,6 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	return nil
 }
 
-
 func (resources *ResourcesContainer) collectRegionalResources(region, apiKey string) error {
 	// check if region is valid
 	if _, ok := vpcRegionURLs[region]; !ok {
