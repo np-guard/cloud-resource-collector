@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	iksv1 "github.com/IBM-Cloud/container-services-go-sdk/kubernetesserviceapiv1"
 	"github.com/IBM/go-sdk-core/v5/core"
@@ -194,12 +195,20 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 }
 
 func (resources *ResourcesContainer) collectRegionalResources(region, apiKey string) error {
+
+	// check if region is valid
+	url, ok := vpcRegionURLs[region]
+	if !ok {
+		providerRegions := strings.Join(resources.AllRegions(), ", ")
+		return errors.New("Invalid region was passed. Available regions for provider ibm: " + providerRegions + "\n")
+	}
+
 	// Instantiate the VPC service with an API key based IAM authenticator
 	vpcService, err := vpcv1.NewVpcV1(&vpcv1.VpcV1Options{
 		Authenticator: &core.IamAuthenticator{
 			ApiKey: apiKey,
 		},
-		URL: vpcRegionURLs[region],
+		URL: url,
 	})
 	if err != nil {
 		return errors.New("error creating VPC Service")
