@@ -198,7 +198,7 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 func (resources *ResourcesContainer) collectRegionalResources(region, apiKey string) error {
 	// check if region is valid
 	if _, ok := vpcRegionURLs[region]; !ok {
-		log.Printf("Invalid region: %s was passed. Available regions for provider ibm: %s\n", region, strings.Join(resources.AllRegions(), ", "))
+		log.Printf("Unknown region %s. Available regions for provider ibm: %s\n", region, strings.Join(resources.AllRegions(), ", "))
 		return nil
 	}
 
