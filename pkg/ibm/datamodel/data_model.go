@@ -1,3 +1,9 @@
+/*
+Copyright 2023- IBM Inc. All Rights Reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
 package datamodel
 
 import (
@@ -37,11 +43,12 @@ func (res *BaseTaggedResource) SetTags(tags []string) {
 // VPC configuration object
 type VPC struct {
 	vpcv1.VPC
+	Region string `json:"region"`
 	BaseTaggedResource
 }
 
-func NewVPC(sdkVPC *vpcv1.VPC) *VPC {
-	return &VPC{VPC: *sdkVPC}
+func NewVPC(sdkVPC *vpcv1.VPC, region string) *VPC {
+	return &VPC{VPC: *sdkVPC, Region: region}
 }
 
 func (res *VPC) GetCRN() *string { return res.VPC.CRN }
@@ -217,11 +224,35 @@ func (res *Instance) GetCRN() *string { return res.CRN }
 // RoutingTable configuration object (not taggable)
 type RoutingTable struct {
 	vpcv1.RoutingTable
-	Routes []vpcv1.Route `json:"routes"`
+	Routes []RouteWrapper `json:"routes"`
 }
 
 func NewRoutingTable(rt *vpcv1.RoutingTable, routes []vpcv1.Route) *RoutingTable {
-	return &RoutingTable{RoutingTable: *rt, Routes: routes}
+	routesWrapper := make([]RouteWrapper, len(routes))
+	for i := range routes {
+		routesWrapper[i] = RouteWrapper(routes[i])
+	}
+	return &RoutingTable{RoutingTable: *rt, Routes: routesWrapper}
+}
+
+// RouteWrapper is an alias to vpcv1.Route that allows us to override
+// the implementation of UnmarshalJSON
+type RouteWrapper vpcv1.Route
+
+func (res *RouteWrapper) UnmarshalJSON(data []byte) error {
+	asMap, err := jsonToMap(data)
+	if err != nil {
+		return err
+	}
+
+	route := &vpcv1.Route{}
+	err = vpcv1.UnmarshalRoute(asMap, &route)
+	if err != nil {
+		return err
+	}
+
+	*res = RouteWrapper(*route)
+	return nil
 }
 
 // LoadBalancer configuration objects
@@ -355,6 +386,14 @@ type TransitConnection struct {
 
 func NewTransitConnection(transitConnection *tgw.TransitConnection) *TransitConnection {
 	return &TransitConnection{TransitConnection: *transitConnection}
+}
+
+type TransitGateway struct {
+	tgw.TransitGateway
+}
+
+func NewTransitGateway(transitGateway *tgw.TransitGateway) *TransitGateway {
+	return &TransitGateway{TransitGateway: *transitGateway}
 }
 
 // IKSWorkerNode configuration object

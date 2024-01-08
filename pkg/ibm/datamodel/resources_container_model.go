@@ -1,8 +1,16 @@
+/*
+Copyright 2023- IBM Inc. All Rights Reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
 package datamodel
 
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/np-guard/cloud-resource-collector/pkg/version"
 )
 
 // ResourcesContainerModel defines the model of a container for all resource types we can collect
@@ -18,7 +26,9 @@ type ResourcesContainerModel struct {
 	RoutingTableList      []*RoutingTable      `json:"routing_tables"`
 	LBList                []*LoadBalancer      `json:"load_balancers"`
 	TransitConnectionList []*TransitConnection `json:"transit_connections"`
+	TransitGatewayList    []*TransitGateway    `json:"transit_gateways"`
 	IKSWorkerNodes        []*IKSWorkerNode     `json:"iks_worker_nodes"`
+	Version               string               `json:"collector_version"`
 }
 
 // NewResourcesContainerModel creates an empty resources container
@@ -35,7 +45,9 @@ func NewResourcesContainerModel() *ResourcesContainerModel {
 		RoutingTableList:      []*RoutingTable{},
 		LBList:                []*LoadBalancer{},
 		TransitConnectionList: []*TransitConnection{},
+		TransitGatewayList:    []*TransitGateway{},
 		IKSWorkerNodes:        []*IKSWorkerNode{},
+		Version:               version.VersionCore,
 	}
 }
 
@@ -52,6 +64,7 @@ func (resources *ResourcesContainerModel) PrintStats() {
 	fmt.Printf("Found %d routing tables\n", len(resources.RoutingTableList))
 	fmt.Printf("Found %d load balancers\n", len(resources.LBList))
 	fmt.Printf("Found %d transit connections\n", len(resources.TransitConnectionList))
+	fmt.Printf("Found %d transit gateways\n", len(resources.TransitGatewayList))
 	fmt.Printf("Found %d IKS worker nodes\n", len(resources.IKSWorkerNodes))
 }
 

@@ -57,9 +57,13 @@ Usage of ./bin/collect:
         cloud provider from which to collect resources
   -region value
         cloud region from which to collect resources
+  -resource-group string
+        resource group id from which to collect resources
+
 ```
 * Value of `-provider` must be either `ibm` or `aws`
 * The `-region` argument can appear multiple times. If running with no `-region` arguments, resources from all regions are collected.
+* If running with no `-resource-group` argument, resources from all resource groups are collected.
 
 ## Build the project
 

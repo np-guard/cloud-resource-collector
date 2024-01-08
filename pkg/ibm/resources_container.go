@@ -1,9 +1,17 @@
+/*
+Copyright 2023- IBM Inc. All Rights Reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
 package ibm
 
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
+	"strings"
 
 	iksv1 "github.com/IBM-Cloud/container-services-go-sdk/kubernetesserviceapiv1"
 	"github.com/IBM/go-sdk-core/v5/core"
@@ -52,11 +60,12 @@ func (tagsCollector *tagsClient) setResourceTags(resource datamodel.TaggedResour
 // ResourcesContainer holds the results of collecting the configurations of all resources.
 type ResourcesContainer struct {
 	datamodel.ResourcesContainerModel
-	regions []string
+	regions         []string
+	ResourceGroupID string
 }
 
 // NewResourcesContainer creates an empty resources container
-func NewResourcesContainer(regions []string) *ResourcesContainer {
+func NewResourcesContainer(regions []string, resourceGroupID string) *ResourcesContainer {
 	if len(regions) == 0 {
 		regions = allRegions()
 	}
@@ -64,6 +73,7 @@ func NewResourcesContainer(regions []string) *ResourcesContainer {
 	return &ResourcesContainer{
 		ResourcesContainerModel: *datamodel.NewResourcesContainerModel(),
 		regions:                 regions,
+		ResourceGroupID:         resourceGroupID,
 	}
 }
 
@@ -185,6 +195,12 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 }
 
 func (resources *ResourcesContainer) collectRegionalResources(region, apiKey string) error {
+	// check if region is valid
+	if _, ok := vpcRegionURLs[region]; !ok {
+		log.Printf("Unknown region %s. Available regions for provider ibm: %s\n", region, strings.Join(resources.AllRegions(), ", "))
+		return nil
+	}
+
 	// Instantiate the VPC service with an API key based IAM authenticator
 	vpcService, err := vpcv1.NewVpcV1(&vpcv1.VpcV1Options{
 		Authenticator: &core.IamAuthenticator{
@@ -196,8 +212,10 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 		return errors.New("error creating VPC Service")
 	}
 
+	log.Printf("Collecting resources from region %s\n", region)
+
 	// VPCs
-	vpcs, err := getVPCs(vpcService)
+	vpcs, err := getVPCs(vpcService, region, resources.ResourceGroupID)
 	if err != nil {
 		return err
 	}
@@ -208,49 +226,49 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 	}
 
 	// Subnets
-	subnets, err := getSubnets(vpcService)
+	subnets, err := getSubnets(vpcService, resources.ResourceGroupID)
 	if err != nil {
 		return err
 	}
 	resources.SubnetList = append(resources.SubnetList, subnets...)
 
 	// Public Gateways
-	pgws, err := getPublicGateways(vpcService)
+	pgws, err := getPublicGateways(vpcService, resources.ResourceGroupID)
 	if err != nil {
 		return err
 	}
 	resources.PublicGWList = append(resources.PublicGWList, pgws...)
 
 	// Floating IPs
-	fips, err := getFloatingIPs(vpcService)
+	fips, err := getFloatingIPs(vpcService, resources.ResourceGroupID)
 	if err != nil {
 		return err
 	}
 	resources.FloatingIPList = append(resources.FloatingIPList, fips...)
 
 	// Network ACLs
-	nacls, err := getNetworkACLs(vpcService)
+	nacls, err := getNetworkACLs(vpcService, resources.ResourceGroupID)
 	if err != nil {
 		return err
 	}
 	resources.NetworkACLList = append(resources.NetworkACLList, nacls...)
 
 	// Security Groups
-	sgs, err := getSecurityGroups(vpcService)
+	sgs, err := getSecurityGroups(vpcService, resources.ResourceGroupID)
 	if err != nil {
 		return err
 	}
 	resources.SecurityGroupList = append(resources.SecurityGroupList, sgs...)
 
 	// Endpoint Gateways (VPEs)
-	vpes, err := getEndpointGateways(vpcService)
+	vpes, err := getEndpointGateways(vpcService, resources.ResourceGroupID)
 	if err != nil {
 		return err
 	}
 	resources.EndpointGWList = append(resources.EndpointGWList, vpes...)
 
 	// Instances
-	insts, err := getInstances(vpcService)
+	insts, err := getInstances(vpcService, resources.ResourceGroupID)
 	if err != nil {
 		return err
 	}
@@ -264,7 +282,7 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 	resources.RoutingTableList = append(resources.RoutingTableList, rts...)
 
 	// Load Balancers
-	lbs, err := getLoadBalancers(vpcService)
+	lbs, err := getLoadBalancers(vpcService, resources.ResourceGroupID)
 	if err != nil {
 		return err
 	}
@@ -273,6 +291,8 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 }
 
 func (resources *ResourcesContainer) collectGlobalResources(apiKey string) error {
+	log.Println("Collecting global resources")
+
 	// Transit Gateways
 	// Instantiate the Networking service with an API key based IAM authenticator
 	var tgServiceVersion = "2021-12-30"
@@ -291,7 +311,12 @@ func (resources *ResourcesContainer) collectGlobalResources(apiKey string) error
 		return errors.New("error setting Networking Service URL")
 	}
 
-	resources.TransitConnectionList, err = getTransitConnections(transitGWService)
+	resources.TransitGatewayList, err = getTransitGateways(transitGWService, resources.ResourceGroupID)
+	if err != nil {
+		return err
+	}
+
+	resources.TransitConnectionList, err = getTransitConnections(transitGWService, resources.TransitGatewayList)
 	if err != nil {
 		return err
 	}
@@ -307,7 +332,7 @@ func (resources *ResourcesContainer) collectGlobalResources(apiKey string) error
 	}
 
 	// IKS Clusters
-	clusterIDs, err := getClusters(iksService)
+	clusterIDs, err := getClusters(iksService, resources.ResourceGroupID)
 	if err != nil {
 		return err
 	}

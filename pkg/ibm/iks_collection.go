@@ -1,3 +1,9 @@
+/*
+Copyright 2023- IBM Inc. All Rights Reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
 package ibm
 
 import (
@@ -11,8 +17,8 @@ import (
 const HTTPOK = 200
 
 // Get (the first page of) IKS Clusters
-func getClusters(iksService *iksv1.KubernetesServiceApiV1) ([]*string, error) {
-	clusterCollection, _, err := iksService.VpcGetClusters(&iksv1.VpcGetClustersOptions{})
+func getClusters(iksService *iksv1.KubernetesServiceApiV1, resourceGroupID string) ([]*string, error) {
+	clusterCollection, _, err := iksService.VpcGetClusters(&iksv1.VpcGetClustersOptions{XAuthResourceGroup: &resourceGroupID})
 	if err != nil {
 		return nil, fmt.Errorf("[getClusters] error getting Clusters: %w", err)
 	}

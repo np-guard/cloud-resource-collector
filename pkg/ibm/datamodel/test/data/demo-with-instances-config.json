@@ -51,6 +51,13 @@
                 "id": "id:14",
                 "name": "ky-testenv-default-sg"
             },
+            "dns": {
+                "enable_hub": false,
+                "resolution_binding_count": 0,
+                "resolver": null
+            },
+            "health_reasons": [],
+            "health_state": "ok",
             "href": "href:2",
             "id": "id:3",
             "name": "ky-testenv-vpc",
@@ -61,6 +68,7 @@
             },
             "resource_type": "vpc",
             "status": "available",
+            "region": "br-sao",
             "tags": []
         }
     ],
@@ -1724,7 +1732,8 @@
                     "crn": "crn:223",
                     "href": "href:224",
                     "id": "id:225",
-                    "name": "security-parsnip-expert-giggle"
+                    "name": "security-parsnip-expert-giggle",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-04-27T11:43:27.000Z",
@@ -1736,7 +1745,8 @@
                 "crn": "crn:226",
                 "href": "href:227",
                 "id": "id:228",
-                "name": "ibm-centos-7-9-minimal-amd64-8"
+                "name": "ibm-centos-7-9-minimal-amd64-8",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -1747,6 +1757,7 @@
                 "response_hop_limit": 1
             },
             "name": "transit-0-instance-ky",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:90",
                 "id": "id:91",
@@ -1799,7 +1810,8 @@
                         "crn": "crn:223",
                         "href": "href:224",
                         "id": "id:225",
-                        "name": "security-parsnip-expert-giggle"
+                        "name": "security-parsnip-expert-giggle",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -1868,7 +1880,8 @@
                     "crn": "crn:236",
                     "href": "href:237",
                     "id": "id:238",
-                    "name": "androids-mashed-steadier-judge"
+                    "name": "androids-mashed-steadier-judge",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-04-27T11:43:27.000Z",
@@ -1880,7 +1893,8 @@
                 "crn": "crn:226",
                 "href": "href:227",
                 "id": "id:228",
-                "name": "ibm-centos-7-9-minimal-amd64-8"
+                "name": "ibm-centos-7-9-minimal-amd64-8",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -1891,6 +1905,7 @@
                 "response_hop_limit": 1
             },
             "name": "edge-0-instance-ky",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:144",
                 "id": "id:145",
@@ -1943,7 +1958,8 @@
                         "crn": "crn:236",
                         "href": "href:237",
                         "id": "id:238",
-                        "name": "androids-mashed-steadier-judge"
+                        "name": "androids-mashed-steadier-judge",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -2012,7 +2028,8 @@
                     "crn": "crn:245",
                     "href": "href:246",
                     "id": "id:247",
-                    "name": "defog-jeeps-unshackle-clustered"
+                    "name": "defog-jeeps-unshackle-clustered",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-04-27T11:43:27.000Z",
@@ -2024,7 +2041,8 @@
                 "crn": "crn:226",
                 "href": "href:227",
                 "id": "id:228",
-                "name": "ibm-centos-7-9-minimal-amd64-8"
+                "name": "ibm-centos-7-9-minimal-amd64-8",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -2035,6 +2053,7 @@
                 "response_hop_limit": 1
             },
             "name": "private-0-instance-ky",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:53",
                 "id": "id:54",
@@ -2087,7 +2106,8 @@
                         "crn": "crn:245",
                         "href": "href:246",
                         "id": "id:247",
-                        "name": "defog-jeeps-unshackle-clustered"
+                        "name": "defog-jeeps-unshackle-clustered",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -2156,7 +2176,8 @@
                     "crn": "crn:254",
                     "href": "href:255",
                     "id": "id:256",
-                    "name": "ducking-impolite-proofs-shopping"
+                    "name": "ducking-impolite-proofs-shopping",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-04-27T11:43:27.000Z",
@@ -2168,7 +2189,8 @@
                 "crn": "crn:226",
                 "href": "href:227",
                 "id": "id:228",
-                "name": "ibm-centos-7-9-minimal-amd64-8"
+                "name": "ibm-centos-7-9-minimal-amd64-8",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -2179,6 +2201,7 @@
                 "response_hop_limit": 1
             },
             "name": "private-1-instance-ky",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:107",
                 "id": "id:108",
@@ -2231,7 +2254,8 @@
                         "crn": "crn:254",
                         "href": "href:255",
                         "id": "id:256",
-                        "name": "ducking-impolite-proofs-shopping"
+                        "name": "ducking-impolite-proofs-shopping",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -2300,7 +2324,8 @@
                     "crn": "crn:263",
                     "href": "href:264",
                     "id": "id:265",
-                    "name": "bacteria-sheet-geoduck-ocean"
+                    "name": "bacteria-sheet-geoduck-ocean",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-04-27T11:43:27.000Z",
@@ -2312,7 +2337,8 @@
                 "crn": "crn:226",
                 "href": "href:227",
                 "id": "id:228",
-                "name": "ibm-centos-7-9-minimal-amd64-8"
+                "name": "ibm-centos-7-9-minimal-amd64-8",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -2323,6 +2349,7 @@
                 "response_hop_limit": 1
             },
             "name": "transit-1-instance-ky",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:161",
                 "id": "id:162",
@@ -2375,7 +2402,8 @@
                         "crn": "crn:263",
                         "href": "href:264",
                         "id": "id:265",
-                        "name": "bacteria-sheet-geoduck-ocean"
+                        "name": "bacteria-sheet-geoduck-ocean",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -2444,7 +2472,8 @@
                     "crn": "crn:272",
                     "href": "href:273",
                     "id": "id:274",
-                    "name": "canon-aardvark-bouncing-fading"
+                    "name": "canon-aardvark-bouncing-fading",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-04-27T11:43:27.000Z",
@@ -2456,7 +2485,8 @@
                 "crn": "crn:226",
                 "href": "href:227",
                 "id": "id:228",
-                "name": "ibm-centos-7-9-minimal-amd64-8"
+                "name": "ibm-centos-7-9-minimal-amd64-8",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -2467,6 +2497,7 @@
                 "response_hop_limit": 1
             },
             "name": "edge-1-instance-ky",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:73",
                 "id": "id:74",
@@ -2519,7 +2550,8 @@
                         "crn": "crn:272",
                         "href": "href:273",
                         "id": "id:274",
-                        "name": "canon-aardvark-bouncing-fading"
+                        "name": "canon-aardvark-bouncing-fading",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -2588,7 +2620,8 @@
                     "crn": "crn:281",
                     "href": "href:282",
                     "id": "id:283",
-                    "name": "attain-unit-attend-headsman"
+                    "name": "attain-unit-attend-headsman",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-04-27T11:43:27.000Z",
@@ -2600,7 +2633,8 @@
                 "crn": "crn:226",
                 "href": "href:227",
                 "id": "id:228",
-                "name": "ibm-centos-7-9-minimal-amd64-8"
+                "name": "ibm-centos-7-9-minimal-amd64-8",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -2611,6 +2645,7 @@
                 "response_hop_limit": 1
             },
             "name": "transit-2-instance-ky",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:124",
                 "id": "id:125",
@@ -2663,7 +2698,8 @@
                         "crn": "crn:281",
                         "href": "href:282",
                         "id": "id:283",
-                        "name": "attain-unit-attend-headsman"
+                        "name": "attain-unit-attend-headsman",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -2732,7 +2768,8 @@
                     "crn": "crn:290",
                     "href": "href:291",
                     "id": "id:292",
-                    "name": "shrewdly-output-criteria-paying"
+                    "name": "shrewdly-output-criteria-paying",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-04-27T11:43:27.000Z",
@@ -2744,7 +2781,8 @@
                 "crn": "crn:226",
                 "href": "href:227",
                 "id": "id:228",
-                "name": "ibm-centos-7-9-minimal-amd64-8"
+                "name": "ibm-centos-7-9-minimal-amd64-8",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -2755,6 +2793,7 @@
                 "response_hop_limit": 1
             },
             "name": "edge-2-instance-ky",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:33",
                 "id": "id:34",
@@ -2807,7 +2846,8 @@
                         "crn": "crn:290",
                         "href": "href:291",
                         "id": "id:292",
-                        "name": "shrewdly-output-criteria-paying"
+                        "name": "shrewdly-output-criteria-paying",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -2876,7 +2916,8 @@
                     "crn": "crn:299",
                     "href": "href:300",
                     "id": "id:301",
-                    "name": "handiwork-salary-traffic-lazily"
+                    "name": "handiwork-salary-traffic-lazily",
+                    "resource_type": "volume"
                 }
             },
             "created_at": "2023-04-27T11:43:27.000Z",
@@ -2888,7 +2929,8 @@
                 "crn": "crn:226",
                 "href": "href:227",
                 "id": "id:228",
-                "name": "ibm-centos-7-9-minimal-amd64-8"
+                "name": "ibm-centos-7-9-minimal-amd64-8",
+                "resource_type": "image"
             },
             "lifecycle_reasons": [],
             "lifecycle_state": "stable",
@@ -2899,6 +2941,7 @@
                 "response_hop_limit": 1
             },
             "name": "private-2-instance-ky",
+            "network_attachments": [],
             "primary_network_interface": {
                 "href": "href:178",
                 "id": "id:179",
@@ -2951,7 +2994,8 @@
                         "crn": "crn:299",
                         "href": "href:300",
                         "id": "id:301",
-                        "name": "handiwork-salary-traffic-lazily"
+                        "name": "handiwork-salary-traffic-lazily",
+                        "resource_type": "volume"
                     }
                 }
             ],
@@ -3015,6 +3059,7 @@
                     "resource_type": "vpn_server"
                 }
             ],
+            "advertise_routes_to": [],
             "created_at": "2023-04-27T11:42:15.000Z",
             "href": "href:10",
             "id": "id:11",
@@ -3096,5 +3141,7 @@
     ],
     "load_balancers": [],
     "transit_connections": [],
-    "iks_worker_nodes": []
+    "transit_gateways": [],
+    "iks_worker_nodes": [],
+    "collector_version": "0.3.0"
 }

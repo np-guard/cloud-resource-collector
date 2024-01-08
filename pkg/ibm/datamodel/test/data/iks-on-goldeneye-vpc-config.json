@@ -51,6 +51,13 @@
                 "id": "id:14",
                 "name": "ky-test-default-sg"
             },
+            "dns": {
+                "enable_hub": false,
+                "resolution_binding_count": 0,
+                "resolver": null
+            },
+            "health_reasons": [],
+            "health_state": "ok",
             "href": "href:2",
             "id": "id:3",
             "name": "ky-test-vpc",
@@ -61,6 +68,7 @@
             },
             "resource_type": "vpc",
             "status": "available",
+            "region": "us-east",
             "tags": []
         }
     ],
@@ -2461,6 +2469,7 @@
     ],
     "endpoint_gateways": [
         {
+            "allow_dns_resolution_binding": false,
             "created_at": "2023-07-23T13:04:56.000Z",
             "crn": "crn:132",
             "health_state": "ok",
@@ -2489,6 +2498,7 @@
                     "resource_type": "subnet_reserved_ip"
                 }
             ],
+            "lifecycle_reasons": [],
             "lifecycle_state": "stable",
             "name": "iks-ciui60sd0qqbef35up90",
             "resource_group": {
@@ -2534,6 +2544,7 @@
                     "resource_type": "vpn_server"
                 }
             ],
+            "advertise_routes_to": [],
             "created_at": "2023-07-23T12:52:59.000Z",
             "href": "href:10",
             "id": "id:11",
@@ -2641,6 +2652,7 @@
             "hostname": "0e0bf77d-us-south.lb.appdomain.cloud",
             "href": "href:201",
             "id": "id:202",
+            "instance_groups_supported": true,
             "is_public": true,
             "logging": {
                 "datapath": {
@@ -3061,6 +3073,7 @@
         }
     ],
     "transit_connections": [],
+    "transit_gateways": [],
     "iks_worker_nodes": [
         {
             "flavor": "bx2.4x16",
@@ -3386,5 +3399,6 @@
             "poolID": "ciui60sd0qqbef35up90-03a1052",
             "poolName": "transit_vpc_pool_ky"
         }
-    ]
+    ],
+    "collector_version": "0.3.0"
 }

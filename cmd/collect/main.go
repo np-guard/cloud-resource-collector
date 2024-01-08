@@ -1,3 +1,9 @@
+/*
+Copyright 2023- IBM Inc. All Rights Reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
 package main
 
 import (
@@ -8,6 +14,7 @@ import (
 	"github.com/np-guard/cloud-resource-collector/pkg/aws"
 	"github.com/np-guard/cloud-resource-collector/pkg/common"
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm"
+	"github.com/np-guard/cloud-resource-collector/pkg/version"
 )
 
 const (
@@ -22,13 +29,18 @@ func main() {
 		log.Fatalf("error parsing arguments: %v. exiting...\n", err)
 	}
 
+	if *inArgs.version {
+		fmt.Printf("cloud-resource-collector v%s\n", version.VersionCore)
+		return
+	}
+
 	// Initialize a collector for the requested provider
 	var resources common.ResourcesContainerInf
 	switch *inArgs.CollectFromProvider {
 	case AWS:
 		resources = aws.NewResourcesContainer()
 	case IBM:
-		resources = ibm.NewResourcesContainer(inArgs.regions)
+		resources = ibm.NewResourcesContainer(inArgs.regions, *inArgs.resourceGroupID)
 	}
 
 	if *inArgs.getRegions {
