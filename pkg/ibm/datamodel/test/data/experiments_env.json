@@ -65,7 +65,47 @@
             "resource_type": "vpc",
             "status": "available",
             "region": "us-south",
-            "address_prefixes": null,
+            "address_prefixes": [
+                {
+                    "cidr": "10.240.0.0/22",
+                    "created_at": "2024-01-23T10:43:34.000Z",
+                    "has_subnets": true,
+                    "href": "https://us-south.iaas.cloud.ibm.com/v1/vpcs/r006-69c9c615-aff1-4f0e-af20-d8fd8c1da08c/address_prefixes/r006-77ee9034-3355-4864-95d1-0a16050b5156",
+                    "id": "r006-77ee9034-3355-4864-95d1-0a16050b5156",
+                    "is_default": false,
+                    "name": "address-prefix-vpc0-1",
+                    "zone": {
+                        "href": "https://us-south.iaas.cloud.ibm.com/v1/regions/us-south/zones/us-south-1",
+                        "name": "us-south-1"
+                    }
+                },
+                {
+                    "cidr": "10.240.4.0/22",
+                    "created_at": "2024-01-23T10:43:36.000Z",
+                    "has_subnets": true,
+                    "href": "https://us-south.iaas.cloud.ibm.com/v1/vpcs/r006-69c9c615-aff1-4f0e-af20-d8fd8c1da08c/address_prefixes/r006-99d49b54-5baf-47e8-a664-d07617cbf4d0",
+                    "id": "r006-99d49b54-5baf-47e8-a664-d07617cbf4d0",
+                    "is_default": false,
+                    "name": "address-prefix-vpc0-2",
+                    "zone": {
+                        "href": "https://us-south.iaas.cloud.ibm.com/v1/regions/us-south/zones/us-south-1",
+                        "name": "us-south-1"
+                    }
+                },
+                {
+                    "cidr": "10.240.8.0/22",
+                    "created_at": "2024-01-23T10:43:37.000Z",
+                    "has_subnets": true,
+                    "href": "https://us-south.iaas.cloud.ibm.com/v1/vpcs/r006-69c9c615-aff1-4f0e-af20-d8fd8c1da08c/address_prefixes/r006-143c1ca4-1a49-4a41-b280-3485a13540e3",
+                    "id": "r006-143c1ca4-1a49-4a41-b280-3485a13540e3",
+                    "is_default": false,
+                    "name": "address-prefix-vpc0-3",
+                    "zone": {
+                        "href": "https://us-south.iaas.cloud.ibm.com/v1/regions/us-south/zones/us-south-1",
+                        "name": "us-south-1"
+                    }
+                }
+            ],
             "tags": []
         },
         {
@@ -133,7 +173,47 @@
             "resource_type": "vpc",
             "status": "available",
             "region": "us-south",
-            "address_prefixes": null,
+            "address_prefixes": [
+                {
+                    "cidr": "10.240.0.0/22",
+                    "created_at": "2024-01-23T10:43:34.000Z",
+                    "has_subnets": true,
+                    "href": "https://us-south.iaas.cloud.ibm.com/v1/vpcs/r006-69c9c615-aff1-4f0e-af20-d8fd8c1da08c/address_prefixes/r006-77ee9034-3355-4864-95d1-0a16050b5156",
+                    "id": "r006-77ee9034-3355-4864-95d1-0a16050b5156",
+                    "is_default": false,
+                    "name": "address-prefix-vpc0-1",
+                    "zone": {
+                        "href": "https://us-south.iaas.cloud.ibm.com/v1/regions/us-south/zones/us-south-1",
+                        "name": "us-south-1"
+                    }
+                },
+                {
+                    "cidr": "10.240.4.0/22",
+                    "created_at": "2024-01-23T10:43:36.000Z",
+                    "has_subnets": true,
+                    "href": "https://us-south.iaas.cloud.ibm.com/v1/vpcs/r006-69c9c615-aff1-4f0e-af20-d8fd8c1da08c/address_prefixes/r006-99d49b54-5baf-47e8-a664-d07617cbf4d0",
+                    "id": "r006-99d49b54-5baf-47e8-a664-d07617cbf4d0",
+                    "is_default": false,
+                    "name": "address-prefix-vpc0-2",
+                    "zone": {
+                        "href": "https://us-south.iaas.cloud.ibm.com/v1/regions/us-south/zones/us-south-1",
+                        "name": "us-south-1"
+                    }
+                },
+                {
+                    "cidr": "10.240.8.0/22",
+                    "created_at": "2024-01-23T10:43:37.000Z",
+                    "has_subnets": true,
+                    "href": "https://us-south.iaas.cloud.ibm.com/v1/vpcs/r006-69c9c615-aff1-4f0e-af20-d8fd8c1da08c/address_prefixes/r006-143c1ca4-1a49-4a41-b280-3485a13540e3",
+                    "id": "r006-143c1ca4-1a49-4a41-b280-3485a13540e3",
+                    "is_default": false,
+                    "name": "address-prefix-vpc0-3",
+                    "zone": {
+                        "href": "https://us-south.iaas.cloud.ibm.com/v1/regions/us-south/zones/us-south-1",
+                        "name": "us-south-1"
+                    }
+                }
+            ],
             "tags": []
         }
     ],

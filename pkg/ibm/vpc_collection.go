@@ -64,7 +64,7 @@ func getVPCs(vpcService *vpcv1.VpcV1, region, resourceGroupID string) ([]*datamo
 		if err != nil {
 			return nil, fmt.Errorf("[getVPCs] error getting address prefixes: %w", err)
 		}
-		res[i] = datamodel.NewVPC(&vpcs[i], region, *&addressPrefixes.AddressPrefixes)
+		res[i] = datamodel.NewVPC(&vpcs[i], region, addressPrefixes.AddressPrefixes)
 	}
 	return res, nil
 }
