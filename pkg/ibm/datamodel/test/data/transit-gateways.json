@@ -69,6 +69,7 @@
             "resource_type": "vpc",
             "status": "available",
             "region": "us-south",
+            "address_prefixes": null,
             "tags": []
         },
         {
@@ -140,6 +141,7 @@
             "resource_type": "vpc",
             "status": "available",
             "region": "br-sao",
+            "address_prefixes": null,
             "tags": []
         },
         {
@@ -211,6 +213,7 @@
             "resource_type": "vpc",
             "status": "available",
             "region": "us-east",
+            "address_prefixes": null,
             "tags": []
         }
     ],

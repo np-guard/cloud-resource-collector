@@ -43,12 +43,13 @@ func (res *BaseTaggedResource) SetTags(tags []string) {
 // VPC configuration object
 type VPC struct {
 	vpcv1.VPC
-	Region string `json:"region"`
+	Region          string                `json:"region"`
+	AddressPrefixes []vpcv1.AddressPrefix `json:"address_prefixes"`
 	BaseTaggedResource
 }
 
-func NewVPC(sdkVPC *vpcv1.VPC, region string) *VPC {
-	return &VPC{VPC: *sdkVPC, Region: region}
+func NewVPC(sdkVPC *vpcv1.VPC, region string, addressPrefixes []vpcv1.AddressPrefix) *VPC {
+	return &VPC{VPC: *sdkVPC, Region: region, AddressPrefixes: addressPrefixes}
 }
 
 func (res *VPC) GetCRN() *string { return res.VPC.CRN }
