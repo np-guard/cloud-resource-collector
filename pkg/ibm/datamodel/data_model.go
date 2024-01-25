@@ -43,12 +43,13 @@ func (res *BaseTaggedResource) SetTags(tags []string) {
 // VPC configuration object
 type VPC struct {
 	vpcv1.VPC
-	Region string `json:"region"`
+	Region          string                `json:"region"`
+	AddressPrefixes []vpcv1.AddressPrefix `json:"address_prefixes"`
 	BaseTaggedResource
 }
 
-func NewVPC(sdkVPC *vpcv1.VPC, region string) *VPC {
-	return &VPC{VPC: *sdkVPC, Region: region}
+func NewVPC(sdkVPC *vpcv1.VPC, region string, addressPrefixes []vpcv1.AddressPrefix) *VPC {
+	return &VPC{VPC: *sdkVPC, Region: region, AddressPrefixes: addressPrefixes}
 }
 
 func (res *VPC) UnmarshalJSON(data []byte) error {
@@ -62,6 +63,12 @@ func (res *VPC) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	res.VPC = *asObj
+
+	err = json.Unmarshal(asMap["address_prefixes"], &res.AddressPrefixes)
+	if err != nil {
+		return err
+	}
+
 	err = json.Unmarshal(asMap["region"], &res.Region)
 	if err != nil {
 		return err
