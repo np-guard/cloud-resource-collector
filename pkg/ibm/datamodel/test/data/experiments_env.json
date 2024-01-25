@@ -51,7 +51,22 @@
                 "id": "id:14",
                 "name": "suitcase-singular-profile-professed"
             },
-            "dns": null,
+            "dns": {
+                "enable_hub": false,
+                "resolution_binding_count": 0,
+                "resolver": {
+                    "servers": [
+                        {
+                            "address": "161.26.0.10"
+                        },
+                        {
+                            "address": "161.26.0.11"
+                        }
+                    ],
+                    "type": "system",
+                    "configuration": "default"
+                }
+            },
             "health_reasons": [],
             "health_state": "ok",
             "href": "href:2",
