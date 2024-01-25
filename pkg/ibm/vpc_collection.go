@@ -58,13 +58,18 @@ func getVPCs(vpcService *vpcv1.VpcV1, region, resourceGroupID string) ([]*datamo
 	}
 	res := make([]*datamodel.VPC, len(vpcs))
 	for i := range vpcs {
-		listVpcAddressPrefixesOptions := &vpcv1.ListVPCAddressPrefixesOptions{}
-		listVpcAddressPrefixesOptions.SetVPCID(*vpcs[i].ID)
-		addressPrefixes, _, err := vpcService.ListVPCAddressPrefixes(listVpcAddressPrefixesOptions)
-		if err != nil {
-			return nil, fmt.Errorf("[getVPCs] error getting address prefixes: %w", err)
+		APIFunc := func(pageSize int64, next *string) (*vpcv1.AddressPrefixCollection, any, error) {
+			return vpcService.ListVPCAddressPrefixes(&vpcv1.ListVPCAddressPrefixesOptions{VPCID: *&vpcs[i].ID})
 		}
-		res[i] = datamodel.NewVPC(&vpcs[i], region, addressPrefixes.AddressPrefixes)
+		getArray := func(collection *vpcv1.AddressPrefixCollection) []vpcv1.AddressPrefix {
+			return collection.AddressPrefixes
+		}
+		addressPrefixes, err := iteratePagedAPI(APIFunc, getArray)
+		if err != nil {
+			return nil, fmt.Errorf("[getVPCs] error getting Address Prefixes: %w", err)
+		}
+
+		res[i] = datamodel.NewVPC(&vpcs[i], region, addressPrefixes)
 	}
 	return res, nil
 }
