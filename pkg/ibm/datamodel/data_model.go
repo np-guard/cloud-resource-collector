@@ -51,6 +51,25 @@ func NewVPC(sdkVPC *vpcv1.VPC, region string) *VPC {
 	return &VPC{VPC: *sdkVPC, Region: region}
 }
 
+func (res *VPC) UnmarshalJSON(data []byte) error {
+	asMap, err := jsonToMap(data)
+	if err != nil {
+		return err
+	}
+	asObj := &vpcv1.VPC{}
+	err = vpcv1.UnmarshalVPC(asMap, &asObj)
+	if err != nil {
+		return err
+	}
+	res.VPC = *asObj
+	err = json.Unmarshal(asMap["region"], &res.Region)
+	if err != nil {
+		return err
+	}
+
+	return json.Unmarshal(data, &res.BaseTaggedResource)
+}
+
 func (res *VPC) GetCRN() *string { return res.VPC.CRN }
 
 // ReservedIPWrapper is an alias to vpcv1.ReservedIP that allows us to override the implementation of UnmarshalJSON
