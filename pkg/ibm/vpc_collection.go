@@ -59,7 +59,7 @@ func getVPCs(vpcService *vpcv1.VpcV1, region, resourceGroupID string) ([]*datamo
 	res := make([]*datamodel.VPC, len(vpcs))
 	for i := range vpcs {
 		APIFunc := func(pageSize int64, next *string) (*vpcv1.AddressPrefixCollection, any, error) {
-			return vpcService.ListVPCAddressPrefixes(&vpcv1.ListVPCAddressPrefixesOptions{VPCID: *&vpcs[i].ID})
+			return vpcService.ListVPCAddressPrefixes(&vpcv1.ListVPCAddressPrefixesOptions{VPCID: vpcs[i].ID})
 		}
 		getArray := func(collection *vpcv1.AddressPrefixCollection) []vpcv1.AddressPrefix {
 			return collection.AddressPrefixes
