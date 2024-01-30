@@ -64,14 +64,18 @@ func (res *VPC) UnmarshalJSON(data []byte) error {
 	}
 	res.VPC = *asObj
 
-	err = json.Unmarshal(asMap["address_prefixes"], &res.AddressPrefixes)
-	if err != nil {
-		return err
+	val, ok := asMap["address_prefixes"]
+	if ok {
+		if err := json.Unmarshal(val, &res.AddressPrefixes); err != nil {
+			return err
+		}
 	}
 
-	err = json.Unmarshal(asMap["region"], &res.Region)
-	if err != nil {
-		return err
+	val, ok = asMap["region"]
+	if ok {
+		if err := json.Unmarshal(val, &res.Region); err != nil {
+			return err
+		}
 	}
 
 	return json.Unmarshal(data, &res.BaseTaggedResource)

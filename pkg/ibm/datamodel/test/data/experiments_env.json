@@ -79,7 +79,7 @@
             },
             "resource_type": "vpc",
             "status": "available",
-            "region": "us-south",
+            "region": "",
             "address_prefixes": [
                 {
                     "cidr": "10.240.0.0/22",
