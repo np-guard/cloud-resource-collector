@@ -158,6 +158,33 @@ func (resources *ResourcesContainer) collectTags() error {
 	return nil
 }
 
+func (resources *ResourcesContainer) getResourceGroupID(apiKey string) (string, error) {
+	rm, err := resourcemanagerv2.NewResourceManagerV2(&resourcemanagerv2.ResourceManagerV2Options{
+		Authenticator: &core.IamAuthenticator{
+			ApiKey: apiKey,
+		},
+	})
+	if err != nil {
+		return "", errors.New("error creating resource manager Service")
+	}
+
+	resourceGroup, _, err := rm.GetResourceGroup(rm.NewGetResourceGroupOptions(
+		resources.ResourceGroupIDOrName,
+	))
+	if err == nil && resourceGroup != nil {
+		return *resourceGroup.ID, nil
+	}
+
+	listResourceGroupsOptions := rm.NewListResourceGroupsOptions()
+	listResourceGroupsOptions.SetName(resources.ResourceGroupIDOrName)
+
+	resourceGroupList, _, err := rm.ListResourceGroups(&resourcemanagerv2.ListResourceGroupsOptions{Name: &resources.ResourceGroupIDOrName})
+	if err == nil && len(resourceGroupList.Resources) == 1 {
+		return *resourceGroupList.Resources[0].ID, nil
+	}
+	return "", errors.New("error getting resource Group" + resources.ResourceGroupIDOrName + ", no resource group found with this ID or name")
+}
+
 // CollectResourcesFromAPI uses IBM APIs to collect resource configuration information
 func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	//TODO: Enable supplying credentials through other means
@@ -182,31 +209,9 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 
 	resourceGroupID := ""
 	if resources.ResourceGroupIDOrName != "" {
-		rm, err := resourcemanagerv2.NewResourceManagerV2(&resourcemanagerv2.ResourceManagerV2Options{
-			Authenticator: &core.IamAuthenticator{
-				ApiKey: apiKey,
-			},
-		})
+		resourceGroupID, err = resources.getResourceGroupID(apiKey)
 		if err != nil {
-			return errors.New("error creating resource manager Service")
-		}
-
-		resourceGroup, _, err := rm.GetResourceGroup(rm.NewGetResourceGroupOptions(
-			resources.ResourceGroupIDOrName,
-		))
-		if err == nil && resourceGroup != nil {
-			resourceGroupID = *resourceGroup.ID
-		} else {
-
-			listResourceGroupsOptions := rm.NewListResourceGroupsOptions()
-			listResourceGroupsOptions.SetName(resources.ResourceGroupIDOrName)
-
-			resourceGroupList, _, err := rm.ListResourceGroups(&resourcemanagerv2.ListResourceGroupsOptions{Name: &resources.ResourceGroupIDOrName})
-			if err == nil && len(resourceGroupList.Resources) == 1 {
-				resourceGroupID = *resourceGroupList.Resources[0].ID
-			} else {
-				return errors.New("error getting resource Group" + resources.ResourceGroupIDOrName + ", no resource group found with this ID or name")
-			}
+			return err
 		}
 	}
 
