@@ -17,6 +17,7 @@ import (
 	"github.com/IBM/go-sdk-core/v5/core"
 	tgw "github.com/IBM/networking-go-sdk/transitgatewayapisv1"
 	"github.com/IBM/platform-services-go-sdk/globaltaggingv1"
+	"github.com/IBM/platform-services-go-sdk/resourcemanagerv2"
 	"github.com/IBM/vpc-go-sdk/vpcv1"
 
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm/datamodel"
@@ -60,12 +61,12 @@ func (tagsCollector *tagsClient) setResourceTags(resource datamodel.TaggedResour
 // ResourcesContainer holds the results of collecting the configurations of all resources.
 type ResourcesContainer struct {
 	datamodel.ResourcesContainerModel
-	regions         []string
-	ResourceGroupID string
+	regions               []string
+	ResourceGroupIDOrName string
 }
 
 // NewResourcesContainer creates an empty resources container
-func NewResourcesContainer(regions []string, resourceGroupID string) *ResourcesContainer {
+func NewResourcesContainer(regions []string, resourceGroupIDOrName string) *ResourcesContainer {
 	if len(regions) == 0 {
 		regions = allRegions()
 	}
@@ -73,7 +74,7 @@ func NewResourcesContainer(regions []string, resourceGroupID string) *ResourcesC
 	return &ResourcesContainer{
 		ResourcesContainerModel: *datamodel.NewResourcesContainerModel(),
 		regions:                 regions,
-		ResourceGroupID:         resourceGroupID,
+		ResourceGroupIDOrName:   resourceGroupIDOrName,
 	}
 }
 
@@ -179,14 +180,44 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 		return errors.New("failed to set GLOBAL_TAGGING_URL")
 	}
 
+	resourceGroupID := ""
+	if resources.ResourceGroupIDOrName != "" {
+		rm, err := resourcemanagerv2.NewResourceManagerV2(&resourcemanagerv2.ResourceManagerV2Options{
+			Authenticator: &core.IamAuthenticator{
+				ApiKey: apiKey,
+			},
+		})
+		if err != nil {
+			return errors.New("error creating resource manager Service")
+		}
+
+		resourceGroup, _, err := rm.GetResourceGroup(rm.NewGetResourceGroupOptions(
+			resources.ResourceGroupIDOrName,
+		))
+		if err == nil && resourceGroup != nil {
+			resourceGroupID = *resourceGroup.ID
+		} else {
+
+			listResourceGroupsOptions := rm.NewListResourceGroupsOptions()
+			listResourceGroupsOptions.SetName(resources.ResourceGroupIDOrName)
+
+			resourceGroupList, _, err := rm.ListResourceGroups(&resourcemanagerv2.ListResourceGroupsOptions{Name: &resources.ResourceGroupIDOrName})
+			if err == nil && len(resourceGroupList.Resources) == 1 {
+				resourceGroupID = *resourceGroupList.Resources[0].ID
+			} else {
+				return errors.New("error getting resource Group" + resources.ResourceGroupIDOrName + ", no resource group found with this ID or name")
+			}
+		}
+	}
+
 	for _, region := range resources.regions {
-		err = resources.collectRegionalResources(region, apiKey)
+		err = resources.collectRegionalResources(region, apiKey, resourceGroupID)
 		if err != nil {
 			return err
 		}
 	}
 
-	err = resources.collectGlobalResources(apiKey)
+	err = resources.collectGlobalResources(apiKey, resourceGroupID)
 	if err != nil {
 		return err
 	}
@@ -194,7 +225,7 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	return nil
 }
 
-func (resources *ResourcesContainer) collectRegionalResources(region, apiKey string) error {
+func (resources *ResourcesContainer) collectRegionalResources(region, apiKey, resourceGroupID string) error {
 	// check if region is valid
 	if _, ok := vpcRegionURLs[region]; !ok {
 		log.Printf("Unknown region %s. Available regions for provider ibm: %s\n", region, strings.Join(resources.AllRegions(), ", "))
@@ -215,7 +246,7 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 	log.Printf("Collecting resources from region %s\n", region)
 
 	// VPCs
-	vpcs, err := getVPCs(vpcService, region, resources.ResourceGroupID)
+	vpcs, err := getVPCs(vpcService, region, resourceGroupID)
 	if err != nil {
 		return err
 	}
@@ -226,49 +257,49 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 	}
 
 	// Subnets
-	subnets, err := getSubnets(vpcService, resources.ResourceGroupID)
+	subnets, err := getSubnets(vpcService, resourceGroupID)
 	if err != nil {
 		return err
 	}
 	resources.SubnetList = append(resources.SubnetList, subnets...)
 
 	// Public Gateways
-	pgws, err := getPublicGateways(vpcService, resources.ResourceGroupID)
+	pgws, err := getPublicGateways(vpcService, resourceGroupID)
 	if err != nil {
 		return err
 	}
 	resources.PublicGWList = append(resources.PublicGWList, pgws...)
 
 	// Floating IPs
-	fips, err := getFloatingIPs(vpcService, resources.ResourceGroupID)
+	fips, err := getFloatingIPs(vpcService, resourceGroupID)
 	if err != nil {
 		return err
 	}
 	resources.FloatingIPList = append(resources.FloatingIPList, fips...)
 
 	// Network ACLs
-	nacls, err := getNetworkACLs(vpcService, resources.ResourceGroupID)
+	nacls, err := getNetworkACLs(vpcService, resourceGroupID)
 	if err != nil {
 		return err
 	}
 	resources.NetworkACLList = append(resources.NetworkACLList, nacls...)
 
 	// Security Groups
-	sgs, err := getSecurityGroups(vpcService, resources.ResourceGroupID)
+	sgs, err := getSecurityGroups(vpcService, resourceGroupID)
 	if err != nil {
 		return err
 	}
 	resources.SecurityGroupList = append(resources.SecurityGroupList, sgs...)
 
 	// Endpoint Gateways (VPEs)
-	vpes, err := getEndpointGateways(vpcService, resources.ResourceGroupID)
+	vpes, err := getEndpointGateways(vpcService, resourceGroupID)
 	if err != nil {
 		return err
 	}
 	resources.EndpointGWList = append(resources.EndpointGWList, vpes...)
 
 	// Instances
-	insts, err := getInstances(vpcService, resources.ResourceGroupID)
+	insts, err := getInstances(vpcService, resourceGroupID)
 	if err != nil {
 		return err
 	}
@@ -282,7 +313,7 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 	resources.RoutingTableList = append(resources.RoutingTableList, rts...)
 
 	// Load Balancers
-	lbs, err := getLoadBalancers(vpcService, resources.ResourceGroupID)
+	lbs, err := getLoadBalancers(vpcService, resourceGroupID)
 	if err != nil {
 		return err
 	}
@@ -290,7 +321,7 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 	return nil
 }
 
-func (resources *ResourcesContainer) collectGlobalResources(apiKey string) error {
+func (resources *ResourcesContainer) collectGlobalResources(apiKey, resourceGroupID string) error {
 	log.Println("Collecting global resources")
 
 	// Transit Gateways
@@ -311,7 +342,7 @@ func (resources *ResourcesContainer) collectGlobalResources(apiKey string) error
 		return errors.New("error setting Networking Service URL")
 	}
 
-	resources.TransitGatewayList, err = getTransitGateways(transitGWService, resources.ResourceGroupID)
+	resources.TransitGatewayList, err = getTransitGateways(transitGWService, resourceGroupID)
 	if err != nil {
 		return err
 	}
@@ -332,7 +363,7 @@ func (resources *ResourcesContainer) collectGlobalResources(apiKey string) error
 	}
 
 	// IKS Clusters
-	clusterIDs, err := getClusters(iksService, resources.ResourceGroupID)
+	clusterIDs, err := getClusters(iksService, resourceGroupID)
 	if err != nil {
 		return err
 	}
