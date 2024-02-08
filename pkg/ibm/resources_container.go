@@ -172,16 +172,17 @@ func (resources *ResourcesContainer) verifyResourceGroupID(apiKey string) error 
 		resources.resourceGroupID,
 	))
 	if err == nil && resourceGroup != nil {
-		return nil
+		return nil // user provided us with a valid resource group ID
 	}
 
+	// check if the user provided us with the resource group name rather than its id
 	listResourceGroupsOptions := rm.NewListResourceGroupsOptions()
 	listResourceGroupsOptions.SetName(resources.resourceGroupID)
 
 	resourceGroupList, _, err := rm.ListResourceGroups(&resourcemanagerv2.ListResourceGroupsOptions{Name: &resources.resourceGroupID})
 	if err == nil && len(resourceGroupList.Resources) == 1 {
 		resources.resourceGroupID = *resourceGroupList.Resources[0].ID
-		return nil
+		return nil // user provided us with a valid resource group name
 	}
 	return fmt.Errorf("error getting Resource Group %s: no resource group found with this ID or name", resources.resourceGroupID)
 }
