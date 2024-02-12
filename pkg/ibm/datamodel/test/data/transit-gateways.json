@@ -1172,6 +1172,8 @@
             "created_at": "2023-11-09T14:20:56.000Z",
             "crn": "crn:134",
             "disks": [],
+            "health_reasons": [],
+            "health_state": "ok",
             "href": "href:135",
             "id": "id:136",
             "image": {
@@ -1213,7 +1215,12 @@
             },
             "profile": {
                 "href": "href:146",
-                "name": "cx2-2x4"
+                "name": "cx2-2x4",
+                "resource_type": "profile"
+            },
+            "reservation_affinity": {
+                "policy": "",
+                "pool": []
             },
             "resource_group": {
                 "href": "href:28",
@@ -1328,6 +1335,8 @@
             "created_at": "2023-11-09T14:20:56.000Z",
             "crn": "crn:147",
             "disks": [],
+            "health_reasons": [],
+            "health_state": "ok",
             "href": "href:148",
             "id": "id:149",
             "image": {
@@ -1369,7 +1378,12 @@
             },
             "profile": {
                 "href": "href:146",
-                "name": "cx2-2x4"
+                "name": "cx2-2x4",
+                "resource_type": "profile"
+            },
+            "reservation_affinity": {
+                "policy": "",
+                "pool": []
             },
             "resource_group": {
                 "href": "href:28",
