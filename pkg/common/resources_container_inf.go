@@ -12,4 +12,8 @@ type ResourcesContainerInf interface {
 	PrintStats()
 	ToJSONString() (string, error)
 	AllRegions() []string
+	GetResources() ResourcesModel
+}
+
+type ResourcesModel interface {
 }

@@ -20,6 +20,7 @@ import (
 	"github.com/IBM/platform-services-go-sdk/resourcemanagerv2"
 	"github.com/IBM/vpc-go-sdk/vpcv1"
 
+	"github.com/np-guard/cloud-resource-collector/pkg/common"
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm/datamodel"
 )
 
@@ -76,6 +77,10 @@ func NewResourcesContainer(regions []string, resourceGroupID string) *ResourcesC
 		regions:                 regions,
 		resourceGroupID:         resourceGroupID,
 	}
+}
+
+func (resources *ResourcesContainer) GetResources() common.ResourcesModel {
+	return resources.ResourcesContainerModel
 }
 
 func (resources *ResourcesContainer) AllRegions() []string {
