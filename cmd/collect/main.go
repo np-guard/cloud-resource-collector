@@ -15,11 +15,6 @@ import (
 	"github.com/np-guard/cloud-resource-collector/pkg/version"
 )
 
-const (
-	AWS string = "aws"
-	IBM string = "ibm"
-)
-
 func main() {
 	var inArgs InArgs
 	err := ParseInArgs(&inArgs)

@@ -80,7 +80,7 @@ func NewResourcesContainer(regions []string, resourceGroupID string) *ResourcesC
 }
 
 func (resources *ResourcesContainer) GetResources() common.ResourcesModel {
-	return resources.ResourcesContainerModel
+	return &resources.ResourcesContainerModel
 }
 
 func (resources *ResourcesContainer) AllRegions() []string {

@@ -62,7 +62,7 @@ func (resources *ResourcesContainer) AllRegions() []string {
 }
 
 func (resources *ResourcesContainer) GetResources() common.ResourcesModel {
-	return resources
+	return &resources
 }
 
 // CollectResourcesFromAPI uses AWS APIs to collect resource configuration information
