@@ -14,6 +14,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	aws2 "github.com/aws/aws-sdk-go-v2/service/ec2/types"
+
+	"github.com/np-guard/cloud-resource-collector/pkg/common"
 )
 
 // ResourcesContainer holds the results of collecting the configurations of all resources.
@@ -57,6 +59,10 @@ func (resources *ResourcesContainer) ToJSONString() (string, error) {
 
 func (resources *ResourcesContainer) AllRegions() []string {
 	return nil
+}
+
+func (resources *ResourcesContainer) GetResources() common.ResourcesModel {
+	return resources
 }
 
 // CollectResourcesFromAPI uses AWS APIs to collect resource configuration information

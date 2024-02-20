@@ -11,15 +11,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/np-guard/cloud-resource-collector/pkg/aws"
-	"github.com/np-guard/cloud-resource-collector/pkg/common"
-	"github.com/np-guard/cloud-resource-collector/pkg/ibm"
+	"github.com/np-guard/cloud-resource-collector/pkg/factory"
 	"github.com/np-guard/cloud-resource-collector/pkg/version"
-)
-
-const (
-	AWS string = "aws"
-	IBM string = "ibm"
 )
 
 func main() {
@@ -35,13 +28,7 @@ func main() {
 	}
 
 	// Initialize a collector for the requested provider
-	var resources common.ResourcesContainerInf
-	switch *inArgs.CollectFromProvider {
-	case AWS:
-		resources = aws.NewResourcesContainer()
-	case IBM:
-		resources = ibm.NewResourcesContainer(inArgs.regions, *inArgs.resourceGroupID)
-	}
+	resources := factory.GetResourceContainer(*inArgs.CollectFromProvider, inArgs.regions, *inArgs.resourceGroupID)
 
 	if *inArgs.getRegions {
 		providerRegions := strings.Join(resources.AllRegions(), ", ")
