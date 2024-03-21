@@ -427,10 +427,11 @@ func NewTransitGateway(transitGateway *tgw.TransitGateway) *TransitGateway {
 }
 
 // IKSWorkerNode configuration object
-type IKSWorkerNode struct {
-	iksv1.GetWorkerResponse
+type IKSCluster struct {
+	iksv1.GetClustersResponse
+	workerNodes []iksv1.GetWorkerResponse
 }
 
-func NewIKSWorkerNode(getWorkerResponse *iksv1.GetWorkerResponse) *IKSWorkerNode {
-	return &IKSWorkerNode{GetWorkerResponse: *getWorkerResponse}
+func NewCluster(cluster *iksv1.GetClustersResponse, getWorkerResponse []iksv1.GetWorkerResponse) *IKSCluster {
+	return &IKSCluster{GetClustersResponse: *cluster, workerNodes: getWorkerResponse}
 }

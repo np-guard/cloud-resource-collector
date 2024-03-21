@@ -3115,7 +3115,7 @@
     ],
     "transit_connections": [],
     "transit_gateways": [],
-    "iks_worker_nodes": [
+    "iks_clusters": [
         {
             "flavor": "bx2.4x16",
             "health": {
