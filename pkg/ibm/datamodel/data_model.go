@@ -429,9 +429,9 @@ func NewTransitGateway(transitGateway *tgw.TransitGateway) *TransitGateway {
 // IKSWorkerNode configuration object
 type IKSCluster struct {
 	iksv1.GetClustersResponse
-	workerNodes []iksv1.GetWorkerResponse
+	WorkerNodes []iksv1.GetWorkerResponse
 }
 
 func NewCluster(cluster *iksv1.GetClustersResponse, getWorkerResponse []iksv1.GetWorkerResponse) *IKSCluster {
-	return &IKSCluster{GetClustersResponse: *cluster, workerNodes: getWorkerResponse}
+	return &IKSCluster{GetClustersResponse: *cluster, WorkerNodes: getWorkerResponse}
 }
