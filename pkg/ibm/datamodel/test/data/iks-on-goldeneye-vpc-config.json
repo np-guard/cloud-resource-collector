@@ -67,7 +67,7 @@
                     "configuration": "private_resolver"
                 }
             },
-            "health_reasons": null,
+            "health_reasons": [],
             "health_state": "ok",
             "href": "href:2",
             "id": "id:3",
@@ -2897,7 +2897,7 @@
                     "resource_type": "subnet_reserved_ip"
                 }
             ],
-            "lifecycle_reasons": null,
+            "lifecycle_reasons": [],
             "lifecycle_state": "stable",
             "name": "iks-clusterid:1",
             "resource_group": {
@@ -2961,7 +2961,7 @@
                     "resource_type": "subnet_reserved_ip"
                 }
             ],
-            "lifecycle_reasons": null,
+            "lifecycle_reasons": [],
             "lifecycle_state": "stable",
             "name": "iks-api-r006-1008d553-dd20-4b82-940c-489ff71290bd",
             "resource_group": {
@@ -3025,7 +3025,7 @@
                     "resource_type": "subnet_reserved_ip"
                 }
             ],
-            "lifecycle_reasons": null,
+            "lifecycle_reasons": [],
             "lifecycle_state": "stable",
             "name": "iks-registry-r006-1008d553-dd20-4b82-940c-489ff71290bd",
             "resource_group": {
@@ -3600,8 +3600,8 @@
             "tags": []
         }
     ],
-    "transit_connections": null,
-    "transit_gateways": null,
+    "transit_connections": [],
+    "transit_gateways": [],
     "iks_clusters": [
         {
             "caCertRotationStatus": {
