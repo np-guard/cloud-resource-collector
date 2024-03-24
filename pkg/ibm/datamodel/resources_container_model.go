@@ -27,7 +27,7 @@ type ResourcesContainerModel struct {
 	LBList                []*LoadBalancer      `json:"load_balancers"`
 	TransitConnectionList []*TransitConnection `json:"transit_connections"`
 	TransitGatewayList    []*TransitGateway    `json:"transit_gateways"`
-	IKSWorkerNodes        []*IKSWorkerNode     `json:"iks_worker_nodes"`
+	IKSClusters           []*IKSCluster        `json:"iks_clusters"`
 	Version               string               `json:"collector_version"`
 }
 
@@ -46,7 +46,7 @@ func NewResourcesContainerModel() *ResourcesContainerModel {
 		LBList:                []*LoadBalancer{},
 		TransitConnectionList: []*TransitConnection{},
 		TransitGatewayList:    []*TransitGateway{},
-		IKSWorkerNodes:        []*IKSWorkerNode{},
+		IKSClusters:           []*IKSCluster{},
 		Version:               version.VersionCore,
 	}
 }
@@ -65,7 +65,7 @@ func (resources *ResourcesContainerModel) PrintStats() {
 	fmt.Printf("Found %d load balancers\n", len(resources.LBList))
 	fmt.Printf("Found %d transit connections\n", len(resources.TransitConnectionList))
 	fmt.Printf("Found %d transit gateways\n", len(resources.TransitGatewayList))
-	fmt.Printf("Found %d IKS worker nodes\n", len(resources.IKSWorkerNodes))
+	fmt.Printf("Found %d IKS clusters\n", len(resources.IKSClusters))
 }
 
 // ToJSONString converts a ResourcesContainerModel into a json-formatted-string

@@ -373,21 +373,12 @@ func (resources *ResourcesContainer) collectGlobalResources(apiKey string) error
 		return errors.New("error creating IKS Service")
 	}
 
-	// IKS Clusters
-	clusterIDs, err := getClusters(iksService, resources.resourceGroupID)
+	// Collect IKS Clusters
+	clusters, err := getClusters(iksService, resources.resourceGroupID)
 	if err != nil {
 		return err
 	}
-
-	// Collect from all clusters
-	for i := range clusterIDs {
-		// IKS Cluster Nodes
-		iksWorkers, nodeErr := getCLusterNodes(iksService, clusterIDs[i])
-		if nodeErr != nil {
-			return nodeErr
-		}
-		resources.IKSWorkerNodes = append(resources.IKSWorkerNodes, iksWorkers...)
-	}
+	resources.IKSClusters = append(resources.IKSClusters, clusters...)
 
 	// Add the tags to all (taggable) resources
 	err = resources.collectTags()
