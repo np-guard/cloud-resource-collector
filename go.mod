@@ -7,7 +7,7 @@ require (
 	github.com/IBM/go-sdk-core/v5 v5.15.1
 	github.com/IBM/networking-go-sdk v0.44.0
 	github.com/IBM/platform-services-go-sdk v0.56.0
-	github.com/IBM/vpc-go-sdk v0.48.0
+	github.com/IBM/vpc-go-sdk v0.49.1
 	github.com/aws/aws-sdk-go-v2/config v1.19.1
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.97.0
 )
