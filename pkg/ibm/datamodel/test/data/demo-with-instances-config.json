@@ -1633,6 +1633,9 @@
                     "href": "href:213",
                     "id": "id:214",
                     "ip_version": "ipv4",
+                    "local": {
+                        "cidr_block": "0.0.0.0/0"
+                    },
                     "remote": {
                         "crn": "crn:12",
                         "href": "href:13",
