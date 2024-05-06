@@ -4,7 +4,7 @@ go 1.22.2
 
 require (
 	github.com/IBM-Cloud/container-services-go-sdk v0.0.0-20230118060037-101bda076037
-	github.com/IBM/go-sdk-core/v5 v5.17.0
+	github.com/IBM/go-sdk-core/v5 v5.17.1
 	github.com/IBM/networking-go-sdk v0.46.1
 	github.com/IBM/platform-services-go-sdk v0.62.10
 	github.com/IBM/vpc-go-sdk v0.50.0
