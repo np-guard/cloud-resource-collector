@@ -44,7 +44,6 @@ func iteratePagedAPI[T any, Q HasGetNextStart[T]](
 	return res, nil
 }
 
-//nolint:dupl // The duplication is essentially creating the adapter
 func getVPCs(vpcService *vpcv1.VpcV1, region, resourceGroupID string) ([]*datamodel.VPC, error) {
 	APIFunc := func(pageSize int64, next *string) (*vpcv1.VPCCollection, any, error) {
 		return vpcService.ListVpcs(&vpcv1.ListVpcsOptions{Limit: &pageSize, Start: next, ResourceGroupID: &resourceGroupID})
