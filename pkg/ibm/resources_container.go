@@ -88,6 +88,8 @@ func (resources *ResourcesContainer) AllRegions() []string {
 }
 
 // collect the tags for all resources of all types
+//
+//nolint:gocyclo // because Golang forces me to replicate code per-resource-type
 func (resources *ResourcesContainer) collectTags() error {
 	// Instantiate the tags collector
 	tagsCollector, err := newTagsCollector()
