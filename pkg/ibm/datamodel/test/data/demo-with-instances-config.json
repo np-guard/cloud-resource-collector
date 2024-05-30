@@ -3209,7 +3209,14 @@
                     "resource_type": "subnet"
                 }
             ],
-            "routes": []
+            "routes": [],
+            "vpc": {
+                "crn": "crn:1",
+                "href": "href:2",
+                "id": "id:3",
+                "name": "ky-testenv-vpc",
+                "resource_type": "vpc"
+            }
         }
     ],
     "load_balancers": [],

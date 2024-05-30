@@ -254,15 +254,16 @@ func (res *Instance) GetCRN() *string { return res.CRN }
 // RoutingTable configuration object (not taggable)
 type RoutingTable struct {
 	vpcv1.RoutingTable
-	Routes []RouteWrapper `json:"routes"`
+	Routes []RouteWrapper      `json:"routes"`
+	VPC    *vpcv1.VPCReference `json:"vpc"`
 }
 
-func NewRoutingTable(rt *vpcv1.RoutingTable, routes []vpcv1.Route) *RoutingTable {
+func NewRoutingTable(rt *vpcv1.RoutingTable, routes []vpcv1.Route, vpcRef *vpcv1.VPCReference) *RoutingTable {
 	routesWrapper := make([]RouteWrapper, len(routes))
 	for i := range routes {
 		routesWrapper[i] = RouteWrapper(routes[i])
 	}
-	return &RoutingTable{RoutingTable: *rt, Routes: routesWrapper}
+	return &RoutingTable{RoutingTable: *rt, Routes: routesWrapper, VPC: vpcRef}
 }
 
 // RouteWrapper is an alias to vpcv1.Route that allows us to override

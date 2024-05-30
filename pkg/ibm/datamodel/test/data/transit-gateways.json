@@ -1527,7 +1527,14 @@
             "route_transit_gateway_ingress": false,
             "route_vpc_zone_ingress": false,
             "subnets": [],
-            "routes": []
+            "routes": [],
+            "vpc": {
+                "crn": "crn:30",
+                "href": "href:31",
+                "id": "id:32",
+                "name": "ky-vpc2",
+                "resource_type": "vpc"
+            }
         },
         {
             "accept_routes_from": [
@@ -1559,7 +1566,14 @@
                     "resource_type": "subnet"
                 }
             ],
-            "routes": []
+            "routes": [],
+            "vpc": {
+                "crn": "crn:17",
+                "href": "href:18",
+                "id": "id:19",
+                "name": "ky-vpc1",
+                "resource_type": "vpc"
+            }
         },
         {
             "accept_routes_from": [
@@ -1591,7 +1605,14 @@
                     "resource_type": "subnet"
                 }
             ],
-            "routes": []
+            "routes": [],
+            "vpc": {
+                "crn": "crn:30",
+                "href": "href:31",
+                "id": "id:32",
+                "name": "ky-vpc2",
+                "resource_type": "vpc"
+            }
         }
     ],
     "load_balancers": [],
