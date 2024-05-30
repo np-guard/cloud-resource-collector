@@ -270,8 +270,17 @@ func getRoutingTables(vpcService *vpcv1.VpcV1, vpcList []*datamodel.VPC) ([]*dat
 		return collection.RoutingTables
 	}
 
+	vpcResourceType := vpcv1.VPCReferenceResourceTypeVPCConst
 	for i := range vpcList {
-		vpcID := *vpcList[i].ID
+		vpc := vpcList[i]
+		vpcID := *vpc.ID
+		vpcRef := &vpcv1.VPCReference{
+			CRN:          vpc.CRN,
+			Href:         vpc.Href,
+			ID:           vpc.ID,
+			Name:         vpc.Name,
+			ResourceType: &vpcResourceType,
+		}
 
 		routingTables, err := iteratePagedAPI(routingTableAPIFunc(vpcID), routingTableGetArray)
 		if err != nil {
@@ -282,7 +291,7 @@ func getRoutingTables(vpcService *vpcv1.VpcV1, vpcList []*datamodel.VPC) ([]*dat
 			if err != nil {
 				return nil, err
 			}
-			res = append(res, datamodel.NewRoutingTable(&routingTables[j], routes))
+			res = append(res, datamodel.NewRoutingTable(&routingTables[j], routes, vpcRef))
 		}
 	}
 
