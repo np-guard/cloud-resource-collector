@@ -27,6 +27,7 @@ type ResourcesContainer struct {
 	SecurityGroupsList []*aws2.SecurityGroup   `json:"security_groups"`
 	SubnetsList        []*aws2.Subnet          `json:"subnets"`
 	VpcsList           []*aws2.Vpc             `json:"vpcs"`
+	Provider           string                  `json:"provider"`
 }
 
 // NewResourcesContainer creates an empty resources container
@@ -38,6 +39,7 @@ func NewResourcesContainer() *ResourcesContainer {
 		SecurityGroupsList: []*aws2.SecurityGroup{},
 		SubnetsList:        []*aws2.Subnet{},
 		VpcsList:           []*aws2.Vpc{},
+		Provider:           "aws",
 	}
 }
 

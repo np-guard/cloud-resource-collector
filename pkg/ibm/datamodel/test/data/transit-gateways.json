@@ -1701,5 +1701,6 @@
         }
     ],
     "iks_clusters": [],
-    "collector_version": "0.3.0"
+    "collector_version": "0.3.0",
+    "provider": "ibm"
 }

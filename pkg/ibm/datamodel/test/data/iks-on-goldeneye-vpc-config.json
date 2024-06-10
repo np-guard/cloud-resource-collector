@@ -4067,5 +4067,6 @@
             ]
         }
     ],
-    "collector_version": "0.5.2"
+    "collector_version": "0.5.2",
+    "provider": "ibm"
 }

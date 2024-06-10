@@ -29,6 +29,7 @@ type ResourcesContainerModel struct {
 	TransitGatewayList    []*TransitGateway    `json:"transit_gateways"`
 	IKSClusters           []*IKSCluster        `json:"iks_clusters"`
 	Version               string               `json:"collector_version"`
+	Provider              string               `json:"provider"`
 }
 
 // NewResourcesContainerModel creates an empty resources container
@@ -48,6 +49,7 @@ func NewResourcesContainerModel() *ResourcesContainerModel {
 		TransitGatewayList:    []*TransitGateway{},
 		IKSClusters:           []*IKSCluster{},
 		Version:               version.VersionCore,
+		Provider:              "ibm",
 	}
 }
 
