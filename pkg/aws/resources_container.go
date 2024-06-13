@@ -39,7 +39,7 @@ func NewResourcesContainer() *ResourcesContainer {
 		SecurityGroupsList: []*aws2.SecurityGroup{},
 		SubnetsList:        []*aws2.Subnet{},
 		VpcsList:           []*aws2.Vpc{},
-		Provider:           "aws",
+		Provider:           common.AWS,
 	}
 }
 
