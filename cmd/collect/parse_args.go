@@ -10,7 +10,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/np-guard/cloud-resource-collector/pkg/factory"
+	"github.com/np-guard/cloud-resource-collector/pkg/common"
 )
 
 type regionList []string
@@ -35,8 +35,8 @@ type InArgs struct {
 
 func ParseInArgs(args *InArgs) error {
 	SupportedProviders := map[string]bool{
-		factory.AWS: true,
-		factory.IBM: true,
+		common.AWS: true,
+		common.IBM: true,
 	}
 
 	args.CollectFromProvider = flag.String("provider", "", "cloud provider from which to collect resources")
@@ -52,7 +52,7 @@ func ParseInArgs(args *InArgs) error {
 		return fmt.Errorf("unsupported provider: %s", *args.CollectFromProvider)
 	}
 
-	if *args.CollectFromProvider != factory.IBM {
+	if *args.CollectFromProvider != common.IBM {
 		if len(args.regions) > 0 {
 			return fmt.Errorf("setting regions from the command-line for provider %s is not yet supported. "+
 				"Use environment variables or config files instead", *args.CollectFromProvider)

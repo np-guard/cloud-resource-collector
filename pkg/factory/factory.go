@@ -12,17 +12,12 @@ import (
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm"
 )
 
-const (
-	AWS string = "aws"
-	IBM string = "ibm"
-)
-
 func GetResourceContainer(provider string, regions []string, resourceGroup string) common.ResourcesContainerInf {
 	var resources common.ResourcesContainerInf
 	switch provider {
-	case AWS:
+	case common.AWS:
 		resources = aws.NewResourcesContainer()
-	case IBM:
+	case common.IBM:
 		resources = ibm.NewResourcesContainer(regions, resourceGroup)
 	}
 	return resources

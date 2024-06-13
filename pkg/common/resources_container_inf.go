@@ -6,6 +6,11 @@ SPDX-License-Identifier: Apache-2.0
 
 package common
 
+const (
+	AWS string = "aws"
+	IBM string = "ibm"
+)
+
 // ResourcesContainerInf is the interface common to all resources containers
 type ResourcesContainerInf interface {
 	CollectResourcesFromAPI() error
@@ -16,4 +21,9 @@ type ResourcesContainerInf interface {
 }
 
 type ResourcesModel interface {
+}
+
+type ResourceModelMetadata struct {
+	Version  string `json:"collector_version"`
+	Provider string `json:"provider"`
 }

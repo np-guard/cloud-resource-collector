@@ -10,11 +10,13 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/np-guard/cloud-resource-collector/pkg/common"
 	"github.com/np-guard/cloud-resource-collector/pkg/version"
 )
 
 // ResourcesContainerModel defines the model of a container for all resource types we can collect
 type ResourcesContainerModel struct {
+	common.ResourceModelMetadata
 	VpcList               []*VPC               `json:"vpcs"`
 	SubnetList            []*Subnet            `json:"subnets"`
 	PublicGWList          []*PublicGateway     `json:"public_gateways"`
@@ -28,7 +30,6 @@ type ResourcesContainerModel struct {
 	TransitConnectionList []*TransitConnection `json:"transit_connections"`
 	TransitGatewayList    []*TransitGateway    `json:"transit_gateways"`
 	IKSClusters           []*IKSCluster        `json:"iks_clusters"`
-	Version               string               `json:"collector_version"`
 }
 
 // NewResourcesContainerModel creates an empty resources container
@@ -47,7 +48,7 @@ func NewResourcesContainerModel() *ResourcesContainerModel {
 		TransitConnectionList: []*TransitConnection{},
 		TransitGatewayList:    []*TransitGateway{},
 		IKSClusters:           []*IKSCluster{},
-		Version:               version.VersionCore,
+		ResourceModelMetadata: common.ResourceModelMetadata{Version: version.VersionCore, Provider: common.IBM},
 	}
 }
 

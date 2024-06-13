@@ -1,4 +1,6 @@
 {
+    "collector_version": "0.3.0",
+    "provider": "ibm",
     "vpcs": [
         {
             "classic_access": false,
@@ -1700,6 +1702,5 @@
             "updated_at": "2023-11-09T13:20:34.203Z"
         }
     ],
-    "iks_clusters": [],
-    "collector_version": "0.3.0"
+    "iks_clusters": []
 }
