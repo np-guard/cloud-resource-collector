@@ -2474,6 +2474,8 @@
     "transit_connections": [],
     "transit_gateways": [],
     "iks_clusters": [],
-    "collector_version": "0.3.0",
-    "provider": "ibm"
+    "metadata": {
+        "collector_version": "0.3.0",
+        "provider": "ibm"
+    }
 }

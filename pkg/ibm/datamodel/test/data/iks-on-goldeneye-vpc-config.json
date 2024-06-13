@@ -4067,6 +4067,8 @@
             ]
         }
     ],
-    "collector_version": "0.5.2",
-    "provider": "ibm"
+    "metadata": {
+        "collector_version": "0.5.2",
+        "provider": "ibm"
+    }
 }

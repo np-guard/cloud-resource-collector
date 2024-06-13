@@ -22,3 +22,8 @@ type ResourcesContainerInf interface {
 
 type ResourcesModel interface {
 }
+
+type ResourceModelMetadata struct {
+	Version  string `json:"collector_version"`
+	Provider string `json:"provider"`
+}
