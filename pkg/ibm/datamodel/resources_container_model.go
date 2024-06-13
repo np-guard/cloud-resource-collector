@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/np-guard/cloud-resource-collector/pkg/common"
 	"github.com/np-guard/cloud-resource-collector/pkg/version"
 )
 
@@ -49,7 +50,7 @@ func NewResourcesContainerModel() *ResourcesContainerModel {
 		TransitGatewayList:    []*TransitGateway{},
 		IKSClusters:           []*IKSCluster{},
 		Version:               version.VersionCore,
-		Provider:              "ibm",
+		Provider:              common.IBM,
 	}
 }
 
