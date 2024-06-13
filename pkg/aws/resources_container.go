@@ -22,25 +22,25 @@ import (
 // ResourcesContainer holds the results of collecting the configurations of all resources.
 // This includes: instances, internet gateways, network ACLs, security groups, subnets, and VPCs
 type ResourcesContainer struct {
-	InstancesList      []*aws2.Instance             `json:"instances"`
-	InternetGWList     []*aws2.InternetGateway      `json:"internet_gateways"`
-	NetworkACLsList    []*aws2.NetworkAcl           `json:"network_acls"`
-	SecurityGroupsList []*aws2.SecurityGroup        `json:"security_groups"`
-	SubnetsList        []*aws2.Subnet               `json:"subnets"`
-	VpcsList           []*aws2.Vpc                  `json:"vpcs"`
-	Metadata           common.ResourceModelMetadata `json:"metadata"`
+	common.ResourceModelMetadata
+	InstancesList      []*aws2.Instance        `json:"instances"`
+	InternetGWList     []*aws2.InternetGateway `json:"internet_gateways"`
+	NetworkACLsList    []*aws2.NetworkAcl      `json:"network_acls"`
+	SecurityGroupsList []*aws2.SecurityGroup   `json:"security_groups"`
+	SubnetsList        []*aws2.Subnet          `json:"subnets"`
+	VpcsList           []*aws2.Vpc             `json:"vpcs"`
 }
 
 // NewResourcesContainer creates an empty resources container
 func NewResourcesContainer() *ResourcesContainer {
 	return &ResourcesContainer{
-		InstancesList:      []*aws2.Instance{},
-		InternetGWList:     []*aws2.InternetGateway{},
-		NetworkACLsList:    []*aws2.NetworkAcl{},
-		SecurityGroupsList: []*aws2.SecurityGroup{},
-		SubnetsList:        []*aws2.Subnet{},
-		VpcsList:           []*aws2.Vpc{},
-		Metadata:           common.ResourceModelMetadata{Version: version.VersionCore, Provider: common.AWS},
+		InstancesList:         []*aws2.Instance{},
+		InternetGWList:        []*aws2.InternetGateway{},
+		NetworkACLsList:       []*aws2.NetworkAcl{},
+		SecurityGroupsList:    []*aws2.SecurityGroup{},
+		SubnetsList:           []*aws2.Subnet{},
+		VpcsList:              []*aws2.Vpc{},
+		ResourceModelMetadata: common.ResourceModelMetadata{Version: version.VersionCore, Provider: common.AWS},
 	}
 }
 

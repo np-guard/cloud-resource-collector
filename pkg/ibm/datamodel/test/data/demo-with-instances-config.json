@@ -1,4 +1,6 @@
 {
+    "collector_version": "0.3.0",
+    "provider": "ibm",
     "vpcs": [
         {
             "classic_access": false,
@@ -3222,9 +3224,5 @@
     "load_balancers": [],
     "transit_connections": [],
     "transit_gateways": [],
-    "iks_clusters": [],
-    "metadata": {
-        "collector_version": "0.3.0",
-        "provider": "ibm"
-    }
+    "iks_clusters": []
 }

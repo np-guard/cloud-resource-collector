@@ -16,20 +16,20 @@ import (
 
 // ResourcesContainerModel defines the model of a container for all resource types we can collect
 type ResourcesContainerModel struct {
-	VpcList               []*VPC                       `json:"vpcs"`
-	SubnetList            []*Subnet                    `json:"subnets"`
-	PublicGWList          []*PublicGateway             `json:"public_gateways"`
-	FloatingIPList        []*FloatingIP                `json:"floating_ips"`
-	NetworkACLList        []*NetworkACL                `json:"network_acls"`
-	SecurityGroupList     []*SecurityGroup             `json:"security_groups"`
-	EndpointGWList        []*EndpointGateway           `json:"endpoint_gateways"`
-	InstanceList          []*Instance                  `json:"instances"`
-	RoutingTableList      []*RoutingTable              `json:"routing_tables"`
-	LBList                []*LoadBalancer              `json:"load_balancers"`
-	TransitConnectionList []*TransitConnection         `json:"transit_connections"`
-	TransitGatewayList    []*TransitGateway            `json:"transit_gateways"`
-	IKSClusters           []*IKSCluster                `json:"iks_clusters"`
-	Metadata              common.ResourceModelMetadata `json:"metadata"`
+	common.ResourceModelMetadata
+	VpcList               []*VPC               `json:"vpcs"`
+	SubnetList            []*Subnet            `json:"subnets"`
+	PublicGWList          []*PublicGateway     `json:"public_gateways"`
+	FloatingIPList        []*FloatingIP        `json:"floating_ips"`
+	NetworkACLList        []*NetworkACL        `json:"network_acls"`
+	SecurityGroupList     []*SecurityGroup     `json:"security_groups"`
+	EndpointGWList        []*EndpointGateway   `json:"endpoint_gateways"`
+	InstanceList          []*Instance          `json:"instances"`
+	RoutingTableList      []*RoutingTable      `json:"routing_tables"`
+	LBList                []*LoadBalancer      `json:"load_balancers"`
+	TransitConnectionList []*TransitConnection `json:"transit_connections"`
+	TransitGatewayList    []*TransitGateway    `json:"transit_gateways"`
+	IKSClusters           []*IKSCluster        `json:"iks_clusters"`
 }
 
 // NewResourcesContainerModel creates an empty resources container
@@ -48,7 +48,7 @@ func NewResourcesContainerModel() *ResourcesContainerModel {
 		TransitConnectionList: []*TransitConnection{},
 		TransitGatewayList:    []*TransitGateway{},
 		IKSClusters:           []*IKSCluster{},
-		Metadata:              common.ResourceModelMetadata{Version: version.VersionCore, Provider: common.IBM},
+		ResourceModelMetadata: common.ResourceModelMetadata{Version: version.VersionCore, Provider: common.IBM},
 	}
 }
 

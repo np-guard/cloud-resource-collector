@@ -1,4 +1,6 @@
 {
+    "collector_version": "0.5.2",
+    "provider": "ibm",
     "vpcs": [
         {
             "classic_access": false,
@@ -4066,9 +4068,5 @@
                 }
             ]
         }
-    ],
-    "metadata": {
-        "collector_version": "0.5.2",
-        "provider": "ibm"
-    }
+    ]
 }
