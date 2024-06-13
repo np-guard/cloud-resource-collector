@@ -1512,9 +1512,11 @@
                     "resource_type": "volume"
                 }
             },
+            "confidential_compute_mode": "",
             "created_at": "2023-06-06T07:41:48.000Z",
             "crn": "crn:179",
             "disks": [],
+            "enable_secure_boot": false,
             "health_reasons": [],
             "health_state": "ok",
             "href": "href:180",
@@ -1667,9 +1669,11 @@
                     "resource_type": "volume"
                 }
             },
+            "confidential_compute_mode": "",
             "created_at": "2023-06-06T07:19:10.000Z",
             "crn": "crn:195",
             "disks": [],
+            "enable_secure_boot": false,
             "health_reasons": [],
             "health_state": "ok",
             "href": "href:196",
@@ -1830,9 +1834,11 @@
                     "resource_type": "volume"
                 }
             },
+            "confidential_compute_mode": "",
             "created_at": "2023-06-06T07:18:57.000Z",
             "crn": "crn:207",
             "disks": [],
+            "enable_secure_boot": false,
             "health_reasons": [],
             "health_state": "ok",
             "href": "href:208",
@@ -1985,9 +1991,11 @@
                     "resource_type": "volume"
                 }
             },
+            "confidential_compute_mode": "",
             "created_at": "2023-06-06T07:18:55.000Z",
             "crn": "crn:216",
             "disks": [],
+            "enable_secure_boot": false,
             "health_reasons": [],
             "health_state": "ok",
             "href": "href:217",
@@ -2140,9 +2148,11 @@
                     "resource_type": "volume"
                 }
             },
+            "confidential_compute_mode": "",
             "created_at": "2023-06-06T07:18:55.000Z",
             "crn": "crn:21611",
             "disks": [],
+            "enable_secure_boot": false,
             "health_reasons": [],
             "health_state": "ok",
             "href": "href:21711",
