@@ -48,7 +48,7 @@ func NewResourcesContainerModel() *ResourcesContainerModel {
 		TransitConnectionList: []*TransitConnection{},
 		TransitGatewayList:    []*TransitGateway{},
 		IKSClusters:           []*IKSCluster{},
-		ResourceModelMetadata: common.ResourceModelMetadata{Version: version.VersionCore, Provider: common.IBM},
+		ResourceModelMetadata: common.ResourceModelMetadata{Version: version.VersionCore, Provider: string(common.IBM)},
 	}
 }
 

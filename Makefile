@@ -1,5 +1,5 @@
 REPOSITORY := github.com/np-guard/cloud-resource-collector
-EXE:=collect
+EXE:=collector
 
 mod: go.mod
 	@echo -- $@ --
