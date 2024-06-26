@@ -46,31 +46,30 @@ export IBMCLOUD_API_KEY=<ibm-cloud-api-key>
 
 ## Usage
 
+### Collecting resources
 ```
-$ ./bin/collect -h
-Usage of ./bin/collect:
-  -get-regions
-        just print the list of regions for the selected provider
-  -out string
-        file path to store results
-  -provider string
-        cloud provider from which to collect resources
-  -region value
-        cloud region from which to collect resources
-  -resource-group string
-        resource group id or name from which to collect resources
+./bin/collector collect --provider <provider> [flags]
 
+Flags:
+  -h, --help                    help for collect
+      --out string              file path to store results
+  -r, --region stringArray      cloud region from which to collect resources
+      --resource-group string   resource group id or name from which to collect resources
 ```
-* Value of `-provider` must be either `ibm` or `aws`
-* The `-region` argument can appear multiple times. If running with no `-region` arguments, resources from all regions are collected.
-* If running with no `-resource-group` argument, resources from all resource groups are collected.
+
+* Value of `--provider` must be either `ibm` or `aws`
+* **IBM only**: The `--region` argument can appear multiple times. If running with no `--region` arguments, resources from all regions are collected.
+* If running with no `--resource-group` argument, resources from all resource groups are collected.
+
+### Listing available regions
+```
+./bin/collector get-regions --provider <provider>
+```
 
 ## Build the project
-
+Requires Go version 1.22 or later.
 ```shell
 git clone git@github.com:np-guard/cloud-resource-collector.git
 cd cloud-resource-collector
-make mod
 make build
 ```
-
