@@ -1624,12 +1624,13 @@
     "load_balancers": [],
     "transit_connections": [
         {
-            "created_at": "2023-11-09T13:17:51.263Z",
-            "id": "id:156",
             "name": "glob_connection1",
             "network_id": "crn:17",
             "network_type": "vpc",
+            "id": "id:156",
+            "created_at": "2023-11-09T13:17:51.263Z",
             "prefix_filters_default": "permit",
+            "request_status": "approved",
             "status": "attached",
             "transit_gateway": {
                 "crn": "crn:157",
@@ -1639,12 +1640,13 @@
             "updated_at": "2023-11-09T13:18:52.216Z"
         },
         {
-            "created_at": "2023-11-09T13:17:55.396Z",
-            "id": "id:159",
             "name": "glob_connection2",
             "network_id": "crn:164",
             "network_type": "vpc",
+            "id": "id:159",
+            "created_at": "2023-11-09T13:17:55.396Z",
             "prefix_filters_default": "permit",
+            "request_status": "approved",
             "status": "attached",
             "transit_gateway": {
                 "crn": "crn:157",
@@ -1654,12 +1656,13 @@
             "updated_at": "2023-11-09T13:19:28.968Z"
         },
         {
-            "created_at": "2023-11-09T13:18:22.496Z",
-            "id": "id:160",
             "name": "tg_connection1",
             "network_id": "crn:17",
             "network_type": "vpc",
+            "id": "id:160",
+            "created_at": "2023-11-09T13:18:22.496Z",
             "prefix_filters_default": "permit",
+            "request_status": "approved",
             "status": "attached",
             "transit_gateway": {
                 "crn": "crn:161",
@@ -1669,12 +1672,13 @@
             "updated_at": "2023-11-09T13:19:58.022Z"
         },
         {
-            "created_at": "2023-11-09T13:18:37.316Z",
-            "id": "id:163",
             "name": "tg_connection2",
             "network_id": "crn:30",
             "network_type": "vpc",
+            "id": "id:163",
+            "created_at": "2023-11-09T13:18:37.316Z",
             "prefix_filters_default": "permit",
+            "request_status": "approved",
             "status": "attached",
             "transit_gateway": {
                 "crn": "crn:161",
