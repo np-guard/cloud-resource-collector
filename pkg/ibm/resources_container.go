@@ -248,7 +248,7 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 		Authenticator: &core.IamAuthenticator{
 			ApiKey: apiKey,
 		},
-		URL: vpcRegionURLs[region],
+		URL: vpcRegionURLs[region].url,
 	})
 	if err != nil {
 		return errors.New("error creating VPC Service")
