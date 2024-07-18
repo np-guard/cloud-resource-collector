@@ -1,7 +1,6 @@
 module github.com/np-guard/cloud-resource-collector
 
-go 1.22.2
-toolchain go1.22.5
+go 1.22.4
 
 require (
 	github.com/IBM-Cloud/container-services-go-sdk v0.0.0-20240510130133-9f76aa34af27
