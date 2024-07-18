@@ -1,16 +1,16 @@
 module github.com/np-guard/cloud-resource-collector
 
-go 1.22.2
+go 1.22.4
 
 require (
 	github.com/IBM-Cloud/container-services-go-sdk v0.0.0-20240510130133-9f76aa34af27
-	github.com/IBM/go-sdk-core/v5 v5.17.3
-	github.com/IBM/networking-go-sdk v0.47.1
-	github.com/IBM/platform-services-go-sdk v0.64.1
-	github.com/IBM/vpc-go-sdk v0.52.0
+	github.com/IBM/go-sdk-core/v5 v5.17.4
+	github.com/IBM/networking-go-sdk v0.49.0
+	github.com/IBM/platform-services-go-sdk v0.65.0
+	github.com/IBM/vpc-go-sdk v0.54.0
 	github.com/aws/aws-sdk-go-v2/config v1.27.21
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.163.0
-	github.com/spf13/cobra v0.0.3
+	github.com/spf13/cobra v1.8.1
 )
 
 require (
@@ -36,12 +36,12 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.7 // indirect
-	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
-	github.com/spf13/pflag v1.0.3 // indirect
+	github.com/spf13/pflag v1.0.5 // indirect
 	go.mongodb.org/mongo-driver v1.15.0 // indirect
 	golang.org/x/crypto v0.24.0 // indirect
 	golang.org/x/net v0.26.0 // indirect
