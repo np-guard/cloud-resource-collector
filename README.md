@@ -58,7 +58,7 @@ Flags:
 ```
 
 * Value of `--provider` must be either `ibm` or `aws`
-* **IBM only**: The `--region` argument can appear multiple times. If running with no `--region` arguments, resources from all regions are collected.
+* **IBM only**: The `--region` argument can appear multiple times. If running with no `--region` arguments, resources from all (public) regions are collected.
 * If running with no `--resource-group` argument, resources from all resource groups are collected.
 
 ### Listing available regions

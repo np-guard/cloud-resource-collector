@@ -69,7 +69,7 @@ type ResourcesContainer struct {
 // NewResourcesContainer creates an empty resources container
 func NewResourcesContainer(regions []string, resourceGroupID string) *ResourcesContainer {
 	if len(regions) == 0 {
-		regions = allRegions()
+		regions = allRegions(false)
 	}
 
 	return &ResourcesContainer{
@@ -84,7 +84,7 @@ func (resources *ResourcesContainer) GetResources() common.ResourcesModel {
 }
 
 func (resources *ResourcesContainer) AllRegions() []string {
-	return allRegions()
+	return allRegions(true)
 }
 
 // collect the tags for all resources of all types
@@ -248,7 +248,7 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 		Authenticator: &core.IamAuthenticator{
 			ApiKey: apiKey,
 		},
-		URL: vpcRegionURLs[region],
+		URL: vpcRegionURLs[region].url,
 	})
 	if err != nil {
 		return errors.New("error creating VPC Service")

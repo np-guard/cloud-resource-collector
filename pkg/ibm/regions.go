@@ -6,25 +6,31 @@ SPDX-License-Identifier: Apache-2.0
 
 package ibm
 
-var vpcRegionURLs = map[string]string{
-	"us-east":  "https://us-east.iaas.cloud.ibm.com/v1",
-	"us-south": "https://us-south.iaas.cloud.ibm.com/v1",
-	"ca-tor":   "https://ca-tor.iaas.cloud.ibm.com/v1",
-	"br-sao":   "https://br-sao.iaas.cloud.ibm.com/v1",
-	"eu-de":    "https://eu-de.iaas.cloud.ibm.com/v1",
-	"eu-es":    "https://eu-es.iaas.cloud.ibm.com/v1",
-	"eu-gb":    "https://eu-gb.iaas.cloud.ibm.com/v1",
-	"au-syd":   "https://au-syd.iaas.cloud.ibm.com/v1",
-	"jp-osa":   "https://jp-osa.iaas.cloud.ibm.com/v1",
-	"jp-tok":   "https://jp-tok.iaas.cloud.ibm.com/v1",
+type ibmRegion struct {
+	url       string
+	isPrivate bool
 }
 
-func allRegions() []string {
-	regions := make([]string, len(vpcRegionURLs))
-	i := 0
-	for region := range vpcRegionURLs {
-		regions[i] = region
-		i++
+var vpcRegionURLs = map[string]ibmRegion{
+	"us-east":  {"https://us-east.iaas.cloud.ibm.com/v1", false},
+	"us-south": {"https://us-south.iaas.cloud.ibm.com/v1", false},
+	"ca-tor":   {"https://ca-tor.iaas.cloud.ibm.com/v1", false},
+	"br-sao":   {"https://br-sao.iaas.cloud.ibm.com/v1", false},
+	"eu-de":    {"https://eu-de.iaas.cloud.ibm.com/v1", false},
+	"eu-es":    {"https://eu-es.iaas.cloud.ibm.com/v1", false},
+	"eu-gb":    {"https://eu-gb.iaas.cloud.ibm.com/v1", false},
+	"eu-fr2":   {"https://eu-fr2.iaas.cloud.ibm.com/v1", true},
+	"au-syd":   {"https://au-syd.iaas.cloud.ibm.com/v1", false},
+	"jp-osa":   {"https://jp-osa.iaas.cloud.ibm.com/v1", false},
+	"jp-tok":   {"https://jp-tok.iaas.cloud.ibm.com/v1", false},
+}
+
+func allRegions(includePrivate bool) []string {
+	regions := []string{}
+	for regionName, regionDetails := range vpcRegionURLs {
+		if includePrivate || !regionDetails.isPrivate {
+			regions = append(regions, regionName)
+		}
 	}
 	return regions
 }
