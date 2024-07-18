@@ -69,7 +69,7 @@ type ResourcesContainer struct {
 // NewResourcesContainer creates an empty resources container
 func NewResourcesContainer(regions []string, resourceGroupID string) *ResourcesContainer {
 	if len(regions) == 0 {
-		regions = allRegions(false)
+		regions = allRegions()
 	}
 
 	return &ResourcesContainer{
@@ -84,7 +84,7 @@ func (resources *ResourcesContainer) GetResources() common.ResourcesModel {
 }
 
 func (resources *ResourcesContainer) AllRegions() []string {
-	return allRegions(true)
+	return allRegions()
 }
 
 // collect the tags for all resources of all types

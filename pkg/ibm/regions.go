@@ -25,10 +25,11 @@ var vpcRegionURLs = map[string]ibmRegion{
 	"jp-tok":   {"https://jp-tok.iaas.cloud.ibm.com/v1", false},
 }
 
-func allRegions(includePrivate bool) []string {
+// returns a list of shorthand names of all (public) regions
+func allRegions() []string {
 	regions := []string{}
 	for regionName, regionDetails := range vpcRegionURLs {
-		if includePrivate || !regionDetails.isPrivate {
+		if !regionDetails.isPrivate {
 			regions = append(regions, regionName)
 		}
 	}
