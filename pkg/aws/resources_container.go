@@ -68,6 +68,9 @@ func (resources *ResourcesContainer) GetResources() common.ResourcesModel {
 	return resources
 }
 
+func (resources *ResourcesContainer) Fabricate(opts *common.FabricateOptions) { // TODO: implement
+}
+
 // CollectResourcesFromAPI uses AWS APIs to collect resource configuration information
 func (resources *ResourcesContainer) CollectResourcesFromAPI() error { //nolint:gocyclo // due to many API calls
 	// Load the Shared AWS Configuration (~/.aws/config)

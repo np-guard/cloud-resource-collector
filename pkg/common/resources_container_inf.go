@@ -13,6 +13,7 @@ type ResourcesContainerInf interface {
 	ToJSONString() (string, error)
 	AllRegions() []string
 	GetResources() ResourcesModel
+	Fabricate(opts *FabricateOptions)
 }
 
 type ResourcesModel interface {
@@ -21,4 +22,9 @@ type ResourcesModel interface {
 type ResourceModelMetadata struct {
 	Version  string `json:"collector_version"`
 	Provider string `json:"provider"`
+}
+
+type FabricateOptions struct {
+	NumVPCs       int
+	SubnetsPerVPC int
 }

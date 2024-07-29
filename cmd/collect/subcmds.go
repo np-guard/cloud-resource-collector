@@ -26,6 +26,8 @@ var (
 	regions         []string
 	resourceGroupID string
 	outputFile      string
+
+	fabricatesOpts common.FabricateOptions
 )
 
 func newRootCommand() *cobra.Command {
@@ -39,8 +41,11 @@ func newRootCommand() *cobra.Command {
 	rootCmd.PersistentFlags().VarP(&provider, providerFlag, "p", "collect resources from an account in this cloud provider")
 	_ = rootCmd.MarkPersistentFlagRequired(providerFlag)
 
+	rootCmd.PersistentFlags().StringVar(&outputFile, "out", "", "file path to store results")
+
 	rootCmd.AddCommand(newCollectCommand())
 	rootCmd.AddCommand(newGetRegionsCommand())
+	rootCmd.AddCommand(newFabricateCommand())
 
 	rootCmd.SetHelpCommand(&cobra.Command{Hidden: true}) // disable help command. should use --help flag instead
 
@@ -58,7 +63,6 @@ func newCollectCommand() *cobra.Command {
 
 	collectCmd.Flags().StringArrayVarP(&regions, "region", "r", nil, "cloud region from which to collect resources")
 	collectCmd.Flags().StringVar(&resourceGroupID, "resource-group", "", "resource group id or name from which to collect resources")
-	collectCmd.Flags().StringVar(&outputFile, "out", "", "file path to store results")
 
 	return collectCmd
 }
@@ -79,4 +83,23 @@ func newGetRegionsCommand() *cobra.Command {
 			return nil
 		},
 	}
+}
+
+func newFabricateCommand() *cobra.Command {
+	fabricateCmd := &cobra.Command{
+		Use:   "fabricate",
+		Short: "Fabricate synthetic data",
+		Long:  `Generates synthetic data with a given number of VPCs, Subnets, VSIs, ...`,
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			resources := factory.GetResourceContainer(provider, regions, "")
+			resources.Fabricate(&fabricatesOpts)
+			OutputResources(resources, outputFile)
+			return nil
+		},
+	}
+	fabricateCmd.Flags().IntVar(&fabricatesOpts.NumVPCs, "num-vpcs", 1, "Number of VPCs to generate")
+	fabricateCmd.Flags().IntVar(&fabricatesOpts.SubnetsPerVPC, "subnets-per-vpc", 1, "Number of subnets to generate in each VPC")
+
+	return fabricateCmd
 }
