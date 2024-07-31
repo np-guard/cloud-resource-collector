@@ -19,6 +19,11 @@ import (
 	"github.com/np-guard/cloud-resource-collector/pkg/version"
 )
 
+type VPC struct {
+	aws2.Vpc
+	Region string
+}
+
 // ResourcesContainer holds the results of collecting the configurations of all resources.
 // This includes: instances, internet gateways, network ACLs, security groups, subnets, and VPCs
 type ResourcesContainer struct {
@@ -28,7 +33,7 @@ type ResourcesContainer struct {
 	NetworkACLsList    []*aws2.NetworkAcl      `json:"network_acls"`
 	SecurityGroupsList []*aws2.SecurityGroup   `json:"security_groups"`
 	SubnetsList        []*aws2.Subnet          `json:"subnets"`
-	VpcsList           []*aws2.Vpc             `json:"vpcs"`
+	VpcsList           []*VPC                  `json:"vpcs"`
 }
 
 // NewResourcesContainer creates an empty resources container
@@ -39,7 +44,7 @@ func NewResourcesContainer() *ResourcesContainer {
 		NetworkACLsList:       []*aws2.NetworkAcl{},
 		SecurityGroupsList:    []*aws2.SecurityGroup{},
 		SubnetsList:           []*aws2.Subnet{},
-		VpcsList:              []*aws2.Vpc{},
+		VpcsList:              []*VPC{},
 		ResourceModelMetadata: common.ResourceModelMetadata{Version: version.VersionCore, Provider: string(common.AWS)},
 	}
 }
@@ -87,9 +92,10 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error { //nolint:
 	if err != nil {
 		return fmt.Errorf("CollectResourcesFromAPI error getting VPCs: %w", err)
 	}
-	resources.VpcsList = make([]*aws2.Vpc, len(vpcsFromAPI.Vpcs))
+	resources.VpcsList = make([]*VPC, len(vpcsFromAPI.Vpcs))
 	for i := range vpcsFromAPI.Vpcs {
-		resources.VpcsList[i] = &vpcsFromAPI.Vpcs[i]
+		vpc := VPC{Region: cfg.Region, Vpc: vpcsFromAPI.Vpcs[i]}
+		resources.VpcsList[i] = &vpc
 	}
 
 	// Get (the first page of) Internet Gateways
