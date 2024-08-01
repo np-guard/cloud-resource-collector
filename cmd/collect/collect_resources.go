@@ -19,10 +19,6 @@ func collectResources(cmd *cobra.Command, _ []string) error {
 	cmd.SilenceUsage = true // if we got this far, flags are syntactically correct, so no need to print usage
 
 	if provider != common.IBM {
-		if len(regions) > 0 {
-			return fmt.Errorf("setting regions from the command-line for provider %s is not yet supported. "+
-				"Use environment variables or config files instead", provider)
-		}
 		if resourceGroupID != "" {
 			return fmt.Errorf("setting resource-group from the command-line for provider %s is not yet supported. ", provider)
 		}

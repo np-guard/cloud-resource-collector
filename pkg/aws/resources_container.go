@@ -10,6 +10,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
+	"slices"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
@@ -34,10 +37,14 @@ type ResourcesContainer struct {
 	SecurityGroupsList []*aws2.SecurityGroup   `json:"security_groups"`
 	SubnetsList        []*aws2.Subnet          `json:"subnets"`
 	VpcsList           []*VPC                  `json:"vpcs"`
+	regions            []string
 }
 
 // NewResourcesContainer creates an empty resources container
-func NewResourcesContainer() *ResourcesContainer {
+func NewResourcesContainer(regions []string) *ResourcesContainer {
+	if len(regions) == 0 {
+		regions = awsRegions
+	}
 	return &ResourcesContainer{
 		InstancesList:         []*aws2.Instance{},
 		InternetGWList:        []*aws2.InternetGateway{},
@@ -46,6 +53,7 @@ func NewResourcesContainer() *ResourcesContainer {
 		SubnetsList:           []*aws2.Subnet{},
 		VpcsList:              []*VPC{},
 		ResourceModelMetadata: common.ResourceModelMetadata{Version: version.VersionCore, Provider: string(common.AWS)},
+		regions:               regions,
 	}
 }
 
@@ -66,7 +74,7 @@ func (resources *ResourcesContainer) ToJSONString() (string, error) {
 }
 
 func (resources *ResourcesContainer) AllRegions() []string {
-	return nil
+	return awsRegions
 }
 
 func (resources *ResourcesContainer) GetResources() common.ResourcesModel {
@@ -84,73 +92,71 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error { //nolint:
 		return fmt.Errorf("CollectResourcesFromAPI encountered an error loading AWS the configuration: %w", err)
 	}
 
-	// Create an Amazon ec2 service client
-	client := ec2.NewFromConfig(cfg)
+	for _, region := range resources.regions {
+		if !slices.Contains(awsRegions, region) {
+			log.Printf("Unknown region %s. Available regions for provider aws: %s\n", region, strings.Join(awsRegions, ", "))
+			continue
+		}
 
-	// Get (the first page of) VPCs
-	vpcsFromAPI, err := client.DescribeVpcs(context.TODO(), &ec2.DescribeVpcsInput{})
-	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI error getting VPCs: %w", err)
-	}
-	resources.VpcsList = make([]*VPC, len(vpcsFromAPI.Vpcs))
-	for i := range vpcsFromAPI.Vpcs {
-		vpc := VPC{Region: cfg.Region, Vpc: vpcsFromAPI.Vpcs[i]}
-		resources.VpcsList[i] = &vpc
-	}
+		log.Printf("Collecting resources from region %s\n", region)
+		cfg.Region = region
+		client := ec2.NewFromConfig(cfg) // Create an Amazon ec2 service client
 
-	// Get (the first page of) Internet Gateways
-	intGWFromAPI, err := client.DescribeInternetGateways(context.TODO(), &ec2.DescribeInternetGatewaysInput{})
-	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI error getting internet gateways: %w", err)
-	}
-	resources.InternetGWList = make([]*aws2.InternetGateway, len(intGWFromAPI.InternetGateways))
-	for i := range intGWFromAPI.InternetGateways {
-		resources.InternetGWList[i] = &intGWFromAPI.InternetGateways[i]
-	}
+		// Get (the first page of) VPCs
+		vpcsFromAPI, err := client.DescribeVpcs(context.TODO(), &ec2.DescribeVpcsInput{})
+		if err != nil {
+			return fmt.Errorf("CollectResourcesFromAPI error getting VPCs: %w", err)
+		}
+		for i := range vpcsFromAPI.Vpcs {
+			vpc := VPC{Region: region, Vpc: vpcsFromAPI.Vpcs[i]}
+			resources.VpcsList = append(resources.VpcsList, &vpc)
+		}
 
-	// Get (the first page of) Subnets
-	subnetsFromAPI, err := client.DescribeSubnets(context.TODO(), &ec2.DescribeSubnetsInput{})
-	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI error getting subnets: %w", err)
-	}
-	resources.SubnetsList = make([]*aws2.Subnet, len(subnetsFromAPI.Subnets))
-	for i := range subnetsFromAPI.Subnets {
-		resources.SubnetsList[i] = &subnetsFromAPI.Subnets[i]
-	}
+		// Get (the first page of) Internet Gateways
+		intGWFromAPI, err := client.DescribeInternetGateways(context.TODO(), &ec2.DescribeInternetGatewaysInput{})
+		if err != nil {
+			return fmt.Errorf("CollectResourcesFromAPI error getting internet gateways: %w", err)
+		}
+		for i := range intGWFromAPI.InternetGateways {
+			resources.InternetGWList = append(resources.InternetGWList, &intGWFromAPI.InternetGateways[i])
+		}
 
-	// Get (the first page of) Network ACLs
-	nACLsFromAPI, err := client.DescribeNetworkAcls(context.TODO(), &ec2.DescribeNetworkAclsInput{})
-	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI error getting nACLs: %w", err)
-	}
-	resources.NetworkACLsList = make([]*aws2.NetworkAcl, len(nACLsFromAPI.NetworkAcls))
-	for i := range nACLsFromAPI.NetworkAcls {
-		resources.NetworkACLsList[i] = &nACLsFromAPI.NetworkAcls[i]
-	}
+		// Get (the first page of) Subnets
+		subnetsFromAPI, err := client.DescribeSubnets(context.TODO(), &ec2.DescribeSubnetsInput{})
+		if err != nil {
+			return fmt.Errorf("CollectResourcesFromAPI error getting subnets: %w", err)
+		}
+		for i := range subnetsFromAPI.Subnets {
+			resources.SubnetsList = append(resources.SubnetsList, &subnetsFromAPI.Subnets[i])
+		}
 
-	// Get (the first page of) Security Groups
-	secGroupsFromAPI, err := client.DescribeSecurityGroups(context.TODO(), &ec2.DescribeSecurityGroupsInput{})
-	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI error getting security groups: %w", err)
-	}
-	resources.SecurityGroupsList = make([]*aws2.SecurityGroup, len(secGroupsFromAPI.SecurityGroups))
-	for i := range secGroupsFromAPI.SecurityGroups {
-		resources.SecurityGroupsList[i] = &secGroupsFromAPI.SecurityGroups[i]
-	}
+		// Get (the first page of) Network ACLs
+		nACLsFromAPI, err := client.DescribeNetworkAcls(context.TODO(), &ec2.DescribeNetworkAclsInput{})
+		if err != nil {
+			return fmt.Errorf("CollectResourcesFromAPI error getting nACLs: %w", err)
+		}
+		for i := range nACLsFromAPI.NetworkAcls {
+			resources.NetworkACLsList = append(resources.NetworkACLsList, &nACLsFromAPI.NetworkAcls[i])
+		}
 
-	// Get (the first page of) Instances
-	instancesFromAPI, err := client.DescribeInstances(context.TODO(), &ec2.DescribeInstancesInput{})
-	if err != nil {
-		return fmt.Errorf("CollectResourcesFromAPI error getting instances: %w", err)
-	}
-	numInstances := 0
-	for i := range instancesFromAPI.Reservations {
-		numInstances += len(instancesFromAPI.Reservations[i].Instances)
-	}
-	resources.InstancesList = make([]*aws2.Instance, numInstances)
-	for i := range instancesFromAPI.Reservations {
-		for j := range instancesFromAPI.Reservations[i].Instances {
-			resources.InstancesList[i] = &instancesFromAPI.Reservations[i].Instances[j]
+		// Get (the first page of) Security Groups
+		secGroupsFromAPI, err := client.DescribeSecurityGroups(context.TODO(), &ec2.DescribeSecurityGroupsInput{})
+		if err != nil {
+			return fmt.Errorf("CollectResourcesFromAPI error getting security groups: %w", err)
+		}
+		for i := range secGroupsFromAPI.SecurityGroups {
+			resources.SecurityGroupsList = append(resources.SecurityGroupsList, &secGroupsFromAPI.SecurityGroups[i])
+		}
+
+		// Get (the first page of) Instances
+		instancesFromAPI, err := client.DescribeInstances(context.TODO(), &ec2.DescribeInstancesInput{})
+		if err != nil {
+			return fmt.Errorf("CollectResourcesFromAPI error getting instances: %w", err)
+		}
+		for i := range instancesFromAPI.Reservations {
+			for j := range instancesFromAPI.Reservations[i].Instances {
+				resources.InstancesList = append(resources.InstancesList, &instancesFromAPI.Reservations[i].Instances[j])
+			}
 		}
 	}
 
