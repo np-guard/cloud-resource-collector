@@ -16,7 +16,7 @@ func GetResourceContainer(provider common.Provider, regions []string, resourceGr
 	var resources common.ResourcesContainerInf
 	switch provider {
 	case common.AWS:
-		resources = aws.NewResourcesContainer()
+		resources = aws.NewResourcesContainer(regions)
 	case common.IBM:
 		resources = ibm.NewResourcesContainer(regions, resourceGroup)
 	}
