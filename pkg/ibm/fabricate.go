@@ -31,7 +31,6 @@ var (
 	}
 	uid             = map[string]int{}
 	availableIPs, _ = ipblock.FromCidrList([]string{"10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"})
-	nACLsOfVPC      = map[string][]*datamodel.NetworkACL{}
 
 	vpcType      = vpcv1.VPCReferenceResourceTypeVPCConst
 	ipv4         = vpcv1.NetworkACLRuleItemNetworkACLRuleProtocolAllIPVersionIpv4Const
@@ -48,12 +47,16 @@ func getVPCRef(vpcID *string) *vpcv1.VPCReference {
 	return &vpcv1.VPCReference{CRN: vpcID, ID: vpcID, Name: vpcID, ResourceType: &vpcType}
 }
 
+func weakRand(upperBound int) int {
+	return rand.Intn(upperBound) //nolint:gosec // weak random is ok here
+}
+
 func chooseRandElem[T any](pool []T) *T {
-	return &pool[rand.Intn(len(pool))] //nolint:gosec // weak random is ok here
+	return &pool[weakRand(len(pool))]
 }
 
 func getRandomRegion() string {
-	regionNum := rand.Intn(len(regionsAndZones)) //nolint:gosec // weak random is ok here
+	regionNum := weakRand(len(regionsAndZones))
 	i := 0
 	for k := range regionsAndZones {
 		if i == regionNum {
@@ -65,7 +68,7 @@ func getRandomRegion() string {
 }
 
 func getAvailableInternalCidrBlock() *string {
-	prefix := defaultCidrPrefix - rand.Intn(2) //nolint:gosec // weak random is ok here
+	prefix := defaultCidrPrefix - weakRand(2)
 	baseIP := availableIPs.FirstIPAddress()
 	cidr := fmt.Sprintf("%s/%d", baseIP, prefix)
 	cidrIPBlock, _ := ipblock.FromCidr(cidr)
@@ -76,9 +79,9 @@ func getAvailableInternalCidrBlock() *string {
 func getRandomCidr() *string {
 	var ipElem [4]int
 	for i := 0; i < len(ipElem); i++ {
-		ipElem[i] = rand.Intn(ipElementSize) //nolint:gosec // weak random is ok here
+		ipElem[i] = weakRand(ipElementSize)
 	}
-	prefix := rand.Intn(2) //nolint:gosec // weak random is ok here
+	prefix := weakRand(2)
 	cidr := fmt.Sprintf("%d.%d.%d.%d/%d", ipElem[0], ipElem[1], ipElem[2], ipElem[3], prefix)
 	return &cidr
 }
@@ -86,7 +89,7 @@ func getRandomCidr() *string {
 func makeNACLRules() []vpcv1.NetworkACLRuleItemIntf {
 	res := []vpcv1.NetworkACLRuleItemIntf{}
 
-	numRules := rand.Intn(maxNumRulesInNACL) //nolint:gosec // weak random is ok here
+	numRules := weakRand(maxNumRulesInNACL)
 	for i := 0; i < numRules; i++ {
 		ruleID := getUID("aclRule")
 		rule := vpcv1.NetworkACLRuleItemNetworkACLRuleProtocolAll{
@@ -111,7 +114,7 @@ func makeNACLRules() []vpcv1.NetworkACLRuleItemIntf {
 }
 
 func makeNACLs(vpcID string) []*datamodel.NetworkACL {
-	numNacls := rand.Intn(maxNumACLsInVPC) + 1 //nolint:gosec // weak random is ok here
+	numNacls := weakRand(maxNumACLsInVPC) + 1
 	res := []*datamodel.NetworkACL{}
 	for i := 0; i < numNacls; i++ {
 		naclID := getUID("nacl")
@@ -119,9 +122,23 @@ func makeNACLs(vpcID string) []*datamodel.NetworkACL {
 		sdkNACL.Rules = makeNACLRules()
 		modelNacl := datamodel.NewNetworkACL(&sdkNACL)
 		res = append(res, modelNacl)
-		nACLsOfVPC[vpcID] = append(nACLsOfVPC[vpcID], modelNacl)
 	}
 
+	return res
+}
+
+func makePublicGateways(vpcID, vpcRegion string) map[string]*datamodel.PublicGateway { // map from zone to pgw in this zone
+	res := map[string]*datamodel.PublicGateway{}
+	zones := regionsAndZones[vpcRegion]
+	for i := range zones {
+		if weakRand(2) == 0 {
+			continue // not all zones should get a PGW
+		}
+		zone := zones[i]
+		pgwID := getUID("pgw")
+		sdkPGW := vpcv1.PublicGateway{ID: pgwID, CRN: pgwID, Name: pgwID, VPC: getVPCRef(&vpcID), Zone: getZoneRef(zone)}
+		res[zone] = datamodel.NewPublicGateway(&sdkPGW)
+	}
 	return res
 }
 
@@ -129,8 +146,16 @@ func getNACLRef(nacl *datamodel.NetworkACL) *vpcv1.NetworkACLReference {
 	return &vpcv1.NetworkACLReference{CRN: nacl.CRN, ID: nacl.ID, Name: nacl.Name}
 }
 
+func getPGWRef(nacl *datamodel.PublicGateway) *vpcv1.PublicGatewayReference {
+	return &vpcv1.PublicGatewayReference{CRN: nacl.CRN, ID: nacl.ID, Name: nacl.Name}
+}
+
 func getSubnetRef(subnet *datamodel.Subnet) vpcv1.SubnetReference {
 	return vpcv1.SubnetReference{CRN: subnet.CRN, ID: subnet.ID, Name: subnet.Name}
+}
+
+func getZoneRef(zone string) *vpcv1.ZoneReference {
+	return &vpcv1.ZoneReference{Name: &zone}
 }
 
 func (resources *ResourcesContainer) Fabricate(opts *common.FabricateOptions) {
@@ -141,17 +166,29 @@ func (resources *ResourcesContainer) Fabricate(opts *common.FabricateOptions) {
 		vpc := datamodel.NewVPC(&sdkVPC, vpcRegion, nil)
 		resources.VpcList = append(resources.VpcList, vpc)
 
-		resources.NetworkACLList = append(resources.NetworkACLList, makeNACLs(*vpcID)...)
+		vpcNACLs := makeNACLs(*vpcID)
+		resources.NetworkACLList = append(resources.NetworkACLList, vpcNACLs...)
+		vpcPGWs := makePublicGateways(*vpcID, vpcRegion)
+		for _, pgw := range vpcPGWs {
+			resources.PublicGWList = append(resources.PublicGWList, pgw)
+		}
 
-		zone := vpcv1.ZoneReference{Name: chooseRandElem(regionsAndZones[vpcRegion])}
 		for s := 0; s < opts.SubnetsPerVPC; s++ {
 			subnetID := getUID("subnet")
-			sdkSubnet := vpcv1.Subnet{ID: subnetID, Name: subnetID, CRN: subnetID, VPC: getVPCRef(vpcID), Zone: &zone}
+			subnetZone := chooseRandElem(regionsAndZones[vpcRegion])
+			sdkSubnet := vpcv1.Subnet{ID: subnetID, Name: subnetID, CRN: subnetID, VPC: getVPCRef(vpcID), Zone: getZoneRef(*subnetZone)}
 			sdkSubnet.Ipv4CIDRBlock = getAvailableInternalCidrBlock()
-			subnetNACL := *chooseRandElem(nACLsOfVPC[*vpcID])
+
+			subnetNACL := *chooseRandElem(vpcNACLs)
 			sdkSubnet.NetworkACL = getNACLRef(subnetNACL)
+
 			subnet := datamodel.NewSubnet(&sdkSubnet, nil)
 			subnetNACL.Subnets = append(subnetNACL.Subnets, getSubnetRef(subnet))
+
+			if pgw, ok := vpcPGWs[*subnetZone]; ok && weakRand(2) > 0 { // randomly decide if subnet is connected to a PGW
+				subnet.PublicGateway = getPGWRef(pgw)
+			}
+
 			resources.SubnetList = append(resources.SubnetList, subnet)
 		}
 	}
