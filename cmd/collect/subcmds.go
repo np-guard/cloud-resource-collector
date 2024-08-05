@@ -74,9 +74,6 @@ func newGetRegionsCommand() *cobra.Command {
 		Long:  `List all regions that can be used with the --region flag`,
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			if provider != common.IBM {
-				return fmt.Errorf("command not supported for provider %s", provider)
-			}
 			resources := factory.GetResourceContainer(provider, nil, "")
 			providerRegions := strings.Join(resources.AllRegions(), ", ")
 			fmt.Printf("Available regions for provider %s: %s\n", provider, providerRegions)

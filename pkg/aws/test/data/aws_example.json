@@ -329,7 +329,8 @@
             "OwnerId": "OwnerId:2",
             "State": "available",
             "Tags": [],
-            "VpcId": "VpcId:3"
+            "VpcId": "VpcId:3",
+            "Region": "us-east-1"
         }
     ]
 }
