@@ -153,6 +153,13 @@ func (resources *ResourcesContainer) collectTags() error {
 		}
 	}
 
+	for i := range resources.VirtualNIList {
+		err := tagsCollector.setResourceTags(resources.VirtualNIList[i])
+		if err != nil {
+			return err
+		}
+	}
+
 	for i := range resources.LBList {
 		err := tagsCollector.setResourceTags(resources.LBList[i])
 		if err != nil {
@@ -236,6 +243,7 @@ func (resources *ResourcesContainer) CollectResourcesFromAPI() error {
 	return nil
 }
 
+//nolint:funlen // function is long because there are many types of resources we collect
 func (resources *ResourcesContainer) collectRegionalResources(region, apiKey string) error {
 	// check if region is valid
 	if _, ok := vpcRegionURLs[region]; !ok {
@@ -315,6 +323,12 @@ func (resources *ResourcesContainer) collectRegionalResources(region, apiKey str
 		return err
 	}
 	resources.InstanceList = append(resources.InstanceList, insts...)
+
+	vnis, err := getVirtualNIs(vpcService, resources.resourceGroupID)
+	if err != nil {
+		return err
+	}
+	resources.VirtualNIList = append(resources.VirtualNIList, vnis...)
 
 	// Routing Tables
 	rts, err := getRoutingTables(vpcService, vpcs)

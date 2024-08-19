@@ -251,6 +251,33 @@ func NewInstance(instance *vpcv1.Instance, networkInterfaces []vpcv1.NetworkInte
 
 func (res *Instance) GetCRN() *string { return res.CRN }
 
+// Virtual Network Interface object
+type VirtualNI struct {
+	vpcv1.VirtualNetworkInterface
+	BaseTaggedResource
+}
+
+func NewVirtualNI(vni *vpcv1.VirtualNetworkInterface) *VirtualNI {
+	return &VirtualNI{VirtualNetworkInterface: *vni}
+}
+
+func (res *VirtualNI) GetCRN() *string { return res.CRN }
+
+func (res *VirtualNI) UnmarshalJSON(data []byte) error {
+	asMap, err := jsonToMap(data)
+	if err != nil {
+		return err
+	}
+	asObj := &vpcv1.VirtualNetworkInterface{}
+	err = vpcv1.UnmarshalVirtualNetworkInterface(asMap, &asObj)
+	if err != nil {
+		return err
+	}
+	res.VirtualNetworkInterface = *asObj
+
+	return json.Unmarshal(data, &res.BaseTaggedResource)
+}
+
 // RoutingTable configuration object (not taggable)
 type RoutingTable struct {
 	vpcv1.RoutingTable
