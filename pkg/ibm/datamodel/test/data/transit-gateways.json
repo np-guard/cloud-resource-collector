@@ -1510,6 +1510,7 @@
             "tags": []
         }
     ],
+    "virtual_nis": [],
     "routing_tables": [
         {
             "accept_routes_from": [

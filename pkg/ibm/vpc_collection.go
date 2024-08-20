@@ -8,6 +8,7 @@ package ibm
 
 import (
 	"fmt"
+	"reflect"
 
 	tgw "github.com/IBM/networking-go-sdk/transitgatewayapisv1"
 	"github.com/IBM/vpc-go-sdk/vpcv1"
@@ -41,6 +42,26 @@ func iteratePagedAPI[T any, Q HasGetNextStart[T]](
 			break
 		}
 	}
+	return res, nil
+}
+
+// getResources is a generic function for collecting resources, where the conversion to internal resource is straightforward.
+// R is the type of the IBM-Cloud-API resource to collect, C is the corresponding collection, I is the internal type
+func getResources[R any, C HasGetNextStart[R], I any](
+	listFunc func(pageSize int64, next *string) (C, any, error),
+	getArrayFunc func(collection C) []R,
+	convertFunc func(*R) *I,
+) ([]*I, error) {
+	resources, err := iteratePagedAPI(listFunc, getArrayFunc)
+	if err != nil {
+		var zero [0]R
+		return nil, fmt.Errorf("error listing resources of type %s: %w", reflect.TypeOf(zero).Elem(), err)
+	}
+	res := make([]*I, len(resources))
+	for i := range resources {
+		res[i] = convertFunc(&resources[i])
+	}
+
 	return res, nil
 }
 
@@ -115,7 +136,6 @@ func getReservedIps(vpcService *vpcv1.VpcV1, subnetID, name string) ([]vpcv1.Res
 	return reservedIPs, nil
 }
 
-//nolint:dupl // See getVPCs
 func getPublicGateways(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamodel.PublicGateway, error) {
 	gatewayAPIFunc := func(pageSize int64, next *string) (*vpcv1.PublicGatewayCollection, any, error) {
 		return vpcService.ListPublicGateways(&vpcv1.ListPublicGatewaysOptions{Limit: &pageSize, Start: next, ResourceGroupID: &resourceGroupID})
@@ -123,19 +143,10 @@ func getPublicGateways(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*data
 	gatewayGetArray := func(collection *vpcv1.PublicGatewayCollection) []vpcv1.PublicGateway {
 		return collection.PublicGateways
 	}
-	gateways, err := iteratePagedAPI(gatewayAPIFunc, gatewayGetArray)
-	if err != nil {
-		return nil, fmt.Errorf("[getPublicGateways] error getting Public Gateways: %w", err)
-	}
-	res := make([]*datamodel.PublicGateway, len(gateways))
-	for i := range gateways {
-		res[i] = datamodel.NewPublicGateway(&gateways[i])
-	}
 
-	return res, nil
+	return getResources(gatewayAPIFunc, gatewayGetArray, datamodel.NewPublicGateway)
 }
 
-//nolint:dupl // See getVPCs
 func getFloatingIPs(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamodel.FloatingIP, error) {
 	floatingIPAPIFunc := func(pageSize int64, next *string) (*vpcv1.FloatingIPCollection, any, error) {
 		return vpcService.ListFloatingIps(&vpcv1.ListFloatingIpsOptions{Limit: &pageSize, Start: next, ResourceGroupID: &resourceGroupID})
@@ -143,19 +154,10 @@ func getFloatingIPs(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamod
 	floatingIPGetArray := func(collection *vpcv1.FloatingIPCollection) []vpcv1.FloatingIP {
 		return collection.FloatingIps
 	}
-	floatingIps, err := iteratePagedAPI(floatingIPAPIFunc, floatingIPGetArray)
-	if err != nil {
-		return nil, fmt.Errorf("[getFloatingIPs] error getting Floating IPs: %w", err)
-	}
-	res := make([]*datamodel.FloatingIP, len(floatingIps))
-	for i := range floatingIps {
-		res[i] = datamodel.NewFloatingIP(&floatingIps[i])
-	}
 
-	return res, nil
+	return getResources(floatingIPAPIFunc, floatingIPGetArray, datamodel.NewFloatingIP)
 }
 
-//nolint:dupl // See getVPCs
 func getNetworkACLs(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamodel.NetworkACL, error) {
 	networkACLAPIFunc := func(pageSize int64, next *string) (*vpcv1.NetworkACLCollection, any, error) {
 		return vpcService.ListNetworkAcls(&vpcv1.ListNetworkAclsOptions{Limit: &pageSize, Start: next, ResourceGroupID: &resourceGroupID})
@@ -163,19 +165,10 @@ func getNetworkACLs(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamod
 	networkACLGetArray := func(collection *vpcv1.NetworkACLCollection) []vpcv1.NetworkACL {
 		return collection.NetworkAcls
 	}
-	networkAcls, err := iteratePagedAPI(networkACLAPIFunc, networkACLGetArray)
-	if err != nil {
-		return nil, fmt.Errorf("[getNetworkACLs] error getting Network ACLs: %w", err)
-	}
-	res := make([]*datamodel.NetworkACL, len(networkAcls))
-	for i := range networkAcls {
-		res[i] = datamodel.NewNetworkACL(&networkAcls[i])
-	}
 
-	return res, nil
+	return getResources(networkACLAPIFunc, networkACLGetArray, datamodel.NewNetworkACL)
 }
 
-//nolint:dupl // See getVPCs
 func getSecurityGroups(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamodel.SecurityGroup, error) {
 	securityGroupAPIFunc := func(pageSize int64, next *string) (*vpcv1.SecurityGroupCollection, any, error) {
 		return vpcService.ListSecurityGroups(&vpcv1.ListSecurityGroupsOptions{Limit: &pageSize, Start: next, ResourceGroupID: &resourceGroupID})
@@ -183,21 +176,11 @@ func getSecurityGroups(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*data
 	securityGroupGetArray := func(collection *vpcv1.SecurityGroupCollection) []vpcv1.SecurityGroup {
 		return collection.SecurityGroups
 	}
-	securityGroups, err := iteratePagedAPI(securityGroupAPIFunc, securityGroupGetArray)
-	if err != nil {
-		return nil, fmt.Errorf("[getSecurityGroups] error getting Security Groups: %w", err)
-	}
-	res := make([]*datamodel.SecurityGroup, len(securityGroups))
-	for i := range securityGroups {
-		res[i] = datamodel.NewSecurityGroup(&securityGroups[i])
-	}
 
-	return res, nil
+	return getResources(securityGroupAPIFunc, securityGroupGetArray, datamodel.NewSecurityGroup)
 }
 
 // Get all Endpoint Gateways (VPEs)
-//
-//nolint:dupl // See getVPCs
 func getEndpointGateways(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamodel.EndpointGateway, error) {
 	endpointGatewayAPIFunc := func(pageSize int64, next *string) (*vpcv1.EndpointGatewayCollection, any, error) {
 		return vpcService.ListEndpointGateways(&vpcv1.ListEndpointGatewaysOptions{Limit: &pageSize, Start: next,
@@ -206,16 +189,8 @@ func getEndpointGateways(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*da
 	endpointGatewayGetArray := func(collection *vpcv1.EndpointGatewayCollection) []vpcv1.EndpointGateway {
 		return collection.EndpointGateways
 	}
-	endpointGateways, err := iteratePagedAPI(endpointGatewayAPIFunc, endpointGatewayGetArray)
-	if err != nil {
-		return nil, fmt.Errorf("[getEndpointGateways] error getting Endpoint Gateways: %w", err)
-	}
-	res := make([]*datamodel.EndpointGateway, len(endpointGateways))
-	for i := range endpointGateways {
-		res[i] = datamodel.NewEndpointGateway(&endpointGateways[i])
-	}
 
-	return res, nil
+	return getResources(endpointGatewayAPIFunc, endpointGatewayGetArray, datamodel.NewEndpointGateway)
 }
 
 func getInstances(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamodel.Instance, error) {
@@ -253,6 +228,18 @@ func getNetworkInterface(vpcService *vpcv1.VpcV1, id, name string) ([]vpcv1.Netw
 		return nil, fmt.Errorf("[getInstances] error getting NW Interfaces for %s", name)
 	}
 	return networkInterfaces.NetworkInterfaces, nil
+}
+
+func getVirtualNIs(vpcService *vpcv1.VpcV1, resourceGroupID string) ([]*datamodel.VirtualNI, error) {
+	vniAPIFunc := func(pageSize int64, next *string) (*vpcv1.VirtualNetworkInterfaceCollection, any, error) {
+		opts := vpcv1.ListVirtualNetworkInterfacesOptions{Limit: &pageSize, Start: next, ResourceGroupID: &resourceGroupID}
+		return vpcService.ListVirtualNetworkInterfaces(&opts)
+	}
+	vniGetArray := func(collection *vpcv1.VirtualNetworkInterfaceCollection) []vpcv1.VirtualNetworkInterface {
+		return collection.VirtualNetworkInterfaces
+	}
+
+	return getResources(vniAPIFunc, vniGetArray, datamodel.NewVirtualNI)
 }
 
 func getRoutingTables(vpcService *vpcv1.VpcV1, vpcList []*datamodel.VPC) ([]*datamodel.RoutingTable, error) {

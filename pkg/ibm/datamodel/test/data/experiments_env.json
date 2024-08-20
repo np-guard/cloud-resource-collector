@@ -2286,6 +2286,76 @@
             "tags": []
         }
     ],
+    "virtual_nis": [
+        {
+            "allow_ip_spoofing": false,
+            "auto_delete": true,
+            "created_at": "2024-06-17T11:44:17.000Z",
+            "crn": "crn:4879",
+            "enable_infrastructure_nat": true,
+            "href": "href:80987",
+            "id": "id:8888",
+            "ips": [
+                {
+                    "address": "10.240.64.4",
+                    "href": "href:98765",
+                    "id": "id:87654",
+                    "name": "rip875",
+                    "resource_type": "subnet_reserved_ip"
+                }
+            ],
+            "lifecycle_state": "stable",
+            "mac_address": "99:88:77:66:55:DD",
+            "name": "vni456",
+            "primary_ip": {
+                "address": "10.240.64.4",
+                "href": "href:98765",
+                "id": "id:87654",
+                "name": "rip875",
+                "resource_type": "subnet_reserved_ip"
+            },
+            "protocol_state_filtering_mode": "auto",
+            "resource_group": {
+                "href": "href:15",
+                "id": "id:16",
+                "name": "anonymous"
+            },
+            "resource_type": "virtual_network_interface",
+            "security_groups": [
+                {
+                    "crn": "crn:12",
+                    "href": "href:13",
+                    "id": "id:14",
+                    "name": "suitcase-singular-profile-professed"
+                }
+            ],
+            "subnet": {
+                "crn": "crn:93",
+                "href": "href:94",
+                "id": "id:95",
+                "name": "subnet21-ky",
+                "resource_type": "subnet"
+            },
+            "target": {
+                "href": "href:888866",
+                "id": "id:999977",
+                "name": "eth0",
+                "resource_type": "instance_network_attachment"
+            },
+            "vpc": {
+                "crn": "crn:17",
+                "href": "href:18",
+                "id": "id:19",
+                "name": "test-vpc2-ky",
+                "resource_type": "vpc"
+            },
+            "zone": {
+                "href": "href:5",
+                "name": "us-south-2"
+            },
+            "tags": []
+        }
+    ],
     "routing_tables": [
         {
             "accept_routes_from": [

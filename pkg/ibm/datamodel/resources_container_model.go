@@ -25,6 +25,7 @@ type ResourcesContainerModel struct {
 	SecurityGroupList     []*SecurityGroup     `json:"security_groups"`
 	EndpointGWList        []*EndpointGateway   `json:"endpoint_gateways"`
 	InstanceList          []*Instance          `json:"instances"`
+	VirtualNIList         []*VirtualNI         `json:"virtual_nis"`
 	RoutingTableList      []*RoutingTable      `json:"routing_tables"`
 	LBList                []*LoadBalancer      `json:"load_balancers"`
 	TransitConnectionList []*TransitConnection `json:"transit_connections"`
@@ -43,6 +44,7 @@ func NewResourcesContainerModel() *ResourcesContainerModel {
 		SecurityGroupList:     []*SecurityGroup{},
 		EndpointGWList:        []*EndpointGateway{},
 		InstanceList:          []*Instance{},
+		VirtualNIList:         []*VirtualNI{},
 		RoutingTableList:      []*RoutingTable{},
 		LBList:                []*LoadBalancer{},
 		TransitConnectionList: []*TransitConnection{},
@@ -62,6 +64,7 @@ func (resources *ResourcesContainerModel) PrintStats() {
 	fmt.Printf("Found %d security groups\n", len(resources.SecurityGroupList))
 	fmt.Printf("Found %d endpoint gateways (VPEs)\n", len(resources.EndpointGWList))
 	fmt.Printf("Found %d instances\n", len(resources.InstanceList))
+	fmt.Printf("Found %d virtual network interfaces\n", len(resources.VirtualNIList))
 	fmt.Printf("Found %d routing tables\n", len(resources.RoutingTableList))
 	fmt.Printf("Found %d load balancers\n", len(resources.LBList))
 	fmt.Printf("Found %d transit connections\n", len(resources.TransitConnectionList))
