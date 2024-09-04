@@ -20,6 +20,7 @@ const (
 )
 
 var AllProviders = []string{string(IBM), string(AWS)}
+var AllProvidersStr = strings.Join(AllProviders, ", ")
 
 func (p *Provider) String() string {
 	return string(*p)
@@ -31,7 +32,7 @@ func (p *Provider) Set(v string) error {
 		*p = Provider(v)
 		return nil
 	}
-	return fmt.Errorf("must be one of [%s]", strings.Join(AllProviders, ", "))
+	return fmt.Errorf("must be one of [%s]", AllProvidersStr)
 }
 
 func (p *Provider) Type() string {
