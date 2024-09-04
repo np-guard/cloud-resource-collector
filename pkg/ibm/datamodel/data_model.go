@@ -23,6 +23,30 @@ func jsonToMap(jsonStr []byte) (map[string]json.RawMessage, error) {
 	return result, err
 }
 
+func basicUnmarshal[A any](data []byte, unmarshalFunc func(map[string]json.RawMessage, any) error,
+	objRef *A, tags *BaseTaggedResource) error {
+	asMap, err := jsonToMap(data)
+	if err != nil {
+		return err
+	}
+
+	asRef := new(A)
+	err = unmarshalFunc(asMap, &asRef)
+	if err != nil {
+		return err
+	}
+	*objRef = *asRef
+
+	if tags != nil {
+		err = json.Unmarshal(data, tags)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // The following types define the "canonical data model" for IBM resources.
 // For the most part, these are the SDK types extended with extra information like tags or info from multiple calls
 
@@ -84,21 +108,12 @@ func (res *VPC) UnmarshalJSON(data []byte) error {
 func (res *VPC) GetCRN() *string { return res.VPC.CRN }
 
 // ReservedIPWrapper is an alias to vpcv1.ReservedIP that allows us to override the implementation of UnmarshalJSON
-type ReservedIPWrapper vpcv1.ReservedIP
+type ReservedIPWrapper struct {
+	vpcv1.ReservedIP
+}
 
 func (res *ReservedIPWrapper) UnmarshalJSON(data []byte) error {
-	resIPMap, err := jsonToMap(data)
-	if err != nil {
-		return err
-	}
-	resIPObj := &vpcv1.ReservedIP{}
-	err = vpcv1.UnmarshalReservedIP(resIPMap, &resIPObj)
-	if err != nil {
-		return err
-	}
-
-	*res = ReservedIPWrapper(*resIPObj)
-	return nil
+	return basicUnmarshal(data, vpcv1.UnmarshalReservedIP, &res.ReservedIP, nil)
 }
 
 // Subnet configuration object
@@ -111,7 +126,7 @@ type Subnet struct {
 func NewSubnet(subnet *vpcv1.Subnet, reservedIPs []vpcv1.ReservedIP) *Subnet {
 	reservedIPWraps := make([]ReservedIPWrapper, len(reservedIPs))
 	for i := range reservedIPs {
-		reservedIPWraps[i] = ReservedIPWrapper(reservedIPs[i])
+		reservedIPWraps[i] = ReservedIPWrapper{reservedIPs[i]}
 	}
 	return &Subnet{Subnet: *subnet, ReservedIps: reservedIPWraps}
 }
@@ -143,18 +158,7 @@ func NewFloatingIP(floatingIP *vpcv1.FloatingIP) *FloatingIP {
 func (res *FloatingIP) GetCRN() *string { return res.CRN }
 
 func (res *FloatingIP) UnmarshalJSON(data []byte) error {
-	asMap, err := jsonToMap(data)
-	if err != nil {
-		return err
-	}
-	asObj := &vpcv1.FloatingIP{}
-	err = vpcv1.UnmarshalFloatingIP(asMap, &asObj)
-	if err != nil {
-		return err
-	}
-	res.FloatingIP = *asObj
-
-	return json.Unmarshal(data, &res.BaseTaggedResource)
+	return basicUnmarshal(data, vpcv1.UnmarshalFloatingIP, &res.FloatingIP, &res.BaseTaggedResource)
 }
 
 // NetworkACL configuration object
@@ -170,18 +174,7 @@ func NewNetworkACL(networkACL *vpcv1.NetworkACL) *NetworkACL {
 func (res *NetworkACL) GetCRN() *string { return res.CRN }
 
 func (res *NetworkACL) UnmarshalJSON(data []byte) error {
-	asMap, err := jsonToMap(data)
-	if err != nil {
-		return err
-	}
-	asObj := &vpcv1.NetworkACL{}
-	err = vpcv1.UnmarshalNetworkACL(asMap, &asObj)
-	if err != nil {
-		return err
-	}
-	res.NetworkACL = *asObj
-
-	return json.Unmarshal(data, &res.BaseTaggedResource)
+	return basicUnmarshal(data, vpcv1.UnmarshalNetworkACL, &res.NetworkACL, &res.BaseTaggedResource)
 }
 
 // SecurityGroup configuration object
@@ -197,18 +190,7 @@ func NewSecurityGroup(securityGroup *vpcv1.SecurityGroup) *SecurityGroup {
 func (res *SecurityGroup) GetCRN() *string { return res.CRN }
 
 func (res *SecurityGroup) UnmarshalJSON(data []byte) error {
-	asMap, err := jsonToMap(data)
-	if err != nil {
-		return err
-	}
-	asObj := &vpcv1.SecurityGroup{}
-	err = vpcv1.UnmarshalSecurityGroup(asMap, &asObj)
-	if err != nil {
-		return err
-	}
-	res.SecurityGroup = *asObj
-
-	return json.Unmarshal(data, &res.BaseTaggedResource)
+	return basicUnmarshal[vpcv1.SecurityGroup](data, vpcv1.UnmarshalSecurityGroup, &res.SecurityGroup, &res.BaseTaggedResource)
 }
 
 // EndpointGateway configuration object
@@ -224,18 +206,7 @@ func NewEndpointGateway(endpointGateway *vpcv1.EndpointGateway) *EndpointGateway
 func (res *EndpointGateway) GetCRN() *string { return res.CRN }
 
 func (res *EndpointGateway) UnmarshalJSON(data []byte) error {
-	asMap, err := jsonToMap(data)
-	if err != nil {
-		return err
-	}
-	asObj := &vpcv1.EndpointGateway{}
-	err = vpcv1.UnmarshalEndpointGateway(asMap, &asObj)
-	if err != nil {
-		return err
-	}
-	res.EndpointGateway = *asObj
-
-	return json.Unmarshal(data, &res.BaseTaggedResource)
+	return basicUnmarshal(data, vpcv1.UnmarshalEndpointGateway, &res.EndpointGateway, &res.BaseTaggedResource)
 }
 
 // Instance configuration object
@@ -264,18 +235,7 @@ func NewVirtualNI(vni *vpcv1.VirtualNetworkInterface) *VirtualNI {
 func (res *VirtualNI) GetCRN() *string { return res.CRN }
 
 func (res *VirtualNI) UnmarshalJSON(data []byte) error {
-	asMap, err := jsonToMap(data)
-	if err != nil {
-		return err
-	}
-	asObj := &vpcv1.VirtualNetworkInterface{}
-	err = vpcv1.UnmarshalVirtualNetworkInterface(asMap, &asObj)
-	if err != nil {
-		return err
-	}
-	res.VirtualNetworkInterface = *asObj
-
-	return json.Unmarshal(data, &res.BaseTaggedResource)
+	return basicUnmarshal(data, vpcv1.UnmarshalVirtualNetworkInterface, &res.VirtualNetworkInterface, &res.BaseTaggedResource)
 }
 
 // RoutingTable configuration object (not taggable)
@@ -288,49 +248,31 @@ type RoutingTable struct {
 func NewRoutingTable(rt *vpcv1.RoutingTable, routes []vpcv1.Route, vpcRef *vpcv1.VPCReference) *RoutingTable {
 	routesWrapper := make([]RouteWrapper, len(routes))
 	for i := range routes {
-		routesWrapper[i] = RouteWrapper(routes[i])
+		routesWrapper[i] = RouteWrapper{routes[i]}
 	}
 	return &RoutingTable{RoutingTable: *rt, Routes: routesWrapper, VPC: vpcRef}
 }
 
 // RouteWrapper is an alias to vpcv1.Route that allows us to override
 // the implementation of UnmarshalJSON
-type RouteWrapper vpcv1.Route
+type RouteWrapper struct {
+	vpcv1.Route
+}
 
 func (res *RouteWrapper) UnmarshalJSON(data []byte) error {
-	asMap, err := jsonToMap(data)
-	if err != nil {
-		return err
-	}
-
-	route := &vpcv1.Route{}
-	err = vpcv1.UnmarshalRoute(asMap, &route)
-	if err != nil {
-		return err
-	}
-
-	*res = RouteWrapper(*route)
-	return nil
+	return basicUnmarshal(data, vpcv1.UnmarshalRoute, &res.Route, nil)
 }
 
 // LoadBalancer configuration objects
 
 // LoadBalancerPoolMemberWrapper is an alias to vpcv1.LoadBalancerPoolMember that allows us to override
 // the implementation of UnmarshalJSON
-type LoadBalancerPoolMemberWrapper vpcv1.LoadBalancerPoolMember
+type LoadBalancerPoolMemberWrapper struct {
+	vpcv1.LoadBalancerPoolMember
+}
 
 func (res *LoadBalancerPoolMemberWrapper) UnmarshalJSON(data []byte) error {
-	asMap, err := jsonToMap(data)
-	if err != nil {
-		return err
-	}
-	asObj := &vpcv1.LoadBalancerPoolMember{}
-	err = vpcv1.UnmarshalLoadBalancerPoolMember(asMap, &asObj)
-	if err != nil {
-		return err
-	}
-	*res = LoadBalancerPoolMemberWrapper(*asObj)
-	return nil
+	return basicUnmarshal(data, vpcv1.UnmarshalLoadBalancerPoolMember, &res.LoadBalancerPoolMember, nil)
 }
 
 // LoadBalancerPool object with explicit members (not references)
@@ -343,27 +285,19 @@ func NewLoadBalancerPool(loadBalancerPool *vpcv1.LoadBalancerPool,
 	members []vpcv1.LoadBalancerPoolMember) LoadBalancerPool {
 	LoadBalancerPoolMemberWraps := make([]LoadBalancerPoolMemberWrapper, len(members))
 	for i := range members {
-		LoadBalancerPoolMemberWraps[i] = LoadBalancerPoolMemberWrapper(members[i])
+		LoadBalancerPoolMemberWraps[i] = LoadBalancerPoolMemberWrapper{members[i]}
 	}
 	return LoadBalancerPool{LoadBalancerPool: *loadBalancerPool, Members: LoadBalancerPoolMemberWraps}
 }
 
 // LoadBalancerListenerPolicyRuleWrapper is an alias to vpcv1.LoadBalancerListenerPolicyRule that allows us to override
 // the implementation of UnmarshalJSON
-type LoadBalancerListenerPolicyRuleWrapper vpcv1.LoadBalancerListenerPolicyRule
+type LoadBalancerListenerPolicyRuleWrapper struct {
+	vpcv1.LoadBalancerListenerPolicyRule
+}
 
 func (res *LoadBalancerListenerPolicyRuleWrapper) UnmarshalJSON(data []byte) error {
-	asMap, err := jsonToMap(data)
-	if err != nil {
-		return err
-	}
-	asObj := &vpcv1.LoadBalancerListenerPolicyRule{}
-	err = vpcv1.UnmarshalLoadBalancerListenerPolicyRule(asMap, &asObj)
-	if err != nil {
-		return err
-	}
-	*res = LoadBalancerListenerPolicyRuleWrapper(*asObj)
-	return nil
+	return basicUnmarshal(data, vpcv1.UnmarshalLoadBalancerListenerPolicyRule, &res.LoadBalancerListenerPolicyRule, nil)
 }
 
 // LoadBalancerListenerPolicy configuration with explicit rules (not references)
@@ -377,7 +311,7 @@ func NewLoadBalancerListenerPolicy(
 	rules []vpcv1.LoadBalancerListenerPolicyRule) LoadBalancerListenerPolicy {
 	rulesWrap := make([]LoadBalancerListenerPolicyRuleWrapper, len(rules))
 	for i := range rules {
-		rulesWrap[i] = LoadBalancerListenerPolicyRuleWrapper(rules[i])
+		rulesWrap[i] = LoadBalancerListenerPolicyRuleWrapper{rules[i]}
 	}
 
 	return LoadBalancerListenerPolicy{LoadBalancerListenerPolicy: *loadBalancerListenerPolicy, Rules: rulesWrap}
