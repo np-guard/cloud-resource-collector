@@ -38,7 +38,8 @@ func newRootCommand() *cobra.Command {
 		Version: version.VersionCore,
 	}
 
-	rootCmd.PersistentFlags().VarP(&provider, providerFlag, "p", "collect resources from an account in this cloud provider")
+	providerHelp := fmt.Sprintf("collect resources from an account in this cloud provider. Supported providers: %s", common.AllProvidersStr)
+	rootCmd.PersistentFlags().VarP(&provider, providerFlag, "p", providerHelp)
 	_ = rootCmd.MarkPersistentFlagRequired(providerFlag)
 
 	rootCmd.PersistentFlags().StringVar(&outputFile, "out", "", "file path to store results")
