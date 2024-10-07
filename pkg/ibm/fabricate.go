@@ -14,7 +14,7 @@ import (
 
 	"github.com/np-guard/cloud-resource-collector/pkg/common"
 	"github.com/np-guard/cloud-resource-collector/pkg/ibm/datamodel"
-	"github.com/np-guard/models/pkg/ipblock"
+	"github.com/np-guard/models/pkg/netset"
 )
 
 const (
@@ -30,7 +30,7 @@ var (
 		"us-east":  {"us-east1", "us-east2", "us-east3"},
 	}
 	uid             = map[string]int{}
-	availableIPs, _ = ipblock.FromCidrList([]string{"10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"})
+	availableIPs, _ = netset.IPBlockFromCidrList([]string{"10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"})
 
 	vpcType      = vpcv1.VPCReferenceResourceTypeVPCConst
 	ipv4         = vpcv1.NetworkACLRuleItemNetworkACLRuleProtocolAllIPVersionIpv4Const
@@ -71,7 +71,7 @@ func getAvailableInternalCidrBlock() *string {
 	prefix := defaultCidrPrefix - weakRand(2)
 	baseIP := availableIPs.FirstIPAddress()
 	cidr := fmt.Sprintf("%s/%d", baseIP, prefix)
-	cidrIPBlock, _ := ipblock.FromCidr(cidr)
+	cidrIPBlock, _ := netset.IPBlockFromCidr(cidr)
 	availableIPs = availableIPs.Subtract(cidrIPBlock)
 	return &cidr
 }
