@@ -55,7 +55,7 @@ Flags:
 ```
 
 ## Build the project
-Requires Go version 1.22 or later.
+Requires Go version 1.23 or later.
 ```shell
 git clone git@github.com:np-guard/cloud-resource-collector.git
 cd cloud-resource-collector
