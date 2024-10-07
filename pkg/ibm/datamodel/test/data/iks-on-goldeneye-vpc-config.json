@@ -42,6 +42,7 @@
                 "name": "ky-test-edge-acl"
             },
             "default_routing_table": {
+                "crn": null,
                 "href": "href:10",
                 "id": "id:11",
                 "name": "ky-test-default-table",
@@ -273,6 +274,7 @@
             },
             "resource_type": "subnet",
             "routing_table": {
+                "crn": null,
                 "href": "href:10",
                 "id": "id:11",
                 "name": "ky-test-default-table",
@@ -466,6 +468,7 @@
             },
             "resource_type": "subnet",
             "routing_table": {
+                "crn": null,
                 "href": "href:10",
                 "id": "id:11",
                 "name": "ky-test-default-table",
@@ -641,6 +644,7 @@
             },
             "resource_type": "subnet",
             "routing_table": {
+                "crn": null,
                 "href": "href:10",
                 "id": "id:11",
                 "name": "ky-test-default-table",
@@ -827,6 +831,7 @@
             },
             "resource_type": "subnet",
             "routing_table": {
+                "crn": null,
                 "href": "href:10",
                 "id": "id:11",
                 "name": "ky-test-default-table",
@@ -926,6 +931,7 @@
             },
             "resource_type": "subnet",
             "routing_table": {
+                "crn": null,
                 "href": "href:10",
                 "id": "id:11",
                 "name": "ky-test-default-table",
@@ -1025,6 +1031,7 @@
             },
             "resource_type": "subnet",
             "routing_table": {
+                "crn": null,
                 "href": "href:10",
                 "id": "id:11",
                 "name": "ky-test-default-table",
@@ -1124,6 +1131,7 @@
             },
             "resource_type": "subnet",
             "routing_table": {
+                "crn": null,
                 "href": "href:10",
                 "id": "id:11",
                 "name": "ky-test-default-table",
@@ -1238,6 +1246,7 @@
             },
             "resource_type": "subnet",
             "routing_table": {
+                "crn": null,
                 "href": "href:10",
                 "id": "id:11",
                 "name": "ky-test-default-table",
@@ -1352,6 +1361,7 @@
             },
             "resource_type": "subnet",
             "routing_table": {
+                "crn": null,
                 "href": "href:10",
                 "id": "id:11",
                 "name": "ky-test-default-table",
@@ -1466,6 +1476,7 @@
             },
             "resource_type": "subnet",
             "routing_table": {
+                "crn": null,
                 "href": "href:10",
                 "id": "id:11",
                 "name": "ky-test-default-table",
@@ -1580,6 +1591,7 @@
             },
             "resource_type": "subnet",
             "routing_table": {
+                "crn": null,
                 "href": "href:10",
                 "id": "id:11",
                 "name": "ky-test-default-table",
@@ -1694,6 +1706,7 @@
             },
             "resource_type": "subnet",
             "routing_table": {
+                "crn": null,
                 "href": "href:10",
                 "id": "id:11",
                 "name": "ky-test-default-table",
@@ -3170,11 +3183,13 @@
             ],
             "advertise_routes_to": [],
             "created_at": "2024-03-21T13:02:11.000Z",
+            "crn": null,
             "href": "href:10",
             "id": "id:11",
             "is_default": true,
             "lifecycle_state": "stable",
             "name": "ky-test-default-table",
+            "resource_group": null,
             "resource_type": "routing_table",
             "route_direct_link_ingress": false,
             "route_internet_ingress": false,
@@ -3278,12 +3293,15 @@
     ],
     "load_balancers": [
         {
+            "access_mode": null,
+            "availability": null,
             "created_at": "2024-03-21T13:23:42.000Z",
             "crn": "crn:75",
             "hostname": "4f68e369-us-south.lb.appdomain.cloud",
             "href": "href:76",
             "id": "id:77",
             "instance_groups_supported": true,
+            "is_private_path": null,
             "is_public": true,
             "logging": {
                 "datapath": {
@@ -3338,6 +3356,7 @@
                 }
             ],
             "security_groups_supported": true,
+            "source_ip_session_persistence_supported": null,
             "subnets": [
                 {
                     "crn": "crn:222",
