@@ -12,7 +12,7 @@ require (
 	github.com/IBM/vpc-go-sdk v0.60.0
 	github.com/aws/aws-sdk-go-v2/config v1.27.41
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.163.0
-	github.com/np-guard/models v0.5.0
+	github.com/np-guard/models v0.5.1
 	github.com/spf13/cobra v1.8.1
 )
 
