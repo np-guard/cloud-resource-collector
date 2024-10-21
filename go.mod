@@ -6,9 +6,9 @@ toolchain go1.23.2
 
 require (
 	github.com/IBM-Cloud/container-services-go-sdk v0.0.0-20240510130133-9f76aa34af27
-	github.com/IBM/go-sdk-core/v5 v5.17.5
+	github.com/IBM/go-sdk-core/v5 v5.18.0
 	github.com/IBM/networking-go-sdk v0.49.0
-	github.com/IBM/platform-services-go-sdk v0.69.1
+	github.com/IBM/platform-services-go-sdk v0.69.3
 	github.com/IBM/vpc-go-sdk v0.60.0
 	github.com/aws/aws-sdk-go-v2/config v1.27.41
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.163.0
