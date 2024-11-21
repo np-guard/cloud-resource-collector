@@ -3027,8 +3027,8 @@
                 "clusterid:1.vpe.private.us-south.containers.cloud.ibm.com"
             ],
             "target": {
-                "crn": "crn:383",
-                "resource_type": "provider_cloud_service"
+                "resource_type": "provider_cloud_service",
+                "crn": "crn:383"
             },
             "vpc": {
                 "crn": "crn:1",
@@ -3091,8 +3091,8 @@
                 "api.us-south.containers.cloud.ibm.com"
             ],
             "target": {
-                "crn": "crn:384",
-                "resource_type": "provider_cloud_service"
+                "resource_type": "provider_cloud_service",
+                "crn": "crn:384"
             },
             "vpc": {
                 "crn": "crn:1",
@@ -3156,8 +3156,8 @@
                 "*.icr.io"
             ],
             "target": {
-                "crn": "crn:385",
-                "resource_type": "provider_cloud_service"
+                "resource_type": "provider_cloud_service",
+                "crn": "crn:385"
             },
             "vpc": {
                 "crn": "crn:1",

@@ -1758,6 +1758,7 @@
                     "resource_type": "volume"
                 }
             },
+            "cluster_network_attachments": null,
             "confidential_compute_mode": "",
             "created_at": "2023-04-27T11:43:27.000Z",
             "crn": "crn:217",
@@ -1915,6 +1916,7 @@
                     "resource_type": "volume"
                 }
             },
+            "cluster_network_attachments": null,
             "confidential_compute_mode": "",
             "created_at": "2023-04-27T11:43:27.000Z",
             "crn": "crn:230",
@@ -2072,6 +2074,7 @@
                     "resource_type": "volume"
                 }
             },
+            "cluster_network_attachments": null,
             "confidential_compute_mode": "",
             "created_at": "2023-04-27T11:43:27.000Z",
             "crn": "crn:239",
@@ -2229,6 +2232,7 @@
                     "resource_type": "volume"
                 }
             },
+            "cluster_network_attachments": null,
             "confidential_compute_mode": "",
             "created_at": "2023-04-27T11:43:27.000Z",
             "crn": "crn:248",
@@ -2386,6 +2390,7 @@
                     "resource_type": "volume"
                 }
             },
+            "cluster_network_attachments": null,
             "confidential_compute_mode": "",
             "created_at": "2023-04-27T11:43:27.000Z",
             "crn": "crn:257",
@@ -2543,6 +2548,7 @@
                     "resource_type": "volume"
                 }
             },
+            "cluster_network_attachments": null,
             "confidential_compute_mode": "",
             "created_at": "2023-04-27T11:43:27.000Z",
             "crn": "crn:266",
@@ -2700,6 +2706,7 @@
                     "resource_type": "volume"
                 }
             },
+            "cluster_network_attachments": null,
             "confidential_compute_mode": "",
             "created_at": "2023-04-27T11:43:27.000Z",
             "crn": "crn:275",
@@ -2857,6 +2864,7 @@
                     "resource_type": "volume"
                 }
             },
+            "cluster_network_attachments": null,
             "confidential_compute_mode": "",
             "created_at": "2023-04-27T11:43:27.000Z",
             "crn": "crn:284",
@@ -3014,6 +3022,7 @@
                     "resource_type": "volume"
                 }
             },
+            "cluster_network_attachments": null,
             "confidential_compute_mode": "",
             "created_at": "2023-04-27T11:43:27.000Z",
             "crn": "crn:293",
