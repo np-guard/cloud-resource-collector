@@ -141,6 +141,7 @@
                 }
             ],
             "OwnerId": "OwnerId:2",
+            "SecurityGroupArn": null,
             "Tags": [],
             "VpcId": "VpcId:3"
         }
@@ -151,6 +152,7 @@
             "AvailabilityZone": "us-east-1f",
             "AvailabilityZoneId": "use1-az5",
             "AvailableIpAddressCount": 4091,
+            "BlockPublicAccessStates": null,
             "CidrBlock": "172.31.64.0/20",
             "CustomerOwnedIpv4Pool": null,
             "DefaultForAz": true,
@@ -178,6 +180,7 @@
             "AvailabilityZone": "us-east-1d",
             "AvailabilityZoneId": "use1-az1",
             "AvailableIpAddressCount": 4091,
+            "BlockPublicAccessStates": null,
             "CidrBlock": "172.31.0.0/20",
             "CustomerOwnedIpv4Pool": null,
             "DefaultForAz": true,
@@ -205,6 +208,7 @@
             "AvailabilityZone": "us-east-1c",
             "AvailabilityZoneId": "use1-az6",
             "AvailableIpAddressCount": 4091,
+            "BlockPublicAccessStates": null,
             "CidrBlock": "172.31.32.0/20",
             "CustomerOwnedIpv4Pool": null,
             "DefaultForAz": true,
@@ -232,6 +236,7 @@
             "AvailabilityZone": "us-east-1a",
             "AvailabilityZoneId": "use1-az2",
             "AvailableIpAddressCount": 4091,
+            "BlockPublicAccessStates": null,
             "CidrBlock": "172.31.80.0/20",
             "CustomerOwnedIpv4Pool": null,
             "DefaultForAz": true,
@@ -259,6 +264,7 @@
             "AvailabilityZone": "us-east-1b",
             "AvailabilityZoneId": "use1-az4",
             "AvailableIpAddressCount": 4091,
+            "BlockPublicAccessStates": null,
             "CidrBlock": "172.31.16.0/20",
             "CustomerOwnedIpv4Pool": null,
             "DefaultForAz": true,
@@ -286,6 +292,7 @@
             "AvailabilityZone": "us-east-1e",
             "AvailabilityZoneId": "use1-az3",
             "AvailableIpAddressCount": 4091,
+            "BlockPublicAccessStates": null,
             "CidrBlock": "172.31.48.0/20",
             "CustomerOwnedIpv4Pool": null,
             "DefaultForAz": true,
@@ -311,6 +318,7 @@
     ],
     "vpcs": [
         {
+            "BlockPublicAccessStates": null,
             "CidrBlock": "172.31.0.0/16",
             "CidrBlockAssociationSet": [
                 {
