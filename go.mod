@@ -6,9 +6,9 @@ toolchain go1.23.2
 
 require (
 	github.com/IBM-Cloud/container-services-go-sdk v0.0.0-20240510130133-9f76aa34af27
-	github.com/IBM/go-sdk-core/v5 v5.18.3
+	github.com/IBM/go-sdk-core/v5 v5.18.5
 	github.com/IBM/networking-go-sdk v0.49.0
-	github.com/IBM/platform-services-go-sdk v0.72.0
+	github.com/IBM/platform-services-go-sdk v0.73.0
 	github.com/IBM/vpc-go-sdk v0.64.0
 	github.com/aws/aws-sdk-go-v2/config v1.28.7
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.199.0
@@ -45,9 +45,9 @@ require (
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	go.mongodb.org/mongo-driver v1.15.0 // indirect
-	golang.org/x/crypto v0.31.0 // indirect
-	golang.org/x/net v0.33.0 // indirect
-	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/crypto v0.32.0 // indirect
+	golang.org/x/net v0.34.0 // indirect
+	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
