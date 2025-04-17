@@ -105,7 +105,7 @@ func (res *VPC) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, &res.BaseTaggedResource)
 }
 
-func (res *VPC) GetCRN() *string { return res.VPC.CRN }
+func (res *VPC) GetCRN() *string { return res.CRN }
 
 // ReservedIPWrapper is an alias to vpcv1.ReservedIP that allows us to override the implementation of UnmarshalJSON
 type ReservedIPWrapper struct {
