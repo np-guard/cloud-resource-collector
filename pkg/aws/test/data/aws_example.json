@@ -331,6 +331,7 @@
                 }
             ],
             "DhcpOptionsId": "dopt-0a1fa85c79d575aae",
+            "EncryptionControl": null,
             "InstanceTenancy": "default",
             "Ipv6CidrBlockAssociationSet": null,
             "IsDefault": true,
