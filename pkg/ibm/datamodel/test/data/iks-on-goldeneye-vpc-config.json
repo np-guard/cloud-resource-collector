@@ -3294,9 +3294,11 @@
     "load_balancers": [
         {
             "access_mode": null,
+            "attached_load_balancer_pool_members": null,
             "availability": null,
             "created_at": "2024-03-21T13:23:42.000Z",
             "crn": "crn:75",
+            "failsafe_policy_actions": null,
             "hostname": "4f68e369-us-south.lb.appdomain.cloud",
             "href": "href:76",
             "id": "id:77",
@@ -3467,13 +3469,8 @@
                 {
                     "algorithm": "round_robin",
                     "created_at": "2024-03-21T13:23:42.000Z",
-                    "health_monitor": {
-                        "delay": 5,
-                        "max_retries": 2,
-                        "port": 31546,
-                        "timeout": 2,
-                        "type": "tcp"
-                    },
+                    "failsafe_policy": null,
+                    "health_monitor": null,
                     "href": "href:393",
                     "id": "id:394",
                     "name": "tcp-80-31546",
@@ -3594,13 +3591,8 @@
                 {
                     "algorithm": "round_robin",
                     "created_at": "2024-03-21T13:23:42.000Z",
-                    "health_monitor": {
-                        "delay": 5,
-                        "max_retries": 2,
-                        "port": 30479,
-                        "timeout": 2,
-                        "type": "tcp"
-                    },
+                    "failsafe_policy": null,
+                    "health_monitor": null,
                     "href": "href:389",
                     "id": "id:390",
                     "name": "tcp-443-30479",
