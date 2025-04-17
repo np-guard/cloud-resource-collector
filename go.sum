@@ -6,8 +6,8 @@ github.com/IBM/go-sdk-core/v5 v5.19.0 h1:YN2S5JUvq/EwYulmcNFwgyYBxZhVWl9nkY22H7H
 github.com/IBM/go-sdk-core/v5 v5.19.0/go.mod h1:deZO1J5TSlU69bCnl/YV7nPxFZA2UEaup7cq/7ZTOgw=
 github.com/IBM/networking-go-sdk v0.51.2 h1:aDa33IvvxMMWEB0sf+qNDWr8xE1XYoZYatG57SVsQAk=
 github.com/IBM/networking-go-sdk v0.51.2/go.mod h1:5aBaPKkm47LHECEOOZ4ltbwypOhapVo5aSCP3MTxmgQ=
-github.com/IBM/platform-services-go-sdk v0.73.0 h1:CKs6qCM2U549gMn4ULfJB76DaDQpit/+0VmbKDqSpFU=
-github.com/IBM/platform-services-go-sdk v0.73.0/go.mod h1:LSaXGGJUGGPMCCtG1/24r9LJEbF0hmpXtQOhABRk0PY=
+github.com/IBM/platform-services-go-sdk v0.79.0 h1:qCNheB3390holPcpDxdgNyi11JS6ZfsL39YgnJEOsTo=
+github.com/IBM/platform-services-go-sdk v0.79.0/go.mod h1:FzCPOfbNAt0s9RwtIrbJbfDwA7mKIObtZ/18KnviKr0=
 github.com/IBM/vpc-go-sdk v0.64.0 h1:0x2jakapXxXYTTr0EdrwuXa6h0couSK+FTDGxd8jChA=
 github.com/IBM/vpc-go-sdk v0.64.0/go.mod h1:VBR6bAznHsNCFA89Ue4JFQpqCcFp8F5neqbCFCyks4Q=
 github.com/asaskevich/govalidator v0.0.0-20200907205600-7a23bdc65eef/go.mod h1:WaHUgvxTVq04UNunO+XhnAqY/wQc+bxr74GqbsZ/Jqw=
