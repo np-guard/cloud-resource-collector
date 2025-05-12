@@ -11,7 +11,7 @@ require (
 	github.com/IBM/platform-services-go-sdk v0.79.0
 	github.com/IBM/vpc-go-sdk v0.67.1
 	github.com/aws/aws-sdk-go-v2/config v1.29.14
-	github.com/aws/aws-sdk-go-v2/service/ec2 v1.211.3
+	github.com/aws/aws-sdk-go-v2/service/ec2 v1.218.0
 	github.com/np-guard/models v0.5.5
 	github.com/spf13/cobra v1.9.1
 )
