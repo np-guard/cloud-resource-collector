@@ -7,7 +7,7 @@ toolchain go1.23.4
 require (
 	github.com/IBM-Cloud/container-services-go-sdk v0.0.0-20240510130133-9f76aa34af27
 	github.com/IBM/go-sdk-core/v5 v5.20.1
-	github.com/IBM/networking-go-sdk v0.51.2
+	github.com/IBM/networking-go-sdk v0.51.8
 	github.com/IBM/platform-services-go-sdk v0.79.0
 	github.com/IBM/vpc-go-sdk v0.67.1
 	github.com/aws/aws-sdk-go-v2/config v1.29.14
@@ -47,7 +47,7 @@ require (
 	go.mongodb.org/mongo-driver v1.17.2 // indirect
 	golang.org/x/crypto v0.36.0 // indirect
 	golang.org/x/net v0.38.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
+	golang.org/x/sys v0.32.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
