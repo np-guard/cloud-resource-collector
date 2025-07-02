@@ -8,7 +8,7 @@ require (
 	github.com/IBM-Cloud/container-services-go-sdk v0.0.0-20240510130133-9f76aa34af27
 	github.com/IBM/go-sdk-core/v5 v5.20.1
 	github.com/IBM/networking-go-sdk v0.51.8
-	github.com/IBM/platform-services-go-sdk v0.79.0
+	github.com/IBM/platform-services-go-sdk v0.83.3
 	github.com/IBM/vpc-go-sdk v0.67.1
 	github.com/aws/aws-sdk-go-v2/config v1.29.14
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.211.3
@@ -30,8 +30,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.30.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.33.19 // indirect
 	github.com/aws/smithy-go v1.22.2 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
-	github.com/go-openapi/errors v0.22.0 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.9 // indirect
+	github.com/go-openapi/errors v0.22.1 // indirect
 	github.com/go-openapi/strfmt v0.23.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
@@ -44,10 +44,10 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/spf13/pflag v1.0.6 // indirect
-	go.mongodb.org/mongo-driver v1.17.2 // indirect
-	golang.org/x/crypto v0.36.0 // indirect
-	golang.org/x/net v0.38.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
-	golang.org/x/text v0.23.0 // indirect
+	go.mongodb.org/mongo-driver v1.17.3 // indirect
+	golang.org/x/crypto v0.38.0 // indirect
+	golang.org/x/net v0.40.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.25.0 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
