@@ -1,3 +1,6 @@
+> [!WARNING]  
+> This repo is no longer being maintained
+
 # cloud-resource-collector
 Collects cloud resources in a given account. Supports multiple cloud providers.
 
@@ -61,3 +64,4 @@ git clone git@github.com:np-guard/cloud-resource-collector.git
 cd cloud-resource-collector
 make build
 ```
+
